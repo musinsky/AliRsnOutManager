@@ -1,0 +1,24 @@
+// Authors: Jan Musinsky (jan.musinsky@cern.ch)
+//          Martin Vala  (martin.vala@cern.ch)
+// Date:    15 Feb 2012
+
+#ifndef ALIRSNOUTGROUP_H
+#define ALIRSNOUTGROUP_H
+
+#include <TNamed.h>
+
+class AliRsnOutGroup: public TNamed {
+
+public:
+  AliRsnOutGroup();
+  AliRsnOutGroup(const AliRsnOutGroup &copy);
+  AliRsnOutGroup &operator=(const AliRsnOutGroup &other);
+  virtual     ~AliRsnOutGroup();
+
+private:
+  Int_t        fBla;
+
+  ClassDef(AliRsnOutGroup, 1) // AliRsnOutGroup class
+};
+
+#endif
