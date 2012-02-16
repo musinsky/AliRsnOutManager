@@ -10,7 +10,7 @@
   gSystem->AddIncludePath("-Iinclude");
   gSystem->SetBuildDir("tmp", kTRUE);
 
-  gSystem->Load("libHist");
+  gSystem->Load("libRIO");
   gSystem->Load("lib/libAliRsnOutManager.so");
 
   gStyle->SetHistLineColor(kBlack);

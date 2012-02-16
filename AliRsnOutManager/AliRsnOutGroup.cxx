@@ -1,6 +1,8 @@
 // Authors: Jan Musinsky (jan.musinsky@cern.ch)
 //          Martin Vala  (martin.vala@cern.ch)
-// Date:    15 Feb 2012
+// Date:    17 Feb 2012
+
+#include <TList.h>
 
 #include "AliRsnOutGroup.h"
 
@@ -11,6 +13,16 @@ AliRsnOutGroup::AliRsnOutGroup()
 : TNamed(), fBla(0)
 {
   // Default constructor
+}
+//______________________________________________________________________________
+AliRsnOutGroup::AliRsnOutGroup(TList *l)
+: TNamed(), fList(0)   // TNamed(l->GetName(), ""), fList(l)  // ??  if (!list)    ??
+{
+  // Normal constructor
+  // FIXME
+  // if (!list) ?!?!?;
+  SetName(l->GetName());
+  fList = l;
 }
 //______________________________________________________________________________
 AliRsnOutGroup::AliRsnOutGroup(const AliRsnOutGroup &copy)

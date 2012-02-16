@@ -1,6 +1,6 @@
 // Authors: Jan Musinsky (jan.musinsky@cern.ch)
 //          Martin Vala  (martin.vala@cern.ch)
-// Date:    15 Feb 2012
+// Date:    17 Feb 2012
 
 #ifndef ALIRSNOUTGROUP_H
 #define ALIRSNOUTGROUP_H
@@ -11,12 +11,18 @@ class AliRsnOutGroup: public TNamed {
 
 public:
   AliRsnOutGroup();
+  AliRsnOutGroup(TList *l);
   AliRsnOutGroup(const AliRsnOutGroup &copy);
   AliRsnOutGroup &operator=(const AliRsnOutGroup &other);
   virtual     ~AliRsnOutGroup();
 
+  void          SetSignal();
+  void          SetBackground();
+  void          Addbackground();
+
 private:
   Int_t        fBla;
+  TList       *fList;           //->list of groups
 
   ClassDef(AliRsnOutGroup, 1) // AliRsnOutGroup class
 };
