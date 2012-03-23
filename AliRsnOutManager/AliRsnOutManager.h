@@ -1,6 +1,6 @@
 // Authors: Jan Musinsky (jan.musinsky@cern.ch)
 //          Martin Vala  (martin.vala@cern.ch)
-// Date:    17 Feb 2012
+// Date:    23 Mar 2012
 
 #ifndef ALIRSNOUTMANAGER_H
 #define ALIRSNOUTMANAGER_H
@@ -14,25 +14,18 @@ class AliRsnOutGroup;
 class AliRsnOutManager : public TObject {
 
 public:
-  enum EAxisType { kInvMass, kPt, kEta };
+  enum EAxisType { kInvMass = 0, kPt = 1, kEta = 2 };
 
   AliRsnOutManager();
   AliRsnOutManager(const AliRsnOutManager &copy);
   AliRsnOutManager &operator=(const AliRsnOutManager &other);
   virtual      ~AliRsnOutManager();
 
-  Int_t         GetBla() const { return fBla; }
-  Int_t         GetDza() const { return fDza; }
-
-  void          SetFileName(const char *fname);
-  void          MakeGroup(const char *lname);
+  void          MakeGroup(const char *fname, const char *lname);
   void          FindIntervals() const;
 
 private:
-  Int_t         fBla;
-  Int_t         fDza;
-  TFile        *fFile;              //! sparse file
-  TList        *fGroups;            //->list of groups
+  TList        *fGroups;            //->list of all groups
 
   ClassDef(AliRsnOutManager, 1) // AliRsnOutManager class
 };

@@ -1,6 +1,6 @@
 // Authors: Jan Musinsky (jan.musinsky@cern.ch)
 //          Martin Vala  (martin.vala@cern.ch)
-// Date:    17 Feb 2012
+// Date:    23 Mar 2012
 
 #ifndef ALIRSNOUTGROUP_H
 #define ALIRSNOUTGROUP_H
@@ -16,12 +16,16 @@ public:
   AliRsnOutGroup &operator=(const AliRsnOutGroup &other);
   virtual     ~AliRsnOutGroup();
 
-  void          SetSignal();
-  void          SetBackground();
-  void          Addbackground();
+  TList       *GetList() const { return fList; }
+
+  void         SetFileName(const char *fname) { fFileName = fname; }
+  const char  *GetFileName() const { return fFileName.Data(); }
+  void         SetSignal();
+  void         SetBackground();
+  void         Addbackground();
 
 private:
-  Int_t        fBla;
+  TString      fFileName;
   TList       *fList;           //->list of groups
 
   ClassDef(AliRsnOutGroup, 1) // AliRsnOutGroup class

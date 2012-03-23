@@ -2,49 +2,41 @@
 //          Martin Vala  (martin.vala@cern.ch)
 // Date:    23 Mar 2012
 
-#include <TList.h>
+#include "AliRsnOutFragment.h"
 
-#include "AliRsnOutGroup.h"
-
-ClassImp(AliRsnOutGroup)
+ClassImp(AliRsnOutFragment)
 
 //______________________________________________________________________________
-AliRsnOutGroup::AliRsnOutGroup()
+AliRsnOutFragment::AliRsnOutFragment()
 : TNamed(),
-  fFileName(0),
-  fList(0)
+  fValueType(-1),
+  fValueMin(0),
+  fValueMax(0)
 {
   // Default constructor
 }
 //______________________________________________________________________________
-AliRsnOutGroup::AliRsnOutGroup(TList *l)
-: TNamed()
-{
-  // Normal constructor
-  fFileName = "";
-  fList = 0;
-  if (!l) return;
-  SetName(l->GetName());
-  fList = l;
-}
-//______________________________________________________________________________
-AliRsnOutGroup::AliRsnOutGroup(const AliRsnOutGroup &copy)
+AliRsnOutFragment::AliRsnOutFragment(const AliRsnOutFragment &copy)
 : TNamed(copy),
-  fList(copy.fList)
+  fValueType(copy.fValueType),
+  fValueMin(copy.fValueMin),
+  fValueMax(copy.fValueMax)
 {
   // Copy constructor
 }
 //______________________________________________________________________________
-AliRsnOutGroup &AliRsnOutGroup::operator=(const AliRsnOutGroup &other)
+AliRsnOutFragment &AliRsnOutFragment::operator=(const AliRsnOutFragment &other)
 {
   // Assignment operator
   if(this != &other) {
-    fList = other.fList;
+    fValueType = other.fValueType;
+    fValueMin  = other.fValueMin;
+    fValueMax  = other.fValueMax;
   }
   return *this;
 }
 //______________________________________________________________________________
-AliRsnOutGroup::~AliRsnOutGroup()
+AliRsnOutFragment::~AliRsnOutFragment()
 {
   // Destructor
 }

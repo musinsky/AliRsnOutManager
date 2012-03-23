@@ -1,10 +1,10 @@
 # module for AliRsnOutManager
 # Author: Jan Musinsky
-# Date:   15 Feb 2012
+# Date:   23 Mar 2012
 
 MODULE	= AliRsnOutManager
 MODDIR	= AliRsnOutManager
-FILES	= AliRsnOutManager AliRsnOutGroup AliRsnOutItem
+FILES	= AliRsnOutManager AliRsnOutGroup AliRsnOutFragment
 
 LNKDEF	= $(MODDIR)/$(LNKFILE).$(HdrSuf)
 SRCS	= $(patsubst %,$(MODDIR)/%.$(SrcSuf),$(FILES))

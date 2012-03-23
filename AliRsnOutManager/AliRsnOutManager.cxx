@@ -1,6 +1,6 @@
 // Authors: Jan Musinsky (jan.musinsky@cern.ch)
 //          Martin Vala  (martin.vala@cern.ch)
-// Date:    17 Feb 2012
+// Date:    23 Mar 2012
 
 #include <TFile.h>
 
@@ -11,14 +11,15 @@ ClassImp(AliRsnOutManager)
 
 //______________________________________________________________________________
 AliRsnOutManager::AliRsnOutManager()
-: TObject(), fFile(0), fGroups(0), fBla(0), fDza(0) //TODO "warning:   when initialized here [-Wreorder]"
+: TObject(),
+  fGroups()
 {
   // Default constructor
-  //  fFile = 0;
 }
 //______________________________________________________________________________
 AliRsnOutManager::AliRsnOutManager(const AliRsnOutManager &copy)
-: TObject(copy), fBla(copy.fBla), fDza(copy.fDza)
+: TObject(copy),
+  fGroups(copy.fGroups)
 {
   // Copy constructor
 }
@@ -27,8 +28,7 @@ AliRsnOutManager &AliRsnOutManager::operator=(const AliRsnOutManager &other)
 {
   // Assignment operator
   if(this != &other) {
-    fBla = other.fBla;
-    fDza = other.fDza;
+    fGroups = other.fGroups;
   }
   return *this;
 }
@@ -38,27 +38,24 @@ AliRsnOutManager::~AliRsnOutManager()
   // Destructor
 }
 //______________________________________________________________________________
-void AliRsnOutManager::SetFileName(const char *fname)
+void AliRsnOutManager::MakeGroup(const char *fname, const char *lname)
 {
-  if (fFile) delete fFile;
-  fFile = TFile::Open(fname, "READ");
-}
-//______________________________________________________________________________
-void AliRsnOutManager::MakeGroup(const char *lname)
-{
-  if (!fFile) {
-    Info("MakeGroup", "first specify file name");
-    return;
-  }
-  TList *list = dynamic_cast<TList *>(fFile->Get(lname));
+  TFile *file = TFile::Open(fname, "READ");
+  if (!file) return;
+
+  TList *list = dynamic_cast<TList *>(file->Get(lname));
   if (!list) {
-    Warning("MakeGroup", "list '%s' doesn't exist in file '%s'", lname, fFile->GetName());
+    Warning("MakeGroup", "list '%s' doesn't exist in file '%s'", lname, file->GetName());
+    delete file;
     return;
   }
 
   if (!fGroups) fGroups = new TList();
   AliRsnOutGroup *g = new AliRsnOutGroup(list);
+  g->SetFileName(file->GetName());
   fGroups->Add(g);
+
+  delete file;
 }
 //______________________________________________________________________________
 void AliRsnOutManager::FindIntervals() const

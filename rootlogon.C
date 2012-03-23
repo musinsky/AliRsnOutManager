@@ -1,5 +1,5 @@
 // Jan Musinsky, Martin Vala
-// 15/02/2012
+// 23/02/2012
 
 {
   if (gROOT->GetClass("AliRsnOutManager")) {

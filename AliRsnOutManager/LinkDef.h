@@ -6,6 +6,6 @@
 
 #pragma link C++ class AliRsnOutManager+;
 #pragma link C++ class AliRsnOutGroup+;
-#pragma link C++ class AliRsnOutItem+;
+#pragma link C++ class AliRsnOutFragment+;
 
 #endif

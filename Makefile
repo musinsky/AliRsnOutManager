@@ -1,6 +1,6 @@
 # Top level Makefile for AliRsnOutManager
 # Author: Jan Musinsky
-# Date:   15 Feb 2012
+# Date:   23 Mar 2012
 
 include $(ROOTSYS)/etc/Makefile.arch
 HdrSuf		= h
