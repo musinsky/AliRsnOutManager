@@ -1,7 +1,8 @@
 // Jan Musinsky, Martin Vala
-// 23/02/2012
+// 11/05/2012
 
 {
   rsnm = new AliRsnOutManager();
-  rsnm->MakeGroup("../../Sparse/AnalysisResults_data.root", "RsnHistMini_0");
+  //rsnm->ScanFile("../ALICE_RSN/test/AnalysisResults.root");
+  rsnm->ScanFile("../ALICE_RSN/pp.2.76.Phi/TOF_PID_ONLY/MC/QualityOnly/AnalysisResults_rsn.root");
 }

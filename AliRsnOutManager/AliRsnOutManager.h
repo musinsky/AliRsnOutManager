@@ -1,6 +1,6 @@
 // Authors: Jan Musinsky (jan.musinsky@cern.ch)
 //          Martin Vala  (martin.vala@cern.ch)
-// Date:    23 Mar 2012
+// Date:    14 May 2012
 
 #ifndef ALIRSNOUTMANAGER_H
 #define ALIRSNOUTMANAGER_H
@@ -8,6 +8,7 @@
 #include <TObject.h>
 
 class TFile;
+class THnSparse;
 
 class AliRsnOutGroup;
 
@@ -21,8 +22,14 @@ public:
   AliRsnOutManager &operator=(const AliRsnOutManager &other);
   virtual      ~AliRsnOutManager();
 
-  void          MakeGroup(const char *fname, const char *lname);
+  TList        *Groups() const { return fGroups; }
+
+  void          ScanFile(const char *fname);
+  void          ScanList(TList *list);
+  void          ScanSparse(THnSparse *sparse); // ParseSparse
   void          FindIntervals() const;
+
+//  static const char *GetDelimiter() { return "."; }
 
 private:
   TList        *fGroups;            //->list of all groups
