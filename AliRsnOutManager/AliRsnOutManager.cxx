@@ -1,6 +1,6 @@
 // Authors: Jan Musinsky (jan.musinsky@cern.ch)
 //          Martin Vala  (martin.vala@cern.ch)
-// Date:    14 May 2012
+// Date:    26 Jun 2012
 
 #include <TFile.h>
 #include <TKey.h>
@@ -9,6 +9,7 @@
 #include <TClass.h>
 #include <THnSparse.h>
 
+#include "AliLog.h"
 #include "AliRsnOutManager.h"
 #include "AliRsnOutGroup.h"
 
@@ -23,8 +24,8 @@ AliRsnOutManager::AliRsnOutManager()
 }
 //______________________________________________________________________________
 AliRsnOutManager::AliRsnOutManager(const AliRsnOutManager &copy)
-: TObject(copy),
-  fGroups(copy.fGroups)
+  : TObject(copy),
+    fGroups(copy.fGroups)
 {
   // Copy constructor
 }
@@ -47,6 +48,8 @@ void AliRsnOutManager::ScanFile(const char *fname)
 {
   TFile *file = TFile::Open(fname, "READ");
   if (!file) return;
+
+  AliInfo(Form("Ali Info %s", file->GetName()));
 
   //  TObjLink* lnk = file->GetListOfKeys()->FirstLink();
   //  while (lnk) {

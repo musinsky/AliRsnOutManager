@@ -1,5 +1,5 @@
 // Jan Musinsky, Martin Vala
-// 23/02/2012
+// 2012-06-26
 
 {
   if (gROOT->GetClass("AliRsnOutManager")) {
@@ -11,6 +11,7 @@
   gSystem->SetBuildDir("tmp", kTRUE);
 
   gSystem->Load("libRIO");
+  gSystem->Load("lib/libAliRootMini.so");
   gSystem->Load("lib/libAliRsnOutManager.so");
 
   gStyle->SetHistLineColor(kBlack);

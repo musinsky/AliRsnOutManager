@@ -1,6 +1,6 @@
 # Top level Makefile for AliRsnOutManager
 # Author: Jan Musinsky
-# Date:   23 Mar 2012
+# Date:   26 Jun 2012
 
 include $(ROOTSYS)/etc/Makefile.arch
 HdrSuf		= h
@@ -8,7 +8,7 @@ ifeq ($(MAKECMDGOALS),debug)
 CXXFLAGS	+= -DDEBUG
 endif
 
-MODULES		= AliRsnOutManager
+MODULES		= AliRootMini AliRsnOutManager
 
 MODMAKEFILE	= Module.mk
 LNKFILE		= LinkDef
