@@ -58,7 +58,7 @@ const char *AliRsnOutAxis::GetTitle() const
   return "ToDo";
 }
 //______________________________________________________________________________
-void AliRsnOutAxis::Print(Option_t *option) const
+void AliRsnOutAxis::Print(Option_t * /*option*/) const
 {
   Printf("ToDo");
 }

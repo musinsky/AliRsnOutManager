@@ -1,6 +1,6 @@
 # module for AliRsnOutManager
 # Author: Jan Musinsky
-# Date:   25 May 2012
+# Date:   30 Oct 2012
 
 MODULE	= AliRsnOutManager
 MODDIR	= AliRsnOutManager
@@ -15,9 +15,9 @@ DICTO	= $(DICT:.$(SrcSuf)=.$(ObjSuf))
 OBJS	= $(patsubst %.$(SrcSuf),$(TMPDIR)/%.$(ObjSuf),$(SRCS))
 MODLIB	= $(LIBDIR)/$(LIBPREFIX)$(MODULE).$(DllSuf)
 
-STRELACLEAN := $(OBJS) $(DICTO)
+RSNOUTMANAGERCLEAN := $(OBJS) $(DICTO)
 ifeq (distclean,$(findstring distclean,$(MAKECMDGOALS)))
-STRELACLEAN += $(DICT) $(DICTH) $(MODLIB)
+RSNOUTMANAGERCLEAN += $(DICT) $(DICTH) $(MODLIB)
 endif
 
 # used in the main Makefile
@@ -33,11 +33,11 @@ $(MODLIB):	$(OBJS) $(DICTO)
 $(DICT):	$(HDRS) $(LNKDEF)
 
 clean-$(MODDIR):
-		@rm -fv $(STRELACLEAN)
+		@rm -fv $(RSNOUTMANAGERCLEAN)
 
 clean:		clean-$(MODDIR)
 
 distclean-$(MODDIR):
-		@rm -fv $(STRELACLEAN)
+		@rm -fv $(RSNOUTMANAGERCLEAN)
 
 distclean:	distclean-$(MODDIR)

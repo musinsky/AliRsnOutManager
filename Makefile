@@ -1,9 +1,10 @@
 # Top level Makefile for AliRsnOutManager
 # Author: Jan Musinsky
-# Date:   26 Jun 2012
+# Date:   30 Oct 2012
 
 include $(ROOTSYS)/etc/Makefile.arch
 HdrSuf		= h
+CXXFLAGS	+= -Wextra
 ifeq ($(MAKECMDGOALS),debug)
 CXXFLAGS	+= -DDEBUG
 endif
@@ -83,7 +84,7 @@ distclean:	clean
 distsrc:
 		@rm -f $(DISTSRCNAME).tar.gz;
 		@tar --ignore-failed-read -czvf $(DISTSRCNAME).tar.gz \
-		  $(ALLDIST) Makefile *.C macros/*.C macros/*.cxx;
+		  $(ALLDIST) Makefile *.C;
 		@echo -e "\n$(DISTSRCNAME).tar.gz done\n"
 
 $(DEPENDFILE):	$(ALLDEPEND)

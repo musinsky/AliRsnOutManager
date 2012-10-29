@@ -1,6 +1,6 @@
 # module for AliRootMini
 # Author: Jan Musinsky
-# Date:   26 Jun 2012
+# Date:   30 Oct 2012
 
 MODULE	= AliRootMini
 MODDIR	= AliRootMini
@@ -15,9 +15,9 @@ DICTO	= $(DICT:.$(SrcSuf)=.$(ObjSuf))
 OBJS	= $(patsubst %.$(SrcSuf),$(TMPDIR)/%.$(ObjSuf),$(SRCS))
 MODLIB	= $(LIBDIR)/$(LIBPREFIX)$(MODULE).$(DllSuf)
 
-STRELACLEAN := $(OBJS) $(DICTO)
+ROOTMINICLEAN := $(OBJS) $(DICTO)
 ifeq (distclean,$(findstring distclean,$(MAKECMDGOALS)))
-STRELACLEAN += $(DICT) $(DICTH) $(MODLIB)
+ROOTMINICLEAN += $(DICT) $(DICTH) $(MODLIB)
 endif
 
 # used in the main Makefile
@@ -33,11 +33,11 @@ $(MODLIB):	$(OBJS) $(DICTO)
 $(DICT):	$(HDRS) $(LNKDEF)
 
 clean-$(MODDIR):
-		@rm -fv $(STRELACLEAN)
+		@rm -fv $(ROOTMINICLEAN)
 
 clean:		clean-$(MODDIR)
 
 distclean-$(MODDIR):
-		@rm -fv $(STRELACLEAN)
+		@rm -fv $(ROOTMINICLEAN)
 
 distclean:	distclean-$(MODDIR)
