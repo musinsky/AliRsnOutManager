@@ -10,5 +10,6 @@
 #pragma link C++ class AliRsnOutAxis+;
 #pragma link C++ class AliRsnOutFragment+;
 #pragma link C++ class AliRsnOutGroup+;
+#pragma link C++ class AliROMGraphErrors+;
 
 #endif
