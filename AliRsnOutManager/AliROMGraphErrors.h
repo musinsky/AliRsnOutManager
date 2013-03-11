@@ -1,6 +1,6 @@
 // Authors: Jan Musinsky (jan.musinsky@cern.ch)
 //          Martin Vala  (martin.vala@cern.ch)
-// Date:    02 Mar 2012
+// Date:    11 Mar 2013
 
 #ifndef ALIROMGRAPHERRORS_H
 #define ALIROMGRAPHERRORS_H
@@ -29,8 +29,8 @@ public:
 protected:
 
 private:
-  Int_t         fFlashPoint;
-  TMarker      *fFlashMarker;
+  Int_t         fFlashPoint;        // !
+  TMarker      *fFlashMarker;       // !
 
   ClassDef(AliROMGraphErrors, 1) // AliROMGraphErrors class
 };

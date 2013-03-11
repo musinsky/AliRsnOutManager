@@ -1,6 +1,6 @@
 // Authors: Jan Musinsky (jan.musinsky@cern.ch)
 //          Martin Vala  (martin.vala@cern.ch)
-// Date:    02 Mar 2012
+// Date:    11 Mar 2013
 
 #include <TCanvas.h>
 #include <TGClient.h>
@@ -111,7 +111,7 @@ void AliROMGraphErrors::SetShowHisto(Option_t* option)
   FlashPoint(kTRUE);
 }
 //______________________________________________________________________________
-void AliROMGraphErrors::ShowHisto(Option_t* /*option*/) const
+void AliROMGraphErrors::ShowHisto(Option_t * /*option*/) const
 {
   TVirtualPad *save = gPad;
   TCanvas *c = (TCanvas *)gROOT->GetListOfCanvases()->FindObject("c_graph");
@@ -139,10 +139,11 @@ void AliROMGraphErrors::FlashPoint(Bool_t flash)
     if (!fFlashMarker) {
       fFlashMarker = new TMarker(fX[fFlashPoint], fY[fFlashPoint], GetMarkerStyle());
       fFlashMarker->SetBit(kCannotPick);
-      fFlashMarker->SetMarkerSize(GetMarkerSize()*1.50);
-      fFlashMarker->SetMarkerColor(GetMarkerColor());
       fFlashMarker->Draw();
     }
+    fFlashMarker->SetMarkerStyle(GetMarkerStyle());
+    fFlashMarker->SetMarkerSize(GetMarkerSize()*1.66);
+    fFlashMarker->SetMarkerColor(GetMarkerColor());
     fFlashMarker->SetX(fX[fFlashPoint]);
     fFlashMarker->SetY(fY[fFlashPoint]);
     ShowHisto();
