@@ -1,6 +1,6 @@
 // Authors: Jan Musinsky (jan.musinsky@cern.ch)
 //          Martin Vala  (martin.vala@cern.ch)
-// Date:    11 Mar 2013
+// Date:    12 Mar 2013
 
 #ifndef ALIROMFRAGMENT_H
 #define ALIROMFRAGMENT_H
@@ -9,6 +9,7 @@
 
 class TObjArray;
 class TH1;
+class AliROMGroup;
 
 class AliROMFragment: public TNamed {
 
@@ -19,7 +20,15 @@ public:
   AliROMFragment();
   virtual ~AliROMFragment();
 
-  virtual void  Print(Option_t *option = "") const;
+  Double_t      GetZoneMin() const { return fZoneMin; }
+  Double_t      GetZoneMax() const { return fZoneMax; }
+  Double_t      GetZoneMean() const { return (fZoneMin+fZoneMax)/2.0; }
+  Double_t      GetZoneWidth() const { return TMath::Abs(fZoneMax-fZoneMin); }
+  AliROMGroup  *GetGroup() const { return fGroup; }
+
+  virtual Int_t  Compare(const TObject *obj) const;
+  virtual Bool_t IsSortable() const { return kTRUE; }
+  virtual void   Print(Option_t *option = "") const;
 
   void          AddHisto(TH1 *h, EPairKind kind, EPairType type);
   TH1          *GetHisto(EPairKind kind, EPairType type);
@@ -29,6 +38,9 @@ public:
 private:
   enum { kMaxPairType = 6 };
 
+  Double_t      fZoneMin;
+  Double_t      fZoneMax;
+  AliROMGroup  *fGroup;         // !
   TObjArray    *fHistoSingle;   // !
   TObjArray    *fHistoMix;      // !
   TObjArray    *fHistoTrueMC;   // !

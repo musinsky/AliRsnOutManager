@@ -1,11 +1,11 @@
 # module for AliRsnOutManager
 # Author: Jan Musinsky
-# Date:   04 Mar 2013
+# Date:   12 Mar 2013
 
 MODULE	= AliRsnOutManager
 MODDIR	= AliRsnOutManager
 FILES	= AliRsnOutManager AliRsnOutAxis AliRsnOutFragment AliRsnOutGroup \
-          AliROMGraphErrors AliROMFragment
+          AliROMGraphErrors AliROMFragment AliROMGroup
 
 LNKDEF	= $(MODDIR)/$(LNKFILE).$(HdrSuf)
 SRCS	= $(patsubst %,$(MODDIR)/%.$(SrcSuf),$(FILES))

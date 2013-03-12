@@ -1,6 +1,6 @@
 // Authors: Jan Musinsky (jan.musinsky@cern.ch)
 //          Martin Vala  (martin.vala@cern.ch)
-// Date:    11 Mar 2013
+// Date:    12 Mar 2013
 
 #ifndef ALIROMGRAPHERRORS_H
 #define ALIROMGRAPHERRORS_H
@@ -21,6 +21,7 @@ public:
 
   virtual Int_t DistancetoPrimitive(Int_t px, Int_t py);
   virtual void  Draw(Option_t *chopt = "");
+  virtual char *GetObjectInfo(Int_t px, Int_t py) const;
 
   void          SetShowHisto(Option_t *option = ""); // *MENU*
   void          ShowHisto(Option_t *option = "") const;

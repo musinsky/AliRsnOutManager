@@ -1,6 +1,6 @@
 // Authors: Jan Musinsky (jan.musinsky@cern.ch)
 //          Martin Vala  (martin.vala@cern.ch)
-// Date:    11 Mar 2013
+// Date:    12 Mar 2013
 
 #include <TCanvas.h>
 #include <TGClient.h>
@@ -92,6 +92,21 @@ Int_t AliROMGraphErrors::DistancetoPrimitive(Int_t px, Int_t py)
 
   if (fFlashPoint != prevp) FlashPoint(kTRUE);
   return ret;
+}
+//______________________________________________________________________________
+char *AliROMGraphErrors::GetObjectInfo(Int_t px, Int_t py) const
+{
+  if (!gPad) return (char *)"";
+
+  return TGraphErrors::GetObjectInfo(px, py);
+  // ToDo
+  //  static char info[64];
+  //  Double_t x = gPad->AbsPixeltoX(px);
+  //  Double_t y = gPad->AbsPixeltoY(py);
+  //  const char *xy = "X";
+  //  if (strstr(GetTitle(), "y") || strstr(GetTitle(), "Y")) xy = "Y";
+  //  sprintf(info, "Z=%7.2f, %s=%7.2f [cm]", gPad->PadtoX(x), xy, gPad->PadtoY(y));
+  //  return info;
 }
 //______________________________________________________________________________
 void AliROMGraphErrors::SetShowHisto(Option_t* option)

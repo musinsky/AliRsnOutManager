@@ -14,5 +14,6 @@
 #pragma link C++ class AliRsnOutGroup+;
 #pragma link C++ class AliROMGraphErrors+;
 #pragma link C++ class AliROMFragment+;
+#pragma link C++ class AliROMGroup+;
 
 #endif

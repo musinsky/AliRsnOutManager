@@ -1,6 +1,6 @@
 // Authors: Jan Musinsky (jan.musinsky@cern.ch)
 //          Martin Vala  (martin.vala@cern.ch)
-// Date:    11 Mar 2013
+// Date:    12 Mar 2013
 
 #include <TObjArray.h>
 #include <TH1.h>
@@ -15,6 +15,9 @@ ClassImp(AliROMFragment)
 //______________________________________________________________________________
 AliROMFragment::AliROMFragment()
 : TNamed(),
+  fZoneMin(0.),
+  fZoneMax(0.),
+  fGroup(0),
   fHistoSingle(0),
   fHistoMix(0),
   fHistoTrueMC(0),
@@ -41,6 +44,13 @@ AliROMFragment::~AliROMFragment()
     if (fgHistoOwner) fHistoGenMC->Delete();
     SafeDelete(fHistoGenMC);
   }
+}
+//______________________________________________________________________________
+Int_t AliROMFragment::Compare(const TObject *obj) const
+{
+  if (GetZoneMean() < (((AliROMFragment *)obj)->GetZoneMean())) return -1;
+  else if (GetZoneMean() > (((AliROMFragment *)obj)->GetZoneMean())) return 1;
+  else return 0;
 }
 //______________________________________________________________________________
 void AliROMFragment::Print(Option_t *option) const
