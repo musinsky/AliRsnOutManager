@@ -477,7 +477,18 @@ void AnalyzeSparse(Color_t lcolor = -1)
   gr->Draw("AP");
   gPad->Update();
   gPad->Modified();
- 
+
+  // event stat
+  TH1F *hEventStat = (TH1F *)l->FindObject("hEventStat");
+  if (!hEventStat) Printf("problem !!!");
+  // events All
+  Double_t nEvents    = hEventStat->GetBinContent(1);
+  // events Selected
+  Double_t nEventsSel = hEventStat->GetBinContent(4);
+
+  // teraz treba opravit gry[i] a gryE[i], neviem ci uz
+  // na nEvents alebo na nEventsSel ???
+
   Printf("Creating file %s",lname.Data());
   ofstream myfile;
   myfile.open(lname.Data());
