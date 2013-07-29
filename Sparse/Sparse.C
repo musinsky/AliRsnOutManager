@@ -11,6 +11,8 @@ Bool_t isTPC = kTRUE;
 Bool_t isVoig = kFALSE; // !!!!!!!!!!!!
 Double_t fmin = 0.995;
 Double_t fmax = 1.185;
+TString mv_colon=":";
+// mv_colon="_";
 
 TString fname,lname,s1name,s3name_p,s3name_m,smix,smixpp,smixmm, graph_name,
   graphee_name;
@@ -31,6 +33,8 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE)
 {
   // fname = Form("~/ALICE_RSN/pp_2.76/2013-01-06/DATA_LHC11a_ESD/%s/AnalysisResults.root", suf[fsuf]);
   fname = Form("root://eos.saske.sk//eos/saske.sk/users/m/mvala/ALICE/Rsn_Phi/pp_2.76/DATA_LHC11a_ESD/%s/AnalysisResults.root", suf[fsuf]);
+  fname = "/eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-04-11/DATA/00_default/AnalysisResults.root";
+  // fname = "/eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-04-11/DATA/00_default/data_LHC11a_000146806_ESDs_p4_without_SDD/AnalysisResults.root";
 
   const char *tmp_qc = "";
   if      (qc == 0)  { tmp_qc = "qualityonly"; ilist = 0; sigma = 0.0;
@@ -56,15 +60,15 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE)
   }
 
   if (fsuf == 0) { // bo Mato
-    lname = Form("RsnHistMini_Phi_PhiNsigma_%s_%s",
-                 tmp_qc, tmp_10or11);
+    lname = Form("RsnHistMini_Phi_PhiNsigma%s%s_%s",
+                 mv_colon.Data(),tmp_qc, tmp_10or11);
     what  = Form("PhiNsigma_%s_%s",
                  tmp_qc, tmp_10or11);
     graph_name = Form("%s_%s", what, suf[fsuf]);
   }
   else {
-    lname = Form("RsnHistMini_Phi_PhiNsigma_%s_%s_%s",
-                 tmp_qc, tmp_10or11, suf[fsuf]);
+    lname = Form("RsnHistMini_Phi_PhiNsigma%s%s_%s_%s",
+                 mv_colon.Data(),tmp_qc, tmp_10or11, suf[fsuf]);
     what  = Form("PhiNsigma_%s_%s_%s",
                  tmp_qc, tmp_10or11, suf[fsuf]);
     graph_name = what;
@@ -466,6 +470,18 @@ void AnalyzeSparse(Color_t lcolor = -1)
   //  c->SaveAs(Form("%s_a.pdf", lname.Data()));
   //  c2->SaveAs(Form("%s_b.pdf", lname.Data()));
 
+
+  // applying super macro
+  for (Int_t i = 0; i < count; i++) {
+    // SuperMacro
+    Double_t superfactor = CalculateFactor(l, bwidth[i]);
+    gry[i] = gry[i]*superfactor;
+    gryE[i] = gryE[i]*superfactor;
+
+  }
+
+
+
   //  new TCanvas();
   TGraphErrors *gr = new TGraphErrors(count, grx, gry, grxE, gryE);
   gr->SetMarkerStyle(8);
@@ -665,8 +681,8 @@ void AnalyzeSparse(Color_t lcolor = -1)
     if (deno < 0.0000001) deno = 1;
     gry_fix[i] = gry[i]/deno;
     // SuperMacro
-    Double_t superfactor = CalculateFactor(l, bwidth[i]);
-    if (useCF) gry_fix[i] = gry_fix[i]*superfactor;
+    // Double_t superfactor = CalculateFactor(l, bwidth[i]);
+    // if (useCF) gry_fix[i] = gry_fix[i]*superfactor;
 
     Double_t AAA  = gry[i];
     Double_t AAAE = gryE[i];
