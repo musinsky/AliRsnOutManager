@@ -29,12 +29,11 @@ Int_t ilist = 0;
 TH1D *hg, *h1, *h3_p, *h3_m, *ht;
 TMultiGraph *m_gr = new TMultiGraph();
 
-void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE)
+void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE, const char *my_fname="AnalysisResults.root")
 {
   // fname = Form("~/ALICE_RSN/pp_2.76/2013-01-06/DATA_LHC11a_ESD/%s/AnalysisResults.root", suf[fsuf]);
-  fname = Form("root://eos.saske.sk//eos/saske.sk/users/m/mvala/ALICE/Rsn_Phi/pp_2.76/DATA_LHC11a_ESD/%s/AnalysisResults.root", suf[fsuf]);
-  fname = "/eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-04-11/DATA/00_default/AnalysisResults.root";
-  // fname = "/eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-04-11/DATA/00_default/data_LHC11a_000146806_ESDs_p4_without_SDD/AnalysisResults.root";
+  // fname = Form("root://eos.saske.sk//eos/saske.sk/users/m/mvala/ALICE/Rsn_Phi/pp_2.76/DATA_LHC11a_ESD/%s/AnalysisResults.root", suf[fsuf]);
+  fname = Form("root://eos.saske.sk//eos/saske.sk/users/m/mvala/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-04-11/DATA/%s/%s", suf[fsuf], my_fname);
 
   const char *tmp_qc = "";
   if      (qc == 0)  { tmp_qc = "qualityonly"; ilist = 0; sigma = 0.0;
