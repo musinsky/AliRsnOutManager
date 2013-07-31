@@ -161,7 +161,9 @@ void AnalyzeSparse(Color_t lcolor = -1)
   Double_t gr_mass[999], gr_massE[999], gr_width[999], gr_widthE[999];
   Double_t gry_true[999], gry_true_eff[999];
   TH1::AddDirectory(kFALSE);
-  TFile *f = TFile::Open(fname.Data(), "READ");
+
+  TFile::SetCacheFileDir(gSystem->HomeDirectory()); // direct "$HOME" or "~" not working
+  TFile *f = TFile::Open(fname.Data(), "CACHEREAD");
   if (!f) return;
   TList *l; f->GetObject(lname.Data(), l);
   if (!l) return;
