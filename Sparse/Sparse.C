@@ -11,8 +11,10 @@ Bool_t isTPC = kTRUE;
 Bool_t isVoig = kFALSE; // !!!!!!!!!!!!
 Double_t fmin = 0.995;
 Double_t fmax = 1.185;
-TString mv_colon=":";
-// mv_colon="_";
+Double_t fipm = 3.0;
+TString mv_colon = ":";
+// mv_colon = "_";
+Int_t combi = 0;
 
 TString fname,lname,s1name,s3name_p,s3name_m,smix,smixpp,smixmm, graph_name,
   graphee_name;
@@ -29,10 +31,43 @@ Int_t ilist = 0;
 TH1D *hg, *h1, *h3_p, *h3_m, *ht;
 TMultiGraph *m_gr = new TMultiGraph();
 
+void SetCombinations(Int_t c = 0)
+{
+  if (c == 0) { // default
+    effiTPC = kFALSE; // common or own TPC effi, correct only for 2013_01
+    mixing  = kFALSE;
+    norm[0] = 1.045;  // where is norm signal and background
+    norm[1] = 1.085;
+    fmin    = 0.995;  // where is fit
+    fmax    = 1.185;
+    fipm    = 3.0;    // where is integral (+- 'fipm' sigma)
+    combi   = c;
+  }
+  if (c == 1) {
+    effiTPC = kFALSE;
+    mixing  = kFALSE;
+    norm[0] = norm[0] - 0.01;
+    norm[1] = norm[1] + 0.01;
+    fmin    = fmin - 0.01;
+    fmax    = fmax + 0.01;
+    fipm    = 5.0;
+    combi   = c;
+  }
+  if (c == 2) {
+    effiTPC = kFALSE;
+    mixing  = kFALSE;
+    norm[0] = norm[0] - 0.01;
+    norm[1] = norm[1] + 0.05;
+    fmin    = fmin - 0.02;
+    fmax    = fmax + 0.02;
+    fipm    = 4.0;
+    combi   = c;
+  }
+}
+
 void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE, const char *my_fname="AnalysisResults.root")
 {
-  // fname = Form("~/ALICE_RSN/pp_2.76/2013-01-06/DATA_LHC11a_ESD/%s/AnalysisResults.root", suf[fsuf]);
-  // fname = Form("root://eos.saske.sk//eos/saske.sk/users/m/mvala/ALICE/Rsn_Phi/pp_2.76/DATA_LHC11a_ESD/%s/AnalysisResults.root", suf[fsuf]);
+  //  fname = Form("~/ALICE_RSN/pp_2.76/2013-01-06/DATA_LHC11a_ESD/%s/%s", suf[fsuf], my_fname);
   fname = Form("root://eos.saske.sk//eos/saske.sk/users/m/mvala/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-04-11/DATA/%s/%s", suf[fsuf], my_fname);
 
   const char *tmp_qc = "";
@@ -335,8 +370,8 @@ void AnalyzeSparse(Color_t lcolor = -1)
     gr_widthE[count] = ff->GetParError(2);
 
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    fmini = ff->GetParameter(1) - 3.0*ff->GetParameter(2);
-    fmaxi = ff->GetParameter(1) + 3.0*ff->GetParameter(2);
+    fmini = ff->GetParameter(1) - fipm*ff->GetParameter(2);
+    fmaxi = ff->GetParameter(1) + fipm*ff->GetParameter(2);
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     value              = hh->Integral(hh->FindBin(fmini), hh->FindBin(fmaxi));
     // pre histo doimplementovat odcitavanie BKG, pre fun uz je hotove
@@ -471,17 +506,17 @@ void AnalyzeSparse(Color_t lcolor = -1)
   //  c->SaveAs(Form("%s_a.pdf", lname.Data()));
   //  c2->SaveAs(Form("%s_b.pdf", lname.Data()));
 
+  TGraphErrors *gr_raw = new TGraphErrors(count, grx, gry, grxE, gryE);
+  G2F(gr_raw, TString::Format("%s_%02d_%s", lname.Data(), combi, "R"));
 
   // applying super macro
+  Double_t superfactor;
   for (Int_t i = 0; i < count; i++) {
     // SuperMacro
-    Double_t superfactor = CalculateFactor(l, bwidth[i]);
+    superfactor = CalculateFactor(l, bwidth[i]);
     gry[i] = gry[i]*superfactor;
     gryE[i] = gryE[i]*superfactor;
-
   }
-
-
 
   //  new TCanvas();
   TGraphErrors *gr = new TGraphErrors(count, grx, gry, grxE, gryE);
@@ -494,36 +529,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   gr->Draw("AP");
   gPad->Update();
   gPad->Modified();
-
-  // event stat
-  TH1F *hEventStat = (TH1F *)l->FindObject("hEventStat");
-  if (!hEventStat) Printf("problem !!!");
-  // events All
-  Double_t nEvents    = hEventStat->GetBinContent(1);
-  // events Selected
-  Double_t nEventsSel = hEventStat->GetBinContent(4);
-
-  // teraz treba opravit gry[i] a gryE[i], neviem ci uz
-  // na nEvents alebo na nEventsSel ???
-
-  Printf("Creating file %s",lname.Data());
-  ofstream myfile;
-  myfile.open(lname.Data());
-  TString str_tmp;
-  for (Int_t i = 0; i < count; i++) {
-    str_tmp = TString::Format("%g %g %g %g", grx[i], gry[i], grxE[i], gryE[i]);
-    Printf("%s",str_tmp.Data());
-    myfile << str_tmp.Data() << endl;
-  }
-  myfile.close();
-  // TString tout;
-  // for (Int_t i = 0; i < count; i++) {
-  //   tout = Form("%g %g %g %g", grx[i], gry[i], grxE[i], gryE[i]);
-  //   tout = Form("Printf(\"%s\"); >> %s", tout.Data(), lname.Data());
-  //   gROOT->ProcessLine(tout.Data());
-  // }
-  //gROOT->ProcessLine(Form("gr->Print(); > %s", lname.Data()));
-  return;
+  G2F(gr, TString::Format("%s_%02d_%s", lname.Data(), combi, "RF"));
 
   new TCanvas();
   TGraphErrors *grm = new TGraphErrors(count, grx, gr_mass, grxE, gr_massE);
@@ -726,6 +732,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   m_gr_fix->Add(gr_fix);
   if (superfactor > 0.9) m_gr_fix->SetMinimum(1);
   //  gr_fix->Draw("AP");
+  G2F(gr_fix, TString::Format("%s_%02d_%s", lname.Data(), combi, "RFE"));
 
   c = new TCanvas();
   c->SetWindowSize(1200, 450);
@@ -884,6 +891,30 @@ TGraphErrors *GraphRatio(TGraphErrors *g1,TGraphErrors *g2,
 
   g->GetXaxis()->SetRangeUser(-1, 5);
   return g;
+}
+
+Double_t NanCheck(Double_t value, Double_t retvalue = 0.000000001)
+{
+  if (TMath::IsNaN(value)) return retvalue;
+  return value;
+}
+
+void G2F(const TGraphErrors *g, const char *name, Bool_t info = kTRUE)
+{
+  if (info) Printf("Creating file %s", name);
+  ofstream myfile;
+  myfile.open(name);
+  TString str_tmp;
+  Double_t x, y, ex, ey;
+  for (Int_t i = 0; i < g->GetN(); i++) {
+    g->GetPoint(i, x, y);
+    ex = g->GetErrorX(i);
+    ey = g->GetErrorY(i);
+    str_tmp = TString::Format("%g %g %g %g", x, y, NanCheck(ex), NanCheck(ey));
+    if (info) Printf("%s", str_tmp.Data());
+    myfile << str_tmp.Data() << endl;
+  }
+  myfile.close();
 }
 
 Double_t CalculateFactor(TList *list, Double_t delta_pt)
