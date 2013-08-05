@@ -899,11 +899,11 @@ Double_t NanCheck(Double_t value, Double_t retvalue = 0.000000001)
   return value;
 }
 
-void G2F(const TGraphErrors *g, const char *name, Bool_t info = kTRUE)
+void G2F(const TGraphErrors *g, TString name, Bool_t info = kTRUE)
 {
-  if (info) Printf("Creating file %s", name);
+  if (info) Printf("Creating file %s", name.Data());
   ofstream myfile;
-  myfile.open(name);
+  myfile.open(name.Data());
   TString str_tmp;
   Double_t x, y, ex, ey;
   for (Int_t i = 0; i < g->GetN(); i++) {
