@@ -16,6 +16,10 @@ TString mv_colon = ":";
 // mv_colon = "_";
 Int_t combi = 0;
 
+TString eff_prefix="EFFI_OK/effi_";
+TString eff_prefix_anders="EFFI_Anders/effi_";
+
+
 TString fname,lname,s1name,s3name_p,s3name_m,smix,smixpp,smixmm, graph_name,
   graphee_name;
 TMultiGraph *m_gr     = new TMultiGraph();
@@ -33,7 +37,7 @@ TMultiGraph *m_gr = new TMultiGraph();
 
 void SetCombinations(Int_t c = 0)
 {
-  if (c == 0) { // default
+  // if (c == 0) { // default
     effiTPC = kFALSE; // common or own TPC effi, correct only for 2013_01
     mixing  = kFALSE;
     norm[0] = 1.045;  // where is norm signal and background
@@ -42,7 +46,7 @@ void SetCombinations(Int_t c = 0)
     fmax    = 1.185;
     fipm    = 3.0;    // where is integral (+- 'fipm' sigma)
     combi   = c;
-  }
+  // }
   if (c == 1) {
     effiTPC = kFALSE;
     mixing  = kFALSE;
@@ -673,13 +677,15 @@ void AnalyzeSparse(Color_t lcolor = -1)
     noSigma = kTRUE;
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   }
-  TGraphErrors *geff = new TGraphErrors(Form("EFFI_OK/effi_%s",
-                                             graphee_name.Data()));
+
+  // Printf(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
+
+  TGraphErrors *geff = new TGraphErrors(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
   if (binAnders) {
     delete geff;
-    geff = new TGraphErrors(Form("EFFI_Anders/effi_%s", graphee_name.Data()));
+    geff = new TGraphErrors(TString::Format("%s%s", eff_prefix_anders.Data(), graphee_name.Data()).Data());
   }
-  Printf("Open EFFI_OK/%s", graphee_name.Data());
+  Printf("Open %s%s", eff_prefix.Data(), graphee_name.Data());
   if (geff->IsZombie()) return;
   geff->SetMarkerStyle(20);
   geff->SetMarkerColor(kBlack);
@@ -893,7 +899,7 @@ TGraphErrors *GraphRatio(TGraphErrors *g1,TGraphErrors *g2,
   return g;
 }
 
-Double_t NanCheck(Double_t value, Double_t retvalue = 0.000000001)
+Double_t NanCheck(Double_t value, Double_t retvalue = 0.0)
 {
   if (TMath::IsNaN(value)) return retvalue;
   return value;
