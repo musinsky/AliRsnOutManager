@@ -1,11 +1,14 @@
-void run(Int_t id=0,Int_t id_to=0, Int_t c=0, TString in_fname="AnalysisResults.root", const char *path_Sparce_macro="", TString out_path = "") {
-
+void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
+         TString in_fname = "AnalysisResults.root",
+         const char *path_Sparce_macro = "", TString out_path = "")
+{
   gROOT->ProcessLine(TString::Format(".L %sSparse.C",path_Sparce_macro));
 
   eff_prefix="";
   eff_prefix+="/eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-04-11/MC_LHC12f1a/";
   eff_prefix+="EFFI_OK/effi_";
   del_step = 0.2;
+  rsn_data = 20130411;
   SetNameBordel(id, 30, 2010, 1, in_fname.Data());
   // SetNameBordel(id, 30, 2010, 1);
   SetCombinations(c);
@@ -23,8 +26,8 @@ void run(Int_t id=0,Int_t id_to=0, Int_t c=0, TString in_fname="AnalysisResults.
     out_fname.ReplaceAll("RsnHistMini_Phi_PhiNsigma:","");
     out_fname.ReplaceAll("RsnHistMini_Phi_PhiNsigma_","");
     out_fname.ReplaceAll("_R","");
-    
-    
+
+
     out_path += out_fname;
     // out_path += "/";
     gSystem->Exec(TString::Format("mkdir -p %s", out_path.Data()).Data());

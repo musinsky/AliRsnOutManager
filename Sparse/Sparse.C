@@ -1,3 +1,5 @@
+Int_t rsn_data   = 20130106; // 20130411
+TString mv_colon = "_";      // ":";
 Bool_t effiTPC = kFALSE;
 Bool_t binAnders = kFALSE;
 Bool_t useCF = kFALSE;
@@ -6,19 +8,16 @@ Bool_t noSigma = kFALSE;
 Double_t sigma = 1.0;
 Double_t norm[2]  = {1.045, 1.085};
 Double_t del_step = 0.25;
-Bool_t mc = kFALSE;
 Bool_t isTPC = kTRUE;
-Bool_t isVoig = kFALSE; // !!!!!!!!!!!!
+Bool_t isVoig = kFALSE;
 Double_t fmin = 0.995;
 Double_t fmax = 1.185;
 Double_t fipm = 3.0;
-TString mv_colon = ":";
-// mv_colon = "_";
 Int_t combi = 0;
+Double_t export_bin[999] = {0};
 
 TString eff_prefix="EFFI_OK/effi_";
 TString eff_prefix_anders="EFFI_Anders/effi_";
-
 
 TString fname,lname,s1name,s3name_p,s3name_m,smix,smixpp,smixmm, graph_name,
   graphee_name;
@@ -31,8 +30,9 @@ TMultiGraph *m_gr_fix = new TMultiGraph();
 //                        "NCLSTTPC50", "NCLSTTPC70", "NCLSTTPC80"};
 
 const char *suf[11] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
-		       "DCAXY6S", "DCAXY7S", "DCAXY7S_DCAZ20", "DCAXY7S_NCLSTTPC50",
-		       "DCAZ20", "NCLSTTPC50", "NCLSTTPC80"};
+                       "DCAXY6S", "DCAXY7S", "DCAXY7S_DCAZ20",
+                       "DCAXY7S_NCLSTTPC50", "DCAZ20", "NCLSTTPC50",
+                       "NCLSTTPC80"};
 
 const char *what   = "";
 Int_t ilist = 0;
@@ -104,10 +104,21 @@ void SetCombinations(Int_t c = 0)
 
 }
 
-void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE, const char *my_fname="AnalysisResults.root")
+void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
+                   const char *my_fname="AnalysisResults.root")
 {
-  //  fname = Form("~/ALICE_RSN/pp_2.76/2013-01-06/DATA_LHC11a_ESD/%s/%s", suf[fsuf], my_fname);
-  fname = Form("root://eos.saske.sk//eos/saske.sk/users/m/mvala/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-04-11/DATA/%s/%s", suf[fsuf], my_fname);
+  if (rsn_data == 20130106) {
+    fname = Form("root://eos.saske.sk//eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-01-06/DATA_LHC11a_ESD/%s/%s", suf[fsuf], my_fname);
+    mv_colon = "_";
+  }
+  else if (rsn_data == 20130411) {
+    fname = Form("root://eos.saske.sk//eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-04-11/DATA/%s/%s", suf[fsuf], my_fname);
+    mv_colon = ":";
+  }
+  else {
+    Printf("Wrong input Rsn data !!!");
+    return;
+  }
 
   const char *tmp_qc = "";
   if      (qc == 0)  { tmp_qc = "qualityonly"; ilist = 0; sigma = 0.0;
@@ -123,14 +134,14 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE, co
   else if (qc == 30) { tmp_qc = "KTPCnsig30";  ilist = 5; sigma = 3.0;
     noSigma = kFALSE; }
   else {
-    Printf("Bad TPC cut !!!!!!!!!!!");
+    Printf("Wrong TPC cut !!!");
     return;
   }
   const char *tmp_10or11 = "";
   if      (std10or11 == 2010) tmp_10or11 = "STD2010_PRIMARY";
   else if (std10or11 == 2011) tmp_10or11 = "STD2011_PRIMARY_NCLSTTPC";
   else {
-    Printf("Bad 2010 or 2011 cut !!!!!!!!!!!");
+    Printf("Wrong 2010 or 2011 cut !!!");
     return;
   }
 
@@ -191,11 +202,15 @@ Double_t Levy(const Double_t *pt, const Double_t *par) const
   Double_t lTemp = par[1];
   Double_t lPower = par[2];
 
-  Double_t lBigCoef = ((lPower-1)*(lPower-2)) / (l2pi*lPower*lTemp*(lPower*lTemp+lMass*(lPower-2)));
-  Double_t lInPower = 1 + (TMath::Sqrt(pt[0]*pt[0]+lMass*lMass)-lMass) / (lPower*lTemp);
+  Double_t lBigCoef = ((lPower-1)*(lPower-2)) /
+    (l2pi*lPower*lTemp*(lPower*lTemp+lMass*(lPower-2)));
+  Double_t lInPower = 1 + (TMath::Sqrt(pt[0]*pt[0]+lMass*lMass)-lMass) /
+    (lPower*lTemp);
 
-  return pt[0]*(ldNdy * pt[0] * lBigCoef * TMath::Power(lInPower,(-1.0)*lPower));
+  return pt[0]*(ldNdy * pt[0] * lBigCoef *
+                TMath::Power(lInPower,(-1.0)*lPower));
 }
+
 TF1 *fl = new TF1("fl", Levy, 0., 4., 4);
 fl->SetParameters(13732, 0.2, 6.56, 1.02);
 fl->SetLineStyle(2);
@@ -216,6 +231,7 @@ Double_t LevyTsallis(const Double_t *pt, const Double_t *par) const
 
   return lBigCoef * ldNdy * pt[0] * lInPower;
 }
+
 TF1 *flt = new TF1("flt", LevyTsallis, 0., 5., 4);
 flt->SetParameters(13732, 0.2, 6.56, 1.02);
 //flt->FixParameter(3, 1.019445);
@@ -223,22 +239,19 @@ flt->SetLineStyle(2);
 flt->SetLineWidth(2);
 flt->SetLineColor(kMagenta+1);
 
-
 void AnalyzeSparse(Color_t lcolor = -1)
 {
   gStyle->SetGridColor(kGray);
 
   TH1D *hg, *h1, *h3_p, *h3_m, *ht;
-  TString gtitle;
-  if (mc) gtitle = Form("Monte Carlo, %s", graph_name.Data());
-  else    gtitle = Form("Real Data, %s", graph_name.Data());
+  TString gtitle = Form("Real Data, %s", graph_name.Data());
   Double_t grx[999], gry[999], gry2[999], gry3[999], gry4[999],
     gry_eff[999], gry_fix[999], grxE[999],  gryE[999], gry_fixE[999];
   Double_t gr_mass[999], gr_massE[999], gr_width[999], gr_widthE[999];
   Double_t gry_true[999], gry_true_eff[999];
   TH1::AddDirectory(kFALSE);
 
-  TFile::SetCacheFileDir(gSystem->HomeDirectory()); // direct "$HOME" or "~" not working
+  TFile::SetCacheFileDir(gSystem->HomeDirectory());
   TFile *f = TFile::Open(fname.Data(), "CACHEREAD");
   if (!f) return;
   TList *l; f->GetObject(lname.Data(), l);
@@ -271,12 +284,6 @@ void AnalyzeSparse(Color_t lcolor = -1)
   TCanvas *c2 = (TCanvas *)c->DrawClone("c2");
   c2->Modified(); c2->Draw();
   TCanvas *c3, *c4;
-  if (mc) {
-    c3 = (TCanvas *)c->DrawClone("c3");
-    c3->SetTitle("Phi mesons (gen)"); c3->Modified(); c3->Draw();
-    c4 = (TCanvas *)c->DrawClone("c4");
-    c4->SetTitle("Phi mesons (true)"); c4->Modified(); c4->Draw();
-  }
 
   for (Int_t i = 0; i < nn; i++) {
     c->cd(count + 1)->SetGrid();
@@ -309,20 +316,6 @@ void AnalyzeSparse(Color_t lcolor = -1)
       h3_p->Reset();
     h3_p->SetLineColor(kBlue);
     h3_p->Draw("hist, same");
-
-    if (mc) {
-      c3->cd(count + 1)->SetGrid();
-      hg = (TH1D *)PullHisto(l, s1namegen.Data(), bf[i], bl[i], ptmean, bwidth[i]);
-      hg->SetLineColor(kMagenta);
-      hg->GetXaxis()->SetTitle("M_{ inv} [GeV/c^{2}]");
-      hg->Draw("hist");
-
-      c4->cd(count + 1)->SetGrid();
-      ht = (TH1D *)PullHisto(l, s1nametrue.Data(), bf[i], bl[i], ptmean, bwidth[i]);
-      ht->SetLineColor(kMagenta-5);
-      ht->GetXaxis()->SetTitle("M_{ inv} [GeV/c^{2}]");
-      ht->Draw("hist");
-    }
 
     c2->cd(count + 1)->SetGrid();
     TH1 *hh = (TH1 *)h1->Clone("hh");
@@ -480,66 +473,6 @@ void AnalyzeSparse(Color_t lcolor = -1)
       gry4[count] = tmp_sg/TMath::Sqrt(tmp_sg + tmp_bg);
     }
 
-    if (mc) {
-      c3->cd(count + 1);
-      // !!!!!!!!!!!!!!!!
-      ff->SetParameters(200, 1.02, 0.004, 0., 0., 0., 0.);
-      hg->Fit(ff, "Q", "", fmin, fmax);
-      hg->Fit(ff, "Q", "", fmin, fmax);
-      fitStatus = hg->Fit(ff, "Q", "", fmin, fmax);
-      TF1 *pp3 = new TF1("pp3", "[0]+x*[1]+x*x*[2]+x*x*x*[3]", fmin, fmax);
-      pp3->SetParameters(ff->GetParameter(3), ff->GetParameter(4),
-                         ff->GetParameter(5), ff->GetParameter(6));
-      pp3->SetLineWidth(1);
-      pp3->SetLineColor(h3_p->GetLineColor());
-      pp3->Draw("same");
-
-      value              = hg->Integral(hg->FindBin(fmini), hg->FindBin(fmaxi));
-      if (!hisfun) value = ff->Integral(fmini, fmaxi)*hisfun_k;
-      if (value <= 0) value = -1;
-      if ((fitStatus != 0) || (TMath::Abs(ff->GetParameter(2)) > (0.004*25))) {
-        printf(" SKIP MC");
-        value = -1;
-      }
-      if ((ff->GetParameter(2) < 0.0) ||
-          (TMath::Abs(ff->GetParameter(2)) < (0.004/2.0))) {
-        printf(" SKIP MC");
-        pp3->SetLineWidth(3);
-        value = -1;
-      }
-      gry2[count]    = value;
-      gry_eff[count] = gry[count]/gry2[count];
-
-      c4->cd(count + 1);
-      // !!!!!!!!!!!!!!!!
-      ff->SetParameters(200, 1.02, 0.004, 0., 0., 0., 0.);
-      ht->Fit(ff, "Q", "", fmin, fmax);
-      ht->Fit(ff, "Q", "", fmin, fmax);
-      fitStatus = ht->Fit(ff, "Q", "", fmin, fmax);
-      TF1 *pp3 = new TF1("pp3", "[0]+x*[1]+x*x*[2]+x*x*x*[3]", fmin, fmax);
-      pp3->SetParameters(ff->GetParameter(3), ff->GetParameter(4),
-                         ff->GetParameter(5), ff->GetParameter(6));
-      pp3->SetLineWidth(1);
-      pp3->SetLineColor(h3_p->GetLineColor());
-      pp3->Draw("same");
-
-      value              = ht->Integral(ht->FindBin(fmini), ht->FindBin(fmaxi));
-      if (!hisfun) value = ff->Integral(fmini, fmaxi)*hisfun_k;
-      if (value <= 0) value = -1;
-      if ((fitStatus != 0) || (TMath::Abs(ff->GetParameter(2)) > (0.004*25))) {
-        printf(" SKIP true");
-        value = -1;
-      }
-      if ((ff->GetParameter(2) < 0.0) ||
-          (TMath::Abs(ff->GetParameter(2)) < (0.004/2.0))) {
-        printf(" SKIP true");
-        pp3->SetLineWidth(3);
-        value = -1;
-      }
-
-      gry_true[count]     = value;
-      gry_true_eff[count] = gry_true[count]/gry2[count];
-    }
     Printf("=> %4.2f\n", ptmean);
     count++;
   }
@@ -621,8 +554,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   ccc->cd(1); gr3->Draw("AP");
   ccc->cd(2); gr4->Draw("AP");
 
-  TString blabla = "mc";
-  if (!mc) blabla = "data";
+  TString blabla = "data";
   // gr3->SaveAs(Form("SB_%s_%s.C", blabla.Data(), graph_name.Data()));
   // gr4->SaveAs(Form("Sig_%s_%s.C", blabla.Data(), graph_name.Data()));
   // ccc->SaveAs(Form("%s_%s_2.eps", blabla.Data(), graph_name.Data()));
@@ -630,66 +562,6 @@ void AnalyzeSparse(Color_t lcolor = -1)
   // c2->SaveAs(Form("%s_%s_1.eps", blabla.Data(), graph_name.Data()));
   //  cc3->SaveAs(Form("%s_%s_2.eps", blabla.Data(), graph_name.Data()));
   //  gr3->SaveAs(Form("sig_bck_%s_%s.C", blabla.Data(), graph_name.Data()));
-
-  if (mc) {
-    new TCanvas();
-    TGraph *gr2 = new TGraph(count, grx, gry2);
-    gr2->SetMarkerStyle(8);
-    gr2->SetMarkerColor(hg->GetLineColor());
-    gr2->GetXaxis()->SetTitle("p_{T} [GeV/c]");
-    gr2->SetTitle(Form("gen phi, %s", gtitle.Data()));
-    gr2->Draw("AP");
-    c = new TCanvas();
-    c->SetGrid();
-    TGraph *gr_e = new TGraph(count, grx, gry_eff);
-    gr_e->SetMarkerStyle(22);
-    gr_e->SetMarkerColor(kBlack);
-    gr_e->GetXaxis()->SetTitle("p_{T} [GeV/c]");
-    gr_e->SetTitle(Form("efficiency (raw), %s", graph_name.Data()));
-    gr_e->Draw("AP");
-    Printf("Save as '\033[1meffi_raw_%s\033[0m' file", graph_name.Data());
-    for (Int_t i = 0; i < gr_e->GetN(); i++)
-      Printf("%f %f", gr_e->GetX()[i], gr_e->GetY()[i]);
-
-    new TCanvas();
-    TGraph *gr_true = new TGraph(count, grx, gry_true);
-    gr_true->SetMarkerStyle(8);
-    gr_true->SetMarkerColor(ht->GetLineColor());
-    gr_true->GetXaxis()->SetTitle("p_{T} [GeV/c]");
-    gr_true->SetTitle(Form("true phi, %s", gtitle.Data()));
-    gr_true->Draw("AP");
-    c = new TCanvas();
-    c->SetGrid();
-    TGraph *gr_true_eff = new TGraph(count, grx, gry_true_eff);
-    gr_true_eff->SetMarkerStyle(23);
-    gr_true_eff->SetMarkerColor(kBlack);
-    gr_true_eff->GetXaxis()->SetTitle("p_{T} [GeV/c]");
-    gr_true_eff->SetTitle(Form("efficiency (true), %s", graph_name.Data()));
-    gr_true_eff->Draw("AP");
-    Printf("Save as '\033[1meffi_true_%s\033[0m' file", graph_name.Data());
-    for (Int_t i = 0; i < gr_true_eff->GetN(); i++)
-      Printf("%f %f", gr_true_eff->GetX()[i], gr_true_eff->GetY()[i]);
-
-    // ------------------
-    c = new TCanvas("cfinal", "mc_effi", 1200, 450);
-    c->Divide(2, 1, 0.001, 0.001); c->Modified(); c->Draw();
-    c->cd(1);
-    gr_true->SetMinimum(0);
-    gr_true->SetTitle(Form("phi (true & raw), %s", gtitle.Data()));
-    gr_true->SetMarkerColor(kGreen+1);
-    gr_true->Draw("AP");
-    gr->SetMarkerColor(kRed+1);
-    gr->Draw("P");
-    c->cd(2)->SetGrid();
-    gr_true_eff->SetMinimum(0);
-    gr_true_eff->SetTitle(Form("efficiency, %s", graph_name.Data()));
-    gr_true_eff->SetMarkerColor(kGreen+1);
-    gr_true_eff->Draw("AP");
-    gr_e->SetMarkerColor(kRed+1);
-    gr_e->Draw("P");
-    //    c->SaveAs(Form("%s_%s.eps", blabla.Data(), graph_name.Data()));
-    return;
-  }
 
   // //  TF1 *fun = new TF1("fun",
   // //                     "[2]+([3]*TMath::Erfc((x-[0])/([1]*TMath::Sqrt2())))");
@@ -816,10 +688,14 @@ TH1 *PullHisto(const TList *list, const char *name, Int_t min, Int_t max,
 {
   THnSparse *hs = list->FindObject(name);
   if (!hs) return 0;
+  // cut on pt
   TAxis *atmp = hs->GetAxis(1);
   atmp->SetRange(min, max);
-  // !!!!!!!!!!!!!!!!!!!!
+  // cut on eta
   hs->GetAxis(2)->SetRangeUser(-0.5, 0.5);
+
+  // for specific 2013-04-11 data
+  // hs->GetAxis(2)->SetRangeUser(-0.5, 0.5) = hs->GetAxis(2)->SetRange(2, 2);
   TH1 *hfin = hs->Projection(0);
   hfin->SetTitle(Form("p_{T} #in (%4.2f, %4.2f) GeV/c",
                       atmp->GetBinLowEdge(min),
@@ -830,7 +706,7 @@ TH1 *PullHisto(const TList *list, const char *name, Int_t min, Int_t max,
   bw = (atmp->GetBinLowEdge(max) + atmp->GetBinWidth(max) -
         atmp->GetBinLowEdge(min));
   // !!!!!!!!!!!!!!!!!!!!
-  Printf("binwidth = %.5f", bw);
+  //  Printf("binwidth = %.5f", bw);
   return hfin;//->Rebin();
 }
 
