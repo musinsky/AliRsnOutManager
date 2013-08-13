@@ -26,9 +26,14 @@ TMultiGraph *m_gr     = new TMultiGraph();
 TMultiGraph *m_gr_mass= new TMultiGraph();
 TMultiGraph *m_gr_fix = new TMultiGraph();
 
-const char *suf[12] = {"00_DEFAULT", "CHI2ITS036", "CHI2ITS100", "CHI2TPC04",
-                       "CHI2TPC06", "DCAXY035", "DCAXY140", "DCAZ01", "DCAZ20",
-                       "NCLSTTPC50", "NCLSTTPC70", "NCLSTTPC80"};
+// const char *suf[12] = {"00_DEFAULT", "CHI2ITS036", "CHI2ITS100", "CHI2TPC04",
+//                        "CHI2TPC06", "DCAXY035", "DCAXY140", "DCAZ01", "DCAZ20",
+//                        "NCLSTTPC50", "NCLSTTPC70", "NCLSTTPC80"};
+
+const char *suf[11] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
+		       "DCAXY6S", "DCAXY7S", "DCAXY7S_DCAZ20", "DCAXY7S_NCLSTTPC50",
+		       "DCAZ20", "NCLSTTPC50", "NCLSTTPC80"};
+
 const char *what   = "";
 Int_t ilist = 0;
 
@@ -37,36 +42,66 @@ TMultiGraph *m_gr = new TMultiGraph();
 
 void SetCombinations(Int_t c = 0)
 {
-  // if (c == 0) { // default
-    effiTPC = kFALSE; // common or own TPC effi, correct only for 2013_01
-    mixing  = kFALSE;
-    norm[0] = 1.045;  // where is norm signal and background
-    norm[1] = 1.085;
-    fmin    = 0.995;  // where is fit
-    fmax    = 1.185;
-    fipm    = 3.0;    // where is integral (+- 'fipm' sigma)
-    combi   = c;
-  // }
+  effiTPC = kFALSE; // common or own TPC effi, correct only for 2013_01
+  mixing  = kFALSE;
+  norm[0] = 1.045;  // where is norm signal and background
+  norm[1] = 1.085;
+  fmin    = 0.995;  // where is fit
+  fmax    = 1.185;
+  fipm    = 3.0;    // where is integral (+- 'fipm' sigma)
+  combi   = c;
+
   if (c == 1) {
     effiTPC = kFALSE;
     mixing  = kFALSE;
     norm[0] = norm[0] - 0.01;
     norm[1] = norm[1] + 0.01;
-    fmin    = fmin - 0.01;
-    fmax    = fmax + 0.01;
-    fipm    = 5.0;
+    fmin    = fmin;
+    fmax    = fmax;
+    fipm    = 3.0;
     combi   = c;
   }
   if (c == 2) {
     effiTPC = kFALSE;
     mixing  = kFALSE;
-    norm[0] = norm[0] - 0.01;
-    norm[1] = norm[1] + 0.05;
-    fmin    = fmin - 0.02;
-    fmax    = fmax + 0.02;
-    fipm    = 4.0;
+    norm[0] = norm[0] - 0.02;
+    norm[1] = norm[1] + 0.02;
+    fmin    = fmin;
+    fmax    = fmax;
+    fipm    = 3.0;
     combi   = c;
   }
+  if (c == 3) {
+    effiTPC = kFALSE;
+    mixing  = kFALSE;
+    norm[0] = 0.995;
+    norm[1] = 1.005;
+    fmin    = fmin;
+    fmax    = fmax;
+    fipm    = 3.0;
+    combi   = c;
+  }
+  if (c == 4) {
+    effiTPC = kFALSE;
+    mixing  = kFALSE;
+    norm[0] = norm[0];
+    norm[1] = norm[1];
+    fmin    = fmin - 0.01;
+    fmax    = fmax + 0.01;
+    fipm    = 3.0;
+    combi   = c;
+  }
+  if (c == 5) {
+    effiTPC = kFALSE;
+    mixing  = kFALSE;
+    norm[0] = norm[0];
+    norm[1] = norm[1];
+    fmin    = fmin - 0.02;
+    fmax    = fmax + 0.02;
+    fipm    = 3.0;
+    combi   = c;
+  }
+
 }
 
 void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE, const char *my_fname="AnalysisResults.root")
@@ -77,6 +112,8 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE, co
   const char *tmp_qc = "";
   if      (qc == 0)  { tmp_qc = "qualityonly"; ilist = 0; sigma = 0.0;
     noSigma = kTRUE; }
+  else if (qc == 10) { tmp_qc = "KTPCnsig10";  ilist = 2; sigma = 1.0;
+    noSigma = kFALSE; }
   else if (qc == 15) { tmp_qc = "KTPCnsig15";  ilist = 2; sigma = 1.5;
     noSigma = kFALSE; }
   else if (qc == 20) { tmp_qc = "KTPCnsig20";  ilist = 3; sigma = 2.0;
@@ -678,7 +715,9 @@ void AnalyzeSparse(Color_t lcolor = -1)
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   }
 
-  // Printf(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
+  graphee_name="PhiNsigma_qualityonly_STD2010_PRIMARY_00_DEFAULT";
+
+  Printf(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
 
   TGraphErrors *geff = new TGraphErrors(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
   if (binAnders) {
@@ -739,6 +778,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   if (superfactor > 0.9) m_gr_fix->SetMinimum(1);
   //  gr_fix->Draw("AP");
   G2F(gr_fix, TString::Format("%s_%02d_%s", lname.Data(), combi, "RFE"));
+
 
   c = new TCanvas();
   c->SetWindowSize(1200, 450);
