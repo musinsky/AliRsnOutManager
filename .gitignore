@@ -1,6 +1,7 @@
 include/
 lib/
 tmp/
+*HistMini*
 .settings/
 .cproject
 .project

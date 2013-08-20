@@ -481,13 +481,13 @@ void AnalyzeSparse(Color_t lcolor = -1)
   //  c2->SaveAs(Form("%s_b.pdf", lname.Data()));
 
   TGraphErrors *gr_raw = new TGraphErrors(count, grx, gry, grxE, gryE);
-  G2F(gr_raw, TString::Format("%s_%02d_%s", lname.Data(), combi, "R"));
+  G2F(gr_raw, TString::Format("%s_pt_%02d_%s", lname.Data(), combi, "R"));
 
   // applying super macro
   Double_t superfactor;
   for (Int_t i = 0; i < count; i++) {
     // SuperMacro
-    superfactor = CalculateFactor(l, bwidth[i]);
+    superfactor = CalculateFactor(l, bwidth[i], grx[i]);
     gry[i] = gry[i]*superfactor;
     gryE[i] = gryE[i]*superfactor;
   }
@@ -503,7 +503,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   gr->Draw("AP");
   gPad->Update();
   gPad->Modified();
-  G2F(gr, TString::Format("%s_%02d_%s", lname.Data(), combi, "RF"));
+  G2F(gr, TString::Format("%s_pt_%02d_%s", lname.Data(), combi, "RF"));
 
   new TCanvas();
   TGraphErrors *grm = new TGraphErrors(count, grx, gr_mass, grxE, gr_massE);
@@ -519,6 +519,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   m_gr_mass->SetMaximum(grm->GetMaximum());
   m_gr_mass->Add(grm);
   grm->Draw("AP");
+  G2F(grm, TString::Format("%s_mass_%02d", lname.Data(), combi));
   new TCanvas();
   TGraphErrors *grw = new TGraphErrors(count, grx, gr_width, grxE, gr_widthE);
   grw->SetMarkerStyle(8);
@@ -529,6 +530,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   grw->SetMinimum(0.0);
   grw->SetMaximum(0.015);
   grw->Draw("AP");
+  G2F(grw, TString::Format("%s_width_%02d", lname.Data(), combi));
 
   //  cc3 = new TCanvas();
   TGraph *gr3 = new TGraph(count, grx, gry3);
@@ -649,7 +651,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   m_gr_fix->Add(gr_fix);
   if (superfactor > 0.9) m_gr_fix->SetMinimum(1);
   //  gr_fix->Draw("AP");
-  G2F(gr_fix, TString::Format("%s_%02d_%s", lname.Data(), combi, "RFE"));
+  G2F(gr_fix, TString::Format("%s_pt_%02d_%s", lname.Data(), combi, "RFE"));
 
 
   c = new TCanvas();
@@ -839,8 +841,10 @@ void G2F(const TGraphErrors *g, TString name, Bool_t info = kTRUE)
   myfile.close();
 }
 
-Double_t CalculateFactor(TList *list, Double_t delta_pt)
+Double_t CalculateFactor(TList *list, Double_t delta_pt, Double_t pt)
 {
+  // delta_pt => bin width = 2*x_error
+  // pt       => bin center
   TH1F *hEventStat = (TH1F *)list->FindObject("hEventStat");
   if (!hEventStat) return 1.0;
 
