@@ -653,6 +653,17 @@ void AnalyzeSparse(Color_t lcolor = -1)
   //  gr_fix->Draw("AP");
   G2F(gr_fix, TString::Format("%s_pt_%02d_%s", lname.Data(), combi, "RFE"));
 
+  // applying super macro2 (cross section)
+  Double_t superfactor2;
+  Double_t grycs[999], gryEcs[999];
+  for (Int_t i = 0; i < count; i++) {
+    // SuperMacro2
+    superfactor2 = CalculateFactor2(grx[i]);
+    grycs[i] = gry_fix[i]*superfactor2;
+    gryEcs[i] = gry_fixE[i]*superfactor2;
+  }
+  TGraphErrors *grs2 = new TGraphErrors(count, grx, grycs, grxE, gryEcs);
+  G2F(grs2, TString::Format("%s_pt_%02d_%s", lname.Data(), combi, "RFEC"));
 
   c = new TCanvas();
   c->SetWindowSize(1200, 450);
@@ -870,4 +881,10 @@ Double_t CalculateFactor(TList *list, Double_t delta_pt, Double_t pt)
   Printf("factor = %.10f", fac);
 
   return fac;
+}
+
+Double_t CalculateFactor2(Double_t pt)
+{
+  // pt => bin center
+  return 1.0;
 }
