@@ -894,7 +894,7 @@ Double_t CalculateFactor(TList *list, Double_t delta_pt, Double_t pt)
   Double_t effTrigger = 0.851;
   // Phi loss because of VertexCut We have to check
   // (for now 0.01 -> 1% as in 7TeV paper
-  Double_t effVert    = 0.99;
+  Double_t effVert    = 0.909;
   // Branching ratio
   Double_t br = 0.489;
 
@@ -910,5 +910,8 @@ Double_t CalculateFactor(TList *list, Double_t delta_pt, Double_t pt)
 Double_t CalculateFactor2(Double_t pt)
 {
   // pt => bin center
-  return 1.0;
+  // sigmaMB in pb
+  Double_t sigmaMB = 55.4*10e9;
+  Double_t fac = (sigmaMB)/(2*TMath::Pi()*pt);
+  return fac;
 }
