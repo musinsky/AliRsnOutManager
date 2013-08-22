@@ -25,15 +25,6 @@ TMultiGraph *m_gr     = new TMultiGraph();
 TMultiGraph *m_gr_mass= new TMultiGraph();
 TMultiGraph *m_gr_fix = new TMultiGraph();
 
-// const char *suf[12] = {"00_DEFAULT", "CHI2ITS036", "CHI2ITS100", "CHI2TPC04",
-//                        "CHI2TPC06", "DCAXY035", "DCAXY140", "DCAZ01", "DCAZ20",
-//                        "NCLSTTPC50", "NCLSTTPC70", "NCLSTTPC80"};
-
-const char *suf[11] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
-                       "DCAXY6S", "DCAXY7S", "DCAXY7S_DCAZ20",
-                       "DCAXY7S_NCLSTTPC50", "DCAZ20", "NCLSTTPC50",
-                       "NCLSTTPC80"};
-
 const char *what   = "";
 Int_t ilist = 0;
 
@@ -108,10 +99,18 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
                    const char *my_fname="AnalysisResults.root")
 {
   if (rsn_data == 20130106) {
+     const char *suf[12] = {"00_DEFAULT", "CHI2ITS036", "CHI2ITS100", "CHI2TPC04",
+                       "CHI2TPC06", "DCAXY035", "DCAXY140", "DCAZ01", "DCAZ20",
+                       "NCLSTTPC50", "NCLSTTPC70", "NCLSTTPC80"};
+
     fname = Form("root://eos.saske.sk//eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-01-06/DATA_LHC11a_ESD/%s/%s", suf[fsuf], my_fname);
     mv_colon = "_";
   }
   else if (rsn_data == 20130411) {
+   const char *suf[11] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
+                       "DCAXY6S", "DCAXY7S", "DCAXY7S_DCAZ20",
+                       "DCAXY7S_NCLSTTPC50", "DCAZ20", "NCLSTTPC50",
+                       "NCLSTTPC80"};
     fname = Form("root://eos.saske.sk//eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-04-11/DATA/%s/%s", suf[fsuf], my_fname);
     mv_colon = ":";
   }
@@ -402,6 +401,15 @@ void AnalyzeSparse(Color_t lcolor = -1)
     gr_massE[count]  = ff->GetParError(1);
     gr_width[count]  = ff->GetParameter(2);
     gr_widthE[count] = ff->GetParError(2);
+
+    if ((TMath::Abs(gr_mass[count]-1.0194451)/1.0194451) > 0.001) {
+       gr_mass[count] = 0.0;
+       gr_massE[count] = 0.0;
+   }
+   if ( (gr_mass[count]< 0.1) || ((TMath::Abs(gr_width[count]-0.004)) > 0.004)) {
+       gr_width[count] = 0.0;
+       gr_widthE[count] = 0.0;
+   }
 
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     fmini = ff->GetParameter(1) - fipm*ff->GetParameter(2);
