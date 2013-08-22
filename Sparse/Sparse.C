@@ -476,12 +476,15 @@ void AnalyzeSparse(Color_t lcolor = -1)
     Printf("=> %4.2f\n", ptmean);
     count++;
   }
+
+  lname.ReplaceAll(TString::Format("RsnHistMini_Phi_PhiNsigma%s",mv_colon.Data()).Data(),"");
+
   // save peaks pictures
   //  c->SaveAs(Form("%s_a.pdf", lname.Data()));
   //  c2->SaveAs(Form("%s_b.pdf", lname.Data()));
 
   TGraphErrors *gr_raw = new TGraphErrors(count, grx, gry, grxE, gryE);
-  G2F(gr_raw, TString::Format("%s_pt_%02d_%s", lname.Data(), combi, "R"));
+  G2F(gr_raw, TString::Format("pt_%s", "R"), TString::Format("%s_%02d", lname.Data(), combi));
 
   // applying super macro
   Double_t superfactor;
@@ -503,7 +506,8 @@ void AnalyzeSparse(Color_t lcolor = -1)
   gr->Draw("AP");
   gPad->Update();
   gPad->Modified();
-  G2F(gr, TString::Format("%s_pt_%02d_%s", lname.Data(), combi, "RF"));
+//   G2F(gr, TString::Format("%s_%02d_pt_%s", lname.Data(), combi, "RF"));
+  G2F(gr, TString::Format("pt_%s", "RF"), TString::Format("%s_%02d", lname.Data(), combi));
 
   new TCanvas();
   TGraphErrors *grm = new TGraphErrors(count, grx, gr_mass, grxE, gr_massE);
@@ -519,7 +523,8 @@ void AnalyzeSparse(Color_t lcolor = -1)
   m_gr_mass->SetMaximum(grm->GetMaximum());
   m_gr_mass->Add(grm);
   grm->Draw("AP");
-  G2F(grm, TString::Format("%s_mass_%02d", lname.Data(), combi));
+//   G2F(grm, TString::Format("%s_%02d_mass_R", lname.Data(), combi));
+  G2F(grm, "mass", TString::Format("%s_%02d", lname.Data(), combi));
   new TCanvas();
   TGraphErrors *grw = new TGraphErrors(count, grx, gr_width, grxE, gr_widthE);
   grw->SetMarkerStyle(8);
@@ -530,25 +535,29 @@ void AnalyzeSparse(Color_t lcolor = -1)
   grw->SetMinimum(0.0);
   grw->SetMaximum(0.015);
   grw->Draw("AP");
-  G2F(grw, TString::Format("%s_width_%02d", lname.Data(), combi));
+//   G2F(grw, TString::Format("%s_%02d_width_R", lname.Data(), combi));
+  G2F(grw, "width", TString::Format("%s_%02d", lname.Data(), combi));
 
   //  cc3 = new TCanvas();
-  TGraph *gr3 = new TGraph(count, grx, gry3);
+  TGraphErrors *gr3 = new TGraphErrors(count, grx, gry3);
   gr3->SetMarkerStyle(22);
   gr3->SetMarkerColor(kBlue+1);
   gr3->GetXaxis()->SetTitle("p_{T} [GeV/c]");
   gr3->SetTitle(Form("SIG / BKG, %s", gtitle.Data()));
   gr3->SetMinimum(0);
   //  gr3->Draw("AP");
-
+//   G2F(gr3, TString::Format("%s_%02d_SB_R", lname.Data(), combi));
+  G2F(gr3, "SB", TString::Format("%s_%02d", lname.Data(), combi));
   //  cc4 = new TCanvas();
-  TGraph *gr4 = new TGraph(count, grx, gry4);
+  TGraphErrors *gr4 = new TGraphErrors(count, grx, gry4);
   gr4->SetMarkerStyle(23);
   gr4->SetMarkerColor(kBlue-1);
   gr4->GetXaxis()->SetTitle("p_{T} [GeV/c]");
   gr4->SetTitle(Form("Significance, %s", gtitle.Data()));
   gr4->SetMinimum(0);
   //  gr4->Draw("AP");
+//   G2F(gr4, TString::Format("%s_%02d_SIG_R", lname.Data(), combi));
+    G2F(gr4, "SIGNIF", TString::Format("%s_%02d", lname.Data(), combi));
 
   ccc = new TCanvas();
   ccc->SetWindowSize(900, 300);
@@ -651,7 +660,8 @@ void AnalyzeSparse(Color_t lcolor = -1)
   m_gr_fix->Add(gr_fix);
   if (superfactor > 0.9) m_gr_fix->SetMinimum(1);
   //  gr_fix->Draw("AP");
-  G2F(gr_fix, TString::Format("%s_pt_%02d_%s", lname.Data(), combi, "RFE"));
+//   G2F(gr_fix, TString::Format("%s_%02d_pt_%s", lname.Data(), combi, "RFE"));
+    G2F(gr_fix, "pt_RFE", TString::Format("%s_%02d", lname.Data(), combi));
 
   // applying super macro2 (cross section)
   Double_t superfactor2;
@@ -663,7 +673,9 @@ void AnalyzeSparse(Color_t lcolor = -1)
     gryEcs[i] = gry_fixE[i]*superfactor2;
   }
   TGraphErrors *grs2 = new TGraphErrors(count, grx, grycs, grxE, gryEcs);
-  G2F(grs2, TString::Format("%s_pt_%02d_%s", lname.Data(), combi, "RFEC"));
+//   G2F(grs2, TString::Format("%s_%02d_pt_%s", lname.Data(), combi, "RFEC"));
+  G2F(grs2, "pt_RFEC", TString::Format("%s_%02d", lname.Data(), combi));
+
 
   c = new TCanvas();
   c->SetWindowSize(1200, 450);
@@ -834,7 +846,7 @@ Double_t NanCheck(Double_t value, Double_t retvalue = 0.0)
   return value;
 }
 
-void G2F(const TGraphErrors *g, TString name, Bool_t info = kTRUE)
+void G2F(const TGraphErrors *g, TString name, TString dir="", Bool_t info = kTRUE)
 {
   if (info) Printf("Creating file %s", name.Data());
   ofstream myfile;
@@ -850,6 +862,10 @@ void G2F(const TGraphErrors *g, TString name, Bool_t info = kTRUE)
     myfile << str_tmp.Data() << endl;
   }
   myfile.close();
+  if (!dir.IsNull()) {
+     gSystem->mkdir(dir.Data());
+     gSystem->Exec(TString::Format("mv %s %s/",name.Data(),dir.Data()).Data());
+  }
 }
 
 Double_t CalculateFactor(TList *list, Double_t delta_pt, Double_t pt)
