@@ -1,0 +1,42 @@
+{
+    "template" : "root -b -q '/eos/saske.sk/scratch/ALICE/RSN_OUT/macros/run.C($start,$end,$combination,$file,\"/eos/saske.sk/scratch/ALICE/RSN_OUT/macros/\")'",
+    "packets" : [
+	{
+	    "file" : "AnalysisResults.root",
+	    "combination" : 0,
+	    "start" : 0,
+	    "end" : 10
+	},
+	{
+	    "file" : "AnalysisResults.root",
+	    "combination" : 1,
+	    "start" : 0,
+	    "end" : 10
+	},
+	{
+	    "file" : "AnalysisResults.root",
+	    "combination" : 2,
+	    "start" : 0,
+	    "end" : 10
+	},
+	{
+	    "file" : "AnalysisResults.root",
+	    "combination" : 3,
+	    "start" : 0,
+	    "end" : 10
+	},
+	{
+	    "file" : "AnalysisResults.root",
+	    "combination" : 4,
+	    "start" : 0,
+	    "end" : 10
+	},
+	{
+	    "file" : "AnalysisResults.root",
+	    "combination" : 5,
+	    "start" : 0,
+	    "end" : 10
+	}
+
+    ]
+}

@@ -18,7 +18,7 @@ Double_t export_bin[999] = {0};
 
 TString eff_prefix="EFFI_OK/effi_";
 TString eff_prefix_anders="EFFI_Anders/effi_";
-
+TString sufNameCurrent="";
 TString fname,lname,s1name,s3name_p,s3name_m,smix,smixpp,smixmm, graph_name,
   graphee_name;
 TMultiGraph *m_gr     = new TMultiGraph();
@@ -34,7 +34,7 @@ TMultiGraph *m_gr = new TMultiGraph();
 void SetCombinations(Int_t c = 0)
 {
   effiTPC = kFALSE; // common or own TPC effi, correct only for 2013_01
-  mixing  = kFALSE;
+//  mixing  = kFALSE;
   norm[0] = 1.045;  // where is norm signal and background
   norm[1] = 1.085;
   fmin    = 0.995;  // where is fit
@@ -44,7 +44,6 @@ void SetCombinations(Int_t c = 0)
 
   if (c == 1) {
     effiTPC = kFALSE;
-    mixing  = kFALSE;
     norm[0] = norm[0] - 0.01;
     norm[1] = norm[1] + 0.01;
     fmin    = fmin;
@@ -54,7 +53,6 @@ void SetCombinations(Int_t c = 0)
   }
   if (c == 2) {
     effiTPC = kFALSE;
-    mixing  = kFALSE;
     norm[0] = norm[0] - 0.02;
     norm[1] = norm[1] + 0.02;
     fmin    = fmin;
@@ -64,7 +62,6 @@ void SetCombinations(Int_t c = 0)
   }
   if (c == 3) {
     effiTPC = kFALSE;
-    mixing  = kFALSE;
     norm[0] = 0.995;
     norm[1] = 1.005;
     fmin    = fmin;
@@ -74,21 +71,19 @@ void SetCombinations(Int_t c = 0)
   }
   if (c == 4) {
     effiTPC = kFALSE;
-    mixing  = kFALSE;
     norm[0] = norm[0];
     norm[1] = norm[1];
-    fmin    = fmin - 0.01;
-    fmax    = fmax + 0.01;
+    fmin    = fmin - 0.001;
+    fmax    = fmax + 0.001;
     fipm    = 3.0;
     combi   = c;
   }
   if (c == 5) {
     effiTPC = kFALSE;
-    mixing  = kFALSE;
     norm[0] = norm[0];
     norm[1] = norm[1];
-    fmin    = fmin - 0.02;
-    fmax    = fmax + 0.02;
+    fmin    = fmin - 0.002;
+    fmax    = fmax + 0.002;
     fipm    = 3.0;
     combi   = c;
   }
@@ -105,6 +100,7 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
 
     fname = Form("root://eos.saske.sk//eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-01-06/DATA_LHC11a_ESD/%s/%s", suf[fsuf], my_fname);
     mv_colon = "_";
+    sufNameCurrent=suf[fsuf];
   }
   else if (rsn_data == 20130411) {
    const char *suf[11] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
@@ -113,6 +109,7 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
                        "NCLSTTPC80"};
     fname = Form("root://eos.saske.sk//eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-04-11/DATA/%s/%s", suf[fsuf], my_fname);
     mv_colon = ":";
+    sufNameCurrent=suf[fsuf];
   }
   else {
     Printf("Wrong input Rsn data !!!");
@@ -605,16 +602,18 @@ void AnalyzeSparse(Color_t lcolor = -1)
     noSigma = kTRUE;
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   }
-
-  graphee_name="PhiNsigma_qualityonly_STD2010_PRIMARY_00_DEFAULT";
+  eff_prefix+="EFFI_";
+  if (binAnders) eff_prefix+="ANDERS_";
+  eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
+  graphee_name=TString::Format("PhiNsigma_qualityonly_STD2010_PRIMARY_%s",sufNameCurrent.Data()).Data();
 
   Printf(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
 
   TGraphErrors *geff = new TGraphErrors(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
-  if (binAnders) {
-    delete geff;
-    geff = new TGraphErrors(TString::Format("%s%s", eff_prefix_anders.Data(), graphee_name.Data()).Data());
-  }
+//  if (binAnders) {
+//    delete geff;
+//    geff = new TGraphErrors(TString::Format("%s%s", eff_prefix_anders.Data(), graphee_name.Data()).Data());
+//  }
   Printf("Open %s%s", eff_prefix.Data(), graphee_name.Data());
   if (geff->IsZombie()) return;
   geff->SetMarkerStyle(20);
