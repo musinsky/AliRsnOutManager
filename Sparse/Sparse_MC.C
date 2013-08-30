@@ -74,7 +74,7 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
     graph_name = what;
   }
 
-  dir_prefix = "EFFI";
+  dir_prefix = "EFFI2";
   if (binAnders) dir_prefix += "_ANDERS";
   dir_prefix += Form("_%s", suf[fsuf]);
   //  graphee_name =
@@ -486,8 +486,10 @@ void AnalysisSparse(Bool_t save_output = kFALSE)
     for (Int_t i = 0; i < gr_true_eff->GetN(); i++) {
       oux = gr_true_eff->GetX()[i];
       ouy = gr_true_eff->GetY()[i];
+      ouy = MinusCheck(ouy);
       ouxe = gr_true_eff->GetErrorX(i);
       ouye = gr_true_eff->GetErrorY(i);
+      ouye = NanCheck(ouye);
       Printf("%f %f %f %f", gr_true_eff->GetX()[i], gr_true_eff->GetY()[i],
              gr_true_eff->GetErrorX(i), gr_true_eff->GetErrorY(i));
       if (!save_output) continue;
@@ -588,6 +590,17 @@ void AnalysisSparse(Bool_t save_output = kFALSE)
   cloneg->Draw("AP");
   //  c->SaveAs(Form("%s_%s.eps", blabla.Data(), grapht.Data()));
   f->Close();
+}
+
+Double_t NanCheck(Double_t value, Double_t retvalue = 0.0)
+{
+  if (TMath::IsNaN(value)) return retvalue;
+  return value;
+}
+Double_t MinusCheck(Double_t value, Double_t retvalue = 0.0)
+{
+  if (value < 0.000001) return retvalue;
+  return value;
 }
 
 TH1 *PullHisto(const TList *list, const char *name, Int_t min, Int_t max,
