@@ -5,5 +5,6 @@
   SetNameBordelNew(0, 20, 2010, kTRUE, "RsnOutput.root");
 
   del_step = 0.20;
+  // del_step=1.0;
 
 }

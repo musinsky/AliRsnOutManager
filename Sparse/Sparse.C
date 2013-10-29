@@ -11,6 +11,7 @@ Double_t norm[2]  = {1.045, 1.085};
 Double_t del_step = 0.25;
 Bool_t isTPC = kTRUE;
 Bool_t isVoig = kFALSE;
+Int_t polynom = 3;
 Double_t fmin = 0.995;
 Double_t fmax = 1.185;
 Double_t fipm = 3.0;
@@ -237,15 +238,29 @@ void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
          smix.Data(), smixpp.Data(), smixmm.Data());
 }
 
-Double_t fun_s(double *m, double *par) const
+// Double_t fun_s(double *m, double *par) const
+// {
+//   Double_t val = 0.0;
+//   double x     = m[0];
+//   val = TMath::BreitWigner(x, par[1], par[2]);
+//   return par[0]*val + par[3] + x*par[4] + x*x*par[5] + x*x*x*par[6];
+// }
+
+Double_t fun_s_pol1(double *m, double *par) const
 {
   Double_t val = 0.0;
   double x     = m[0];
   val = TMath::BreitWigner(x, par[1], par[2]);
-  return par[0]*val + par[3] + x*par[4] + x*x*par[5] + x*x*x*par[6];
+  return par[0]*val + par[3] + x*par[4];
 }
-
-Double_t fun_s(double *m, double *par) const
+Double_t fun_s_pol2(double *m, double *par) const
+{
+  Double_t val = 0.0;
+  double x     = m[0];
+  val = TMath::BreitWigner(x, par[1], par[2]);
+  return par[0]*val + par[3] + x*par[4] + x*x*par[5];
+}
+Double_t fun_s_pol3(double *m, double *par) const
 {
   Double_t val = 0.0;
   double x     = m[0];
@@ -434,18 +449,32 @@ void AnalyzeSparse(Color_t lcolor = -1)
     // !!!!!!!!!!!!!!!!!!
     TF1 *ff = 0;
     Int_t del = 0;
-    if (isVoig) {
-      ff = new TF1("ff", fun_s2, 0.9, 1.2, 8);
-      del = 1; // change only from parametger[3]
-    }
-    else {
-      ff = new TF1("ff", fun_s, 0.9, 1.2, 7);
-      del = 0;
-    }
+    // if (isVoig) {
+    //   ff = new TF1("ff", fun_s2, 0.9, 1.2, 8);
+    //   del = 1; // change only from parametger[3]
+    // }
+    // else {
+    //   //      ff = new TF1("ff", fun_s_pol3, 0.9, 1.2, 7);
+    //   //      del = 0;
+    //   if      (polynom == 3) ff = new TF1("ff3", fun_s_pol3, 0.9, 1.2, 7);
+    //   else if (polynom == 2) ff = new TF1("ff2", fun_s_pol2, 0.9, 1.2, 6);
+    //   else if (polynom == 1) ff = new TF1("ff1", fun_s_pol1, 0.9, 1.2, 5);
+    //   else Printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    // }
+
+    // // ?!?!?!??!?!!??!??!?!?!?!!
+    // if (polynom == 3) ff = new TF1("ff", fun_s_pol3, 0.9, 1.2, 7);
+    // if (polynom == 2) ff = new TF1("ff", fun_s_pol2, 0.9, 1.2, 6);
+    // if (polynom == 1) ff = new TF1("ff", fun_s_pol1, 0.9, 1.2, 5);
+    // // ?!?!!?!??!!??!!?!?!?!?!??!
+
+    //    ff = new TF1("ff", fun_s_pol3, 0.9, 1.2, 7); polynom = 3;
+    //    ff = new TF1("ff", fun_s_pol2, 0.9, 1.2, 6); polynom = 2;
+    ff = new TF1("ff", fun_s_pol1, 0.9, 1.2, 5); polynom = 1;
 
     ff->SetParameters(2.0, 1.02, 0.004, 0., 0., 0., 0., 0.);
-    //    if (noSigma) ff->SetParameters(200.0, 1.02, 0.004, 0., 0., 0., 0., 0.);
-    //    ff->SetLineColor(hh->GetLineColor()-3);
+    //  if (noSigma) ff->SetParameters(200.0, 1.02, 0.004, 0., 0., 0., 0., 0.);
+    //  ff->SetLineColor(hh->GetLineColor()-3);
     ff->SetLineColor(kGreen-3);
     ff->SetLineWidth(2);
     if (isVoig) {
@@ -468,8 +497,8 @@ void AnalyzeSparse(Color_t lcolor = -1)
 
     // !!!!!!!!!!!!!!!!!!
     // wehere integral (his or fun)
-    Double_t fmini = 1.02-2*0.004;
-    Double_t fmaxi = 1.02+2*0.004;
+    Double_t fmini = 1.02-fipm*0.004;
+    Double_t fmaxi = 1.02+fipm*0.004;
     hh->Fit(ff, "Q", "", fmin, fmax);
     hh->Fit(ff, "Q", "", fmin, fmax);
     fitStatus = hh->Fit(ff, "Q", "", fmin, fmax);
@@ -497,9 +526,13 @@ void AnalyzeSparse(Color_t lcolor = -1)
     // //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     Double_t drawfmin = fmin; //0.990;
     Double_t drawfmax = fmax; //1.150;
-    TF1 *pp3 = new TF1("pp3", "[0]+x*[1]+x*x*[2]+x*x*x*[3]",drawfmin,drawfmax);
+    TF1 *pp3 = new TF1("pp3", "[0]+x*[1]+x*x*[2]+x*x*x*[3]",
+                       drawfmin, drawfmax);
+    pp3->SetParameters(0,0,0,0,0,0,0,0,0,0);
     pp3->SetParameters(ff->GetParameter(3+del), ff->GetParameter(4+del),
                        ff->GetParameter(5+del), ff->GetParameter(6+del));
+    //    pp3->Print();
+
     pp3->SetLineWidth(1);
     pp3->SetLineColor(h3_p->GetLineColor());
     pp3->Draw("same");
@@ -520,8 +553,8 @@ void AnalyzeSparse(Color_t lcolor = -1)
     }
 
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    fmini = ff->GetParameter(1) - fipm*ff->GetParameter(2);
-    fmaxi = ff->GetParameter(1) + fipm*ff->GetParameter(2);
+    //    fmini = ff->GetParameter(1) - fipm*ff->GetParameter(2);
+    //    fmaxi = ff->GetParameter(1) + fipm*ff->GetParameter(2);
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     value              = hh->Integral(hh->FindBin(fmini), hh->FindBin(fmaxi));
     // pre histo doimplementovat odcitavanie BKG, pre fun uz je hotove
