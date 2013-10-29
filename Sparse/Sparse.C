@@ -468,9 +468,9 @@ void AnalyzeSparse(Color_t lcolor = -1)
     // if (polynom == 1) ff = new TF1("ff", fun_s_pol1, 0.9, 1.2, 5);
     // // ?!?!!?!??!!??!!?!?!?!?!??!
 
-    //    ff = new TF1("ff", fun_s_pol3, 0.9, 1.2, 7); polynom = 3;
+    ff = new TF1("ff", fun_s_pol3, 0.9, 1.2, 7); polynom = 3;
     //    ff = new TF1("ff", fun_s_pol2, 0.9, 1.2, 6); polynom = 2;
-    ff = new TF1("ff", fun_s_pol1, 0.9, 1.2, 5); polynom = 1;
+    //    ff = new TF1("ff", fun_s_pol1, 0.9, 1.2, 5); polynom = 1;
 
     ff->SetParameters(2.0, 1.02, 0.004, 0., 0., 0., 0., 0.);
     //  if (noSigma) ff->SetParameters(200.0, 1.02, 0.004, 0., 0., 0., 0., 0.);
@@ -572,13 +572,14 @@ void AnalyzeSparse(Color_t lcolor = -1)
       pp3->SetLineWidth(3);
       value = 0;
     }
-    if ((ff->GetParameter(2) < 0.0) ||
-        (TMath::Abs(ff->GetParameter(2)) < (0.004/5.0)) ||
-        (TMath::Abs(ff->GetParameter(2)) > (0.004*5.0))) {
-      printf(" SKIP 2 Data");
-      pp3->SetLineWidth(3);
-      value = 0;
-    }
+    // 2013-10
+    // if ((ff->GetParameter(2) < 0.0) ||
+    //     (TMath::Abs(ff->GetParameter(2)) < (0.004/5.0)) ||
+    //     (TMath::Abs(ff->GetParameter(2)) > (0.004*5.0))) {
+    //   printf(" SKIP 2 Data");
+    //   pp3->SetLineWidth(3);
+    //   value = 0;
+    // }
     Double_t ppp1 = ff->GetParameter(1);
     if (ppp1 != TMath::Range(fmini, fmaxi, ppp1)) { // peak is around 1.02
       printf(" SKIP 3 Data");
