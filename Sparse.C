@@ -1,4 +1,3 @@
-Bool_t input_new = kFALSE;
 Int_t rsn_data   = 20130106; // 20130411
 TString mv_colon = "_";      // ":";
 Bool_t effiTPC = kFALSE;
@@ -35,7 +34,7 @@ TMultiGraph *m_gr = new TMultiGraph();
 void SetCombinations(Int_t c = 0)
 {
   effiTPC = kFALSE; // common or own TPC effi, correct only for 2013_01
-  //  mixing  = kFALSE;
+//  mixing  = kFALSE;
   norm[0] = 1.045;  // where is norm signal and background
   norm[1] = 1.085;
   fmin    = 0.995;  // where is fit
@@ -95,19 +94,19 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
                    const char *my_fname="AnalysisResults.root")
 {
   if (rsn_data == 20130106) {
-    const char *suf[12] = {"00_DEFAULT", "CHI2ITS036", "CHI2ITS100", "CHI2TPC04",
-                           "CHI2TPC06", "DCAXY035", "DCAXY140", "DCAZ01", "DCAZ20",
-                           "NCLSTTPC50", "NCLSTTPC70", "NCLSTTPC80"};
+     const char *suf[12] = {"00_DEFAULT", "CHI2ITS036", "CHI2ITS100", "CHI2TPC04",
+                       "CHI2TPC06", "DCAXY035", "DCAXY140", "DCAZ01", "DCAZ20",
+                       "NCLSTTPC50", "NCLSTTPC70", "NCLSTTPC80"};
 
     fname = Form("root://eos.saske.sk//eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-01-06/DATA_LHC11a_ESD/%s/%s", suf[fsuf], my_fname);
     mv_colon = "_";
     sufNameCurrent=suf[fsuf];
   }
   else if (rsn_data == 20130411) {
-    const char *suf[11] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
-                           "DCAXY6S", "DCAXY7S", "DCAXY7S_DCAZ20",
-                           "DCAXY7S_NCLSTTPC50", "DCAZ20", "NCLSTTPC50",
-                           "NCLSTTPC80"};
+   const char *suf[11] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
+                       "DCAXY6S", "DCAXY7S", "DCAXY7S_DCAZ20",
+                       "DCAXY7S_NCLSTTPC50", "DCAZ20", "NCLSTTPC50",
+                       "NCLSTTPC80"};
     fname = Form("root://eos.saske.sk//eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-04-11/DATA/%s/%s", suf[fsuf], my_fname);
     mv_colon = ":";
     sufNameCurrent=suf[fsuf];
@@ -175,68 +174,6 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
          smix.Data(), smixpp.Data(), smixmm.Data());
 }
 
-void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
-                      const char *my_fname="AnalysisResults.root")
-{
-  if (rsn_data == 20131015) {
-    const char *suf[12] = {"00_DEFAULT", "CHI2ITS036", "CHI2ITS100",
-                           "CHI2TPC04", "CHI2TPC06", "DCAXY035", "DCAXY140",
-                           "DCAZ01", "DCAZ20", "NCLSTTPC50", "NCLSTTPC70",
-                           "NCLSTTPC80"};
-    sufNameCurrent=suf[fsuf];
-  }
-  else {
-    Printf("Wrong input Rsn data !!!");
-    return;
-  }
-
-  const char *tmp_qc = "";
-  if      (qc == 0)  { tmp_qc = "qualityonly"; ilist = 0; sigma = 0.0;
-    noSigma = kTRUE; }
-  else if (qc == 10) { tmp_qc = "KTPCnsig10";  ilist = 0; sigma = 1.0;
-    noSigma = kFALSE; }
-  else if (qc == 20) { tmp_qc = "KTPCnsig20";  ilist = 0; sigma = 2.0;
-    noSigma = kFALSE; }
-  else if (qc == 30) { tmp_qc = "KTPCnsig30";  ilist = 0; sigma = 3.0;
-    noSigma = kFALSE; }
-  else if (qc == 40) { tmp_qc = "KTPCnsig40";  ilist = 0; sigma = 4.0;
-    noSigma = kFALSE; }
-  else {
-    Printf("Wrong TPC cut !!!");
-    return;
-  }
-
-  const char *tmp_10or11 = "";
-  if      (std10or11 == 2010) tmp_10or11 = "STD2010";
-  else if (std10or11 == 2011) tmp_10or11 = "STD2011";
-  else {
-    Printf("Wrong 2010 or 2011 cut !!!");
-    return;
-  }
-
-  lname = Form("PhiNsigma_%s_%s_%s", tmp_qc, tmp_10or11, suf[fsuf]);
-  what  = lname;
-  graph_name   = what;
-  graphee_name = Form("PhiNsigma_%s_%s", tmp_10or11, suf[fsuf]);
-
-  s1name     = "Unlike";
-  s3name_p   = "LikePP";
-  s3name_m   = "LikeMM";
-  smix       = "Mixing";
-  smixpp     = "MixingPP";
-  smixmm     = "MixingMM";
-
-  fname = Form("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC11a/ESD_pass4_without_SDD/RSN_20131015/Merged/All/%s/%s/%s/%s", tmp_10or11, suf[fsuf],
-               tmp_qc, my_fname);
-
-  if (!info) return;
-  Printf("file name: %s", fname.Data());
-  Printf("list name: %s", lname.Data());
-  Printf("\n1 - %s\n2 - %s\n3 - %s\n4 - %s\n5 - %s\n6 - %s\n",
-         s1name.Data(), s3name_p.Data(), s3name_m.Data(),
-         smix.Data(), smixpp.Data(), smixmm.Data());
-}
-
 Double_t fun_s(double *m, double *par) const
 {
   Double_t val = 0.0;
@@ -245,13 +182,6 @@ Double_t fun_s(double *m, double *par) const
   return par[0]*val + par[3] + x*par[4] + x*x*par[5] + x*x*x*par[6];
 }
 
-Double_t fun_s(double *m, double *par) const
-{
-  Double_t val = 0.0;
-  double x     = m[0];
-  val = TMath::BreitWigner(x, par[1], par[2]);
-  return par[0]*val + par[3] + x*par[4] + x*x*par[5] + x*x*x*par[6];
-}
 Double_t fun_s2(double *m, double *par) const
 {
   Double_t val = 0.0;
@@ -320,23 +250,11 @@ void AnalyzeSparse(Color_t lcolor = -1)
   TFile::SetCacheFileDir(gSystem->HomeDirectory());
   TFile *f = TFile::Open(fname.Data(), "CACHEREAD");
   if (!f) return;
+  TList *l; f->GetObject(lname.Data(), l);
+  if (!l) return;
   Int_t bf[999], bl[999];
-  Int_t nn = 0;
-  TList *l = 0;
-  THnSparse *sparse = 0;
-  if (!input_new) {
-    sparse = 0;
-    f->GetObject(lname.Data(), l);
-    if (!l) return;
-    nn = FindExactRange(((THnSparse *)(l->FindObject(s1name.Data())))->
-                        Projection(1), del_step, bf, bl);
-  }
-  else {
-    l = 0;
-    f->GetObject(s1name.Data(), sparse);
-    if (!sparse) return;
-    nn = FindExactRange(sparse->Projection(1), del_step, bf, bl);
-  }
+  Int_t nn = FindExactRange(((THnSparse *)(l->FindObject(s1name.Data())))->
+                            Projection(1), del_step, bf, bl);
   //  Int_t nn = FindRange5(bf, bl);
   Bool_t binhaluska = kFALSE;
   //  binhaluska = kTRUE;
@@ -365,11 +283,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
 
   for (Int_t i = 0; i < nn; i++) {
     c->cd(count + 1)->SetGrid();
-    if (l)
-      h1 = (TH1D *)PullHisto(l, s1name.Data(), bf[i], bl[i], ptmean, bwidth[i]);
-    else
-      h1 = (TH1D *)PullHistoNew(f, s1name.Data(), bf[i], bl[i],
-                                ptmean, bwidth[i]);
+    h1 = (TH1D *)PullHisto(l, s1name.Data(), bf[i], bl[i], ptmean, bwidth[i]);
     h1->SetLineColor(kRed);
     h1->GetXaxis()->SetTitle("M_{ inv} [GeV/c^{2}]");
     //    h1->GetXaxis()->SetRangeUser(0.995, 1.095);
@@ -379,42 +293,17 @@ void AnalyzeSparse(Color_t lcolor = -1)
     h1->Draw("hist");
 
     if (!mixing) {
-      if (l)
-        h3_p = (TH1D *)PullHisto(l, s3name_p.Data(), bf[i], bl[i],
-                                 ptmean, bwidth[i]);
-      else
-        h3_p = (TH1D *)PullHistoNew(f, s3name_p.Data(), bf[i], bl[i],
-                                    ptmean, bwidth[i]);
-      if (l)
-        h3_m = (TH1D *)PullHisto(l, s3name_m.Data(), bf[i], bl[i],
-                                 ptmean, bwidth[i]);
-      else
-        h3_m = (TH1D *)PullHistoNew(f, s3name_m.Data(), bf[i], bl[i],
-                                    ptmean, bwidth[i]);
+      h3_p = (TH1D *)PullHisto(l, s3name_p.Data(), bf[i], bl[i], ptmean, bwidth[i]);
+      h3_m = (TH1D *)PullHisto(l, s3name_m.Data(), bf[i], bl[i], ptmean, bwidth[i]);
       h3_p->Add(h3_m);
     }
     else {
       //      h3_m = (TH1D *)PullHisto(l, smixpp.Data(), bf[i], bl[i], ptmean, bwidth[i]);
       //      h3_p->Add(h3_m);
-      if (l)
-        h3_p = (TH1D *)PullHisto(l, smixpp.Data(), bf[i], bl[i],
-                                 ptmean, bwidth[i]);
-      else
-        h3_p = (TH1D *)PullHistoNew(f, smixpp.Data(), bf[i], bl[i],
-                                    ptmean, bwidth[i]);
-      if (l)
-        h3_m = (TH1D *)PullHisto(l, smixmm.Data(), bf[i], bl[i],
-                                 ptmean, bwidth[i]);
-      else
-        h3_m = (TH1D *)PullHistoNew(f, smixmm.Data(), bf[i], bl[i],
-                                    ptmean, bwidth[i]);
+      h3_p = (TH1D *)PullHisto(l, smixpp.Data(), bf[i], bl[i], ptmean, bwidth[i]);
+      h3_m = (TH1D *)PullHisto(l, smixmm.Data(), bf[i], bl[i], ptmean, bwidth[i]);
       h3_p->Add(h3_m);
-      if (l)
-        h3_m = (TH1D *)PullHisto(l, smix.Data(), bf[i], bl[i],
-                                 ptmean, bwidth[i]);
-      else
-        h3_m = (TH1D *)PullHistoNew(f, smix.Data(), bf[i], bl[i],
-                                    ptmean, bwidth[i]);
+      h3_m = (TH1D *)PullHisto(l, smix.Data(), bf[i], bl[i], ptmean, bwidth[i]);
       h3_p->Add(h3_m);
     }
 
@@ -511,13 +400,13 @@ void AnalyzeSparse(Color_t lcolor = -1)
     gr_widthE[count] = ff->GetParError(2);
 
     if ((TMath::Abs(gr_mass[count]-1.0194451)/1.0194451) > 0.001) {
-      gr_mass[count] = 0.0;
-      gr_massE[count] = 0.0;
-    }
-    if ( (gr_mass[count]< 0.1) || ((TMath::Abs(gr_width[count]-0.004)) > 0.004)) {
-      gr_width[count] = 0.0;
-      gr_widthE[count] = 0.0;
-    }
+       gr_mass[count] = 0.0;
+       gr_massE[count] = 0.0;
+   }
+   if ( (gr_mass[count]< 0.1) || ((TMath::Abs(gr_width[count]-0.004)) > 0.004)) {
+       gr_width[count] = 0.0;
+       gr_widthE[count] = 0.0;
+   }
 
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     fmini = ff->GetParameter(1) - fipm*ff->GetParameter(2);
@@ -606,15 +495,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   Double_t superfactor;
   for (Int_t i = 0; i < count; i++) {
     // SuperMacro
-    if (l)
-      superfactor = CalculateFactor((TH1F *)l->FindObject("hEventStat"),
-                                    bwidth[i], grx[i]);
-    else {
-      TH1F *htmpp = 0;
-      f->GetObject("hEventStat", htmpp);
-      superfactor = CalculateFactor(htmpp,
-                                    bwidth[i], grx[i]);
-    }
+    superfactor = CalculateFactor(l, bwidth[i], grx[i]);
     gry[i] = gry[i]*superfactor;
     gryE[i] = gryE[i]*superfactor;
   }
@@ -630,7 +511,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   gr->Draw("AP");
   gPad->Update();
   gPad->Modified();
-  //   G2F(gr, TString::Format("%s_%02d_pt_%s", lname.Data(), combi, "RF"));
+//   G2F(gr, TString::Format("%s_%02d_pt_%s", lname.Data(), combi, "RF"));
   G2F(gr, TString::Format("pt_%s", "RF"), TString::Format("%s_%02d", lname.Data(), combi));
 
   new TCanvas();
@@ -647,7 +528,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   m_gr_mass->SetMaximum(grm->GetMaximum());
   m_gr_mass->Add(grm);
   grm->Draw("AP");
-  //   G2F(grm, TString::Format("%s_%02d_mass_R", lname.Data(), combi));
+//   G2F(grm, TString::Format("%s_%02d_mass_R", lname.Data(), combi));
   G2F(grm, "mass", TString::Format("%s_%02d", lname.Data(), combi));
   new TCanvas();
   TGraphErrors *grw = new TGraphErrors(count, grx, gr_width, grxE, gr_widthE);
@@ -659,7 +540,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   grw->SetMinimum(0.0);
   grw->SetMaximum(0.015);
   grw->Draw("AP");
-  //   G2F(grw, TString::Format("%s_%02d_width_R", lname.Data(), combi));
+//   G2F(grw, TString::Format("%s_%02d_width_R", lname.Data(), combi));
   G2F(grw, "width", TString::Format("%s_%02d", lname.Data(), combi));
 
   //  cc3 = new TCanvas();
@@ -670,7 +551,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   gr3->SetTitle(Form("SIG / BKG, %s", gtitle.Data()));
   gr3->SetMinimum(0);
   //  gr3->Draw("AP");
-  //   G2F(gr3, TString::Format("%s_%02d_SB_R", lname.Data(), combi));
+//   G2F(gr3, TString::Format("%s_%02d_SB_R", lname.Data(), combi));
   G2F(gr3, "SB", TString::Format("%s_%02d", lname.Data(), combi));
   //  cc4 = new TCanvas();
   TGraphErrors *gr4 = new TGraphErrors(count, grx, gry4);
@@ -680,8 +561,8 @@ void AnalyzeSparse(Color_t lcolor = -1)
   gr4->SetTitle(Form("Significance, %s", gtitle.Data()));
   gr4->SetMinimum(0);
   //  gr4->Draw("AP");
-  //   G2F(gr4, TString::Format("%s_%02d_SIG_R", lname.Data(), combi));
-  G2F(gr4, "SIGNIF", TString::Format("%s_%02d", lname.Data(), combi));
+//   G2F(gr4, TString::Format("%s_%02d_SIG_R", lname.Data(), combi));
+    G2F(gr4, "SIGNIF", TString::Format("%s_%02d", lname.Data(), combi));
 
   ccc = new TCanvas();
   ccc->SetWindowSize(900, 300);
@@ -721,18 +602,18 @@ void AnalyzeSparse(Color_t lcolor = -1)
     noSigma = kTRUE;
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   }
-  eff_prefix="EFFI_";
-  if (binAnders) eff_prefix="ANDERS_";
+  eff_prefix+="EFFI_";
+  if (binAnders) eff_prefix+="ANDERS_";
   eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
   graphee_name=TString::Format("PhiNsigma_qualityonly_STD2010_PRIMARY_%s",sufNameCurrent.Data()).Data();
 
   Printf(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
 
   TGraphErrors *geff = new TGraphErrors(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
-  //  if (binAnders) {
-  //    delete geff;
-  //    geff = new TGraphErrors(TString::Format("%s%s", eff_prefix_anders.Data(), graphee_name.Data()).Data());
-  //  }
+//  if (binAnders) {
+//    delete geff;
+//    geff = new TGraphErrors(TString::Format("%s%s", eff_prefix_anders.Data(), graphee_name.Data()).Data());
+//  }
   Printf("Open %s%s", eff_prefix.Data(), graphee_name.Data());
   if (geff->IsZombie()) return;
   geff->SetMarkerStyle(20);
@@ -743,7 +624,6 @@ void AnalyzeSparse(Color_t lcolor = -1)
   //  c->SetGrid();
   //  geff->Draw("AP");
   Double_t sss = TMath::Erf(sigma/TMath::Sqrt(2.0));
-  //  Double_t sss = TMath::Erf(sigma)-TMath::Erf(-sigma);
   if (noSigma) sss = 1.0;
   Printf("sigma = %3.2f => %10f", sigma, sss);
   TGraph *tmp = new TGraph(geff->GetN(), geff->GetX(), geff->GetEY()); // graph with error
@@ -787,8 +667,8 @@ void AnalyzeSparse(Color_t lcolor = -1)
   m_gr_fix->Add(gr_fix);
   if (superfactor > 0.9) m_gr_fix->SetMinimum(1);
   //  gr_fix->Draw("AP");
-  //   G2F(gr_fix, TString::Format("%s_%02d_pt_%s", lname.Data(), combi, "RFE"));
-  G2F(gr_fix, "pt_RFE", TString::Format("%s_%02d", lname.Data(), combi));
+//   G2F(gr_fix, TString::Format("%s_%02d_pt_%s", lname.Data(), combi, "RFE"));
+    G2F(gr_fix, "pt_RFE", TString::Format("%s_%02d", lname.Data(), combi));
 
   // applying super macro2 (cross section)
   Double_t superfactor2;
@@ -800,7 +680,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
     gryEcs[i] = gry_fixE[i]*superfactor2;
   }
   TGraphErrors *grs2 = new TGraphErrors(count, grx, grycs, grxE, gryEcs);
-  //   G2F(grs2, TString::Format("%s_%02d_pt_%s", lname.Data(), combi, "RFEC"));
+//   G2F(grs2, TString::Format("%s_%02d_pt_%s", lname.Data(), combi, "RFEC"));
   G2F(grs2, "pt_RFEC", TString::Format("%s_%02d", lname.Data(), combi));
 
 
@@ -862,37 +742,6 @@ TH1 *PullHisto(const TList *list, const char *name, Int_t min, Int_t max,
   return hfin;//->Rebin();
 }
 
-TH1 *PullHistoNew(const TFile *file, const char *name, Int_t min, Int_t max,
-                  Double_t &mean, Double_t &bw)
-{
-  THnSparse *hs = 0;
-  file->GetObject(name, hs);
-  if (!hs) return 0;
-  // cut on pt
-  TAxis *atmp = hs->GetAxis(1);
-  atmp->SetRange(min, max);
-  // cut on eta
-  hs->GetAxis(2)->SetRangeUser(-0.5, 0.5);
-
-  // for specific 2013-04-11 or 2013-10-15 data
-  // hs->GetAxis(2)->SetRangeUser(-0.5, 0.5) = hs->GetAxis(2)->SetRange(2, 2);
-  TH1 *hfin = hs->Projection(0);
-  hfin->SetTitle(Form("p_{T} #in (%4.2f, %4.2f) GeV/c",
-                      atmp->GetBinLowEdge(min),
-                      atmp->GetBinLowEdge(max) + atmp->GetBinWidth(max)));
-  mean = atmp->GetBinLowEdge(min) +
-    (atmp->GetBinLowEdge(max) + atmp->GetBinWidth(max) -
-     atmp->GetBinLowEdge(min))/2.0;
-  bw = (atmp->GetBinLowEdge(max) + atmp->GetBinWidth(max) -
-        atmp->GetBinLowEdge(min));
-  // !!!!!!!!!!!!!!!!!!!!
-  //  Printf("binwidth = %.5f", bw);
-  return hfin;//->Rebin();
-}
-
-
-
-
 void Norm(const TH1 *h0, TH1 *hn, Double_t min, Double_t max)
 {
   hn->Scale(h0->Integral(h0->FindFixBin(min), h0->FindFixBin(max))/
@@ -914,7 +763,6 @@ Int_t FindExactRange(const TH1 *h, Double_t step, Int_t *fb, Int_t *lb)
       lb[count] = h->GetNbinsX()-1;
       break;
     }
-    //    Printf("%02d %02d", fb[count], lb[count]);
     count++;
   }
 
@@ -1022,16 +870,16 @@ void G2F(const TGraphErrors *g, TString name, TString dir="", Bool_t info = kTRU
   }
   myfile.close();
   if (!dir.IsNull()) {
-    gSystem->mkdir(dir.Data());
-    gSystem->Exec(TString::Format("mv %s %s/",name.Data(),dir.Data()).Data());
+     gSystem->mkdir(dir.Data());
+     gSystem->Exec(TString::Format("mv %s %s/",name.Data(),dir.Data()).Data());
   }
 }
 
-Double_t CalculateFactor(const TH1F *hEventStat, Double_t delta_pt, Double_t pt)
+Double_t CalculateFactor(TList *list, Double_t delta_pt, Double_t pt)
 {
   // delta_pt => bin width = 2*x_error
   // pt       => bin center
-  //  TH1F *hEventStat = (TH1F *)list->FindObject("hEventStat");
+  TH1F *hEventStat = (TH1F *)list->FindObject("hEventStat");
   if (!hEventStat) return 1.0;
 
   // events All
