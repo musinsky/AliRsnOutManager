@@ -920,6 +920,7 @@ TH1 *PullHistoNew(const TFile *file, const char *name, Int_t min, Int_t max,
         atmp->GetBinLowEdge(min));
   // !!!!!!!!!!!!!!!!!!!!
   //  Printf("binwidth = %.5f", bw);
+  delete hs;
   return hfin;//->Rebin();
 }
 
