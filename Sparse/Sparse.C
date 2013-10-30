@@ -11,7 +11,7 @@ Double_t norm[2]  = {1.045, 1.085};
 Double_t del_step = 0.25;
 Bool_t isTPC = kTRUE;
 Bool_t isVoig = kFALSE;
-Int_t polynom = 3;
+Int_t polynom = 2;
 Double_t fmin = 0.995;
 Double_t fmax = 1.185;
 Double_t fipm = 3.0;
@@ -449,18 +449,18 @@ void AnalyzeSparse(Color_t lcolor = -1)
     // !!!!!!!!!!!!!!!!!!
     TF1 *ff = 0;
     Int_t del = 0;
-    // if (isVoig) {
-    //   ff = new TF1("ff", fun_s2, 0.9, 1.2, 8);
-    //   del = 1; // change only from parametger[3]
-    // }
-    // else {
-    //   //      ff = new TF1("ff", fun_s_pol3, 0.9, 1.2, 7);
-    //   //      del = 0;
-    //   if      (polynom == 3) ff = new TF1("ff3", fun_s_pol3, 0.9, 1.2, 7);
-    //   else if (polynom == 2) ff = new TF1("ff2", fun_s_pol2, 0.9, 1.2, 6);
-    //   else if (polynom == 1) ff = new TF1("ff1", fun_s_pol1, 0.9, 1.2, 5);
-    //   else Printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    // }
+    if (isVoig) {
+      ff = new TF1("ff", fun_s2, 0.9, 1.2, 8);
+      del = 1; // change only from parametger[3]
+    }
+    else {
+      //      ff = new TF1("ff", fun_s_pol3, 0.9, 1.2, 7);
+      //      del = 0;
+      if      (polynom == 3) ff = new TF1("ff3", fun_s_pol3, 0.9, 1.2, 7);
+      else if (polynom == 2) ff = new TF1("ff2", fun_s_pol2, 0.9, 1.2, 6);
+      else if (polynom == 1) ff = new TF1("ff1", fun_s_pol1, 0.9, 1.2, 5);
+      else Printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
 
     // // ?!?!?!??!?!!??!??!?!?!?!!
     // if (polynom == 3) ff = new TF1("ff", fun_s_pol3, 0.9, 1.2, 7);
@@ -468,7 +468,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
     // if (polynom == 1) ff = new TF1("ff", fun_s_pol1, 0.9, 1.2, 5);
     // // ?!?!!?!??!!??!!?!?!?!?!??!
 
-    ff = new TF1("ff", fun_s_pol3, 0.9, 1.2, 7); polynom = 3;
+    //    ff = new TF1("ff", fun_s_pol3, 0.9, 1.2, 7); polynom = 3;
     //    ff = new TF1("ff", fun_s_pol2, 0.9, 1.2, 6); polynom = 2;
     //    ff = new TF1("ff", fun_s_pol1, 0.9, 1.2, 5); polynom = 1;
 
@@ -1097,7 +1097,8 @@ Double_t CalculateFactor2(Double_t pt)
 {
   // pt => bin center
   // sigmaMB in pb
-  Double_t sigmaMB = 55.4*10e9;
+  Double_t effTrigger = 0.851;
+  Double_t sigmaMB = 55.4*10e9/effTrigger;
   Double_t fac = (sigmaMB)/(2*TMath::Pi()*pt);
   return fac;
 }
