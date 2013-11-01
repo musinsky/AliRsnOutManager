@@ -1098,7 +1098,7 @@ Double_t CalculateFactor2(Double_t pt)
   // pt => bin center
   // sigmaMB in pb
   Double_t effTrigger = 0.851;
-  Double_t sigmaMB = 55.4*10e9/effTrigger;
+  Double_t sigmaMB = 55.4*1e9/effTrigger;
   Double_t fac = (sigmaMB)/(2*TMath::Pi()*pt);
   return fac;
 }
