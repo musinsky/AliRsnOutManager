@@ -4,7 +4,7 @@
   input_new = kTRUE;
   del_step = 0.20;
   mixing = kTRUE;
-  //  del_step=1.0;
+  //  del_step = 0.50; // Viktor
 
   SetNameBordelNew(0,  0, 2010, kTRUE, "RsnOutput.root");
   AnalyzeSparse(kBlack);
