@@ -33,7 +33,7 @@ Int_t ilist = 0;
 TH1D *hg, *h1, *h3_p, *h3_m, *ht;
 TMultiGraph *m_gr = new TMultiGraph();
 
-void SetCombinations(Int_t c = 0)
+void SetCombinations(Int_t c = 0, Int_t poly = 2)
 {
   effiTPC = kFALSE; // common or own TPC effi, correct only for 2013_01
   //  mixing  = kFALSE;
@@ -42,6 +42,7 @@ void SetCombinations(Int_t c = 0)
   fmin    = 0.995;  // where is fit
   fmax    = 1.185;
   fipm    = 3.0;    // where is integral (+- 'fipm' sigma)
+  polynom = poly;
   combi   = c;
 
   if (c == 1) {
@@ -89,7 +90,51 @@ void SetCombinations(Int_t c = 0)
     fipm    = 3.0;
     combi   = c;
   }
-
+  if (c == 6) {
+    effiTPC = kFALSE;
+    norm[0] = norm[0] - 0.01;
+    norm[1] = norm[1] + 0.01;
+    fmin    = fmin - 0.005;
+    fmax    = fmax + 0.005;
+    fipm    = 4.0;
+    combi   = c;
+  }
+  if (c == 7) {
+    effiTPC = kFALSE;
+    norm[0] = norm[0] - 0.01;
+    norm[1] = norm[1] + 0.01;
+    fmin    = fmin;
+    fmax    = fmax;
+    fipm    = 4.0;
+    combi   = c;
+  }
+  if (c == 8) {
+    effiTPC = kFALSE;
+    norm[0] = 0.995;
+    norm[1] = 1.005;
+    fmin    = fmin - 0.005;
+    fmax    = fmax + 0.005;
+    fipm    = 4.0;
+    combi   = c;
+  }
+  if (c == 9) {
+    effiTPC = kFALSE;
+    norm[0] = norm[0] - 0.01;
+    norm[1] = norm[1] + 0.01;
+    fmin    = fmin - 0.001;
+    fmax    = fmax + 0.001;
+    fipm    = 4.0;
+    combi   = c;
+  }
+  if (c == 10) {
+    effiTPC = kFALSE;
+    norm[0] = norm[0];
+    norm[1] = norm[1];
+    fmin    = fmin - 0.002;
+    fmax    = fmax + 0.002;
+    fipm    = 4.0;
+    combi   = c;
+  }
 }
 
 void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
