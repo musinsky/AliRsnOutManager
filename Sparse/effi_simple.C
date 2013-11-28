@@ -1,13 +1,17 @@
-void effi_simple(Int_t dataset = 201310)
+void effi_simple(Int_t dataset = 201310, TString fname = "")
 {
   TFile::SetCacheFileDir(gSystem->HomeDirectory());
   TFile *f = 0;
-  if (dataset == 201310)
-    f = TFile::Open("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC12f1a/ESD/RSN_20131015/Merged/All/STD2010/00_DEFAULT/qualityonly/RsnOutput.root", "CACHEREAD");
-  if (dataset == 201304)
-    f = TFile::Open("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC12f1a/ESD/RSN_20130411/All/STD2010/00_DEFAULT/qualityonly/RsnOutput.root", "CACHEREAD");
-  if (dataset == 201301)
-    f = TFile::Open("root://eos.saske.sk//eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-01-06/MC_LHC12i6_146805_ESD/00_DEFAULT/AnalysisResults.root", "CACHEREAD");
+  if (fname.IsNull()) {
+    if (dataset == 201310)
+      f = TFile::Open("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC12f1a/ESD/RSN_20131015/Merged/All/STD2010/00_DEFAULT/qualityonly/RsnOutput.root", "CACHEREAD");
+    if (dataset == 201304)
+      f = TFile::Open("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC12f1a/ESD/RSN_20130411/All/STD2010/00_DEFAULT/qualityonly/RsnOutput.root", "CACHEREAD");
+    if (dataset == 201301)
+      f = TFile::Open("root://eos.saske.sk//eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-01-06/MC_LHC12i6_146805_ESD/00_DEFAULT/AnalysisResults.root", "CACHEREAD");
+  }
+  else
+    f = TFile::Open(fname.Data());
 
   if (!f) return;
   THnSparse *sparse;
@@ -55,4 +59,31 @@ void effi_simple(Int_t dataset = 201310)
   gStyle->SetGridColor(kGray);
   gStyle->SetOptStat(0);
   gPad->SetGrid();
+
+  H2F(htrue, "out.effi", kFALSE);
+}
+
+void H2F(const TH1 *h, TString name, Bool_t info = kTRUE)
+{
+  if (info) Printf("Creating file %s", name.Data());
+  ofstream myfile;
+  myfile.open(name.Data());
+  TString str_tmp;
+  Double_t x, y, ex, ey;
+  for (Int_t i = 1; i < h->GetNbinsX(); i++) {
+    x  = h->GetBinCenter(i);
+    y  = h->GetBinContent(i);
+    ex = h->GetBinWidth(i)/2.0;
+    ey = h->GetBinError(i);
+    str_tmp = TString::Format("%f %f %f %f", x, y, NanCheck(ex), NanCheck(ey));
+    if (info) Printf("%s", str_tmp.Data());
+    myfile << str_tmp.Data() << endl;
+  }
+  myfile.close();
+}
+
+Double_t NanCheck(Double_t value, Double_t retvalue = 0.0)
+{
+  if (TMath::IsNaN(value)) return retvalue;
+  return value;
 }
