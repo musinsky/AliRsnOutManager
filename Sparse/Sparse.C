@@ -21,6 +21,7 @@ Double_t export_bin[999] = {0};
 TString eff_prefix="EFFI_OK/effi_";
 TString eff_prefix_anders="EFFI_Anders/effi_";
 TString sufNameCurrent="";
+TString g2f_prefix="";
 TString fname,lname,s1name,s3name_p,s3name_m,smix,smixpp,smixmm, graph_name,
   graphee_name;
 TMultiGraph *m_gr     = new TMultiGraph();
@@ -225,10 +226,9 @@ void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
                       const char *my_fname="AnalysisResults.root")
 {
   if (rsn_data == 20131015) {
-    const char *suf[12] = {"00_DEFAULT", "CHI2ITS036", "CHI2ITS100",
-                           "CHI2TPC04", "CHI2TPC06", "DCAXY035", "DCAXY140",
-                           "DCAZ01", "DCAZ20", "NCLSTTPC50", "NCLSTTPC70",
-                           "NCLSTTPC80"};
+    const char *suf[13] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S", 
+			   "DCAXY6S", "DCAZ01", "DCAZ05", "DCAZ10", "DCAZ15", 
+			   "NCLSTTPC50", "NCLSTTPC80", "NCLSTTPC85", "NCLSTTPC90"};
     sufNameCurrent=suf[fsuf];
   }
   else {
@@ -1102,7 +1102,8 @@ void G2F(const TGraphErrors *g, TString name, TString dir="", Bool_t info = kTRU
   }
   myfile.close();
   if (!dir.IsNull()) {
-    gSystem->mkdir(dir.Data());
+    dir.Prepend(g2f_prefix);
+    gSystem->mkdir(dir.Data(),1);
     gSystem->Exec(TString::Format("mv %s %s/",name.Data(),dir.Data()).Data());
   }
 }
