@@ -7,10 +7,10 @@ void effi_simple_20131015()
                          "NCLSTTPC50","NCLSTTPC80","NCLSTTPC85","NCLSTTPC90"};
   TString path("/eos/saske.sk/alice/rsn/PHIKK/LHC12f1a/ESD/RSN_20131015/Merged/All/STD2010/");
   TString fname, fname_base = "root://eos.saske.sk/" + path;
-  TString edir,  edir_base  = "EFFI_AAAA_";
+  TString edir,  edir_base  = "EFFI_20131015_";
   TString efile, efile_base = "effi_PhiNsigma_qualityonly_STD2010_PRIMARY_";
 
-  for (Int_t i = 0; i < 1; i++) {
+  for (Int_t i = 0; i < 13; i++) {
     fname = fname_base + suf[i] + "/qualityonly/RsnOutput.root";
     edir  = edir_base + suf[i];
     efile = efile_base + suf[i];

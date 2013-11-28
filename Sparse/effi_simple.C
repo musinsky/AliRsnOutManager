@@ -53,12 +53,13 @@ void effi_simple(Int_t dataset = 201310, TString fname = "")
   htrue->GetXaxis()->SetRangeUser(0.0, 5.0);
   if (gPad) {
     htrue->Draw("same");
-    return;
   }
-  htrue->Draw();
-  gStyle->SetGridColor(kGray);
-  gStyle->SetOptStat(0);
-  gPad->SetGrid();
+  else {
+    htrue->Draw();
+    gStyle->SetGridColor(kGray);
+    gStyle->SetOptStat(0);
+    gPad->SetGrid();
+  }
 
   H2F(htrue, "out.effi", kFALSE);
 }
