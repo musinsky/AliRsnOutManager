@@ -800,9 +800,12 @@ void AnalyzeSparse(Color_t lcolor = -1)
     noSigma = kTRUE;
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   }
-  eff_prefix="EFFI_";
+  if (eff_prefix.IsNull()) {
+    eff_prefix="EFFI_";
+    eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
+  }
   if (binAnders) eff_prefix="ANDERS_";
-  eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
+
   graphee_name=TString::Format("PhiNsigma_qualityonly_STD2010_PRIMARY_%s",sufNameCurrent.Data()).Data();
 
   Printf(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());

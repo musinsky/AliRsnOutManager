@@ -1,42 +1,72 @@
 {
-    "template" : "root -b -q '/eos/saske.sk/scratch/ALICE/RSN_OUT/macros/run.C($start,$end,$combination,$file,\"/eos/saske.sk/scratch/ALICE/RSN_OUT/macros/\")'",
+    "template" : "root -b -q '/eos/saske.sk/alice/rsn/PHIKK/00_ANALYSIS/RSN_20131015/RsnOut_macros/run.C($start,$end,$combination,$file,\"/eos/saske.sk/alice/rsn/PHIKK/00_ANALYSIS/RSN_20131015/RsnOut_macros\",\"/eos/saske.sk/scratch/ALICE/RSN_OUT/2013-12-03/\")'",
     "packets" : [
 	{
 	    "file" : "AnalysisResults.root",
 	    "combination" : 0,
 	    "start" : 0,
-	    "end" : 10
+	    "end" : 12
 	},
 	{
 	    "file" : "AnalysisResults.root",
 	    "combination" : 1,
 	    "start" : 0,
-	    "end" : 10
+	    "end" : 12
 	},
 	{
 	    "file" : "AnalysisResults.root",
 	    "combination" : 2,
 	    "start" : 0,
-	    "end" : 10
+	    "end" : 12
 	},
 	{
 	    "file" : "AnalysisResults.root",
 	    "combination" : 3,
 	    "start" : 0,
-	    "end" : 10
+	    "end" : 12
 	},
 	{
 	    "file" : "AnalysisResults.root",
 	    "combination" : 4,
 	    "start" : 0,
-	    "end" : 10
+	    "end" : 12
 	},
 	{
 	    "file" : "AnalysisResults.root",
 	    "combination" : 5,
 	    "start" : 0,
-	    "end" : 10
-	}
+	    "end" : 12
+	},
+        {   
+            "file" : "AnalysisResults.root",
+            "combination" : 6,
+            "start" : 0,
+            "end" : 12
+        },
+        {   
+            "file" : "AnalysisResults.root",
+            "combination" : 7,
+            "start" : 0,
+            "end" : 12
+        },
+        {   
+            "file" : "AnalysisResults.root",
+            "combination" : 8,
+            "start" : 0,
+            "end" : 12
+        },
+        {   
+            "file" : "AnalysisResults.root",
+            "combination" : 9,
+            "start" : 0,
+            "end" : 12
+        },
+        {   
+            "file" : "AnalysisResults.root",
+            "combination" : 10,
+            "start" : 0,
+            "end" : 12
+        }
 
     ]
 }

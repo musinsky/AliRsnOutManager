@@ -1,14 +1,8 @@
 void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
          TString in_fname = "AnalysisResults.root",
-         const char *path_Sparse_macro = "/eos/saske.sk/scratch/ALICE/RSN_OUT/macros", TString out_path = "/eos/saske.sk/scratch/ALICE/RSN_OUT/2013-11-11/OUT/")
+         const char *path_Sparse_macro = "/eos/saske.sk/alice/rsn/PHIKK/00_ANALYSIS/RSN_20131015/RsnOut_macros", TString out_path = "/eos/saske.sk/scratch/ALICE/RSN_OUT/2013-12-01/OUT/")
 {
-  gROOT->ProcessLine(TString::Format(".L %s/Sparse.C",path_Sparse_macro));
-
-  eff_prefix="";
-  // eff_prefix+="/eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-04-11/MC_LHC12f1a/";
-//   eff_prefix+="EFFI_OK/effi_";
-  eff_prefix += "/eos/saske.sk/scratch/ALICE/RSN_OUT/macros/";
-//  eff_prefix+="EFFI_Pythia8/effi_";
+  gROOT->ProcessLine(TString::Format(".L %s/Sparse.C",path_Sparse_macro).Data());
 
   rsn_data = 20131015;
   input_new = kTRUE;
@@ -21,6 +15,10 @@ void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
   SetCombinations(c);
 
   SetNameBordelNew(id,  0, 2010, kTRUE, "RsnOutput.root");
+  eff_prefix = path_Sparse_macro;
+  eff_prefix += "/EFFI_20131015_";
+  eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
+
   AnalyzeSparse(kBlack);
   SetNameBordelNew(id, 10, 2010, kTRUE, "RsnOutput.root");
   AnalyzeSparse(kRed);
