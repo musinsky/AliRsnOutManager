@@ -313,7 +313,23 @@ Double_t fun_s_pol3(double *m, double *par) const
   val = TMath::BreitWigner(x, par[1], par[2]);
   return par[0]*val + par[3] + x*par[4] + x*x*par[5] + x*x*x*par[6];
 }
-Double_t fun_s2(double *m, double *par) const
+Double_t fun_s2_pol1(double *m, double *par) const
+{
+  Double_t val = 0.0;
+  double x     = m[0];
+  val = TMath::Voigt(x - par[1], par[3], par[2]);
+  return par[0]*val + par[4] + x*par[5];
+}
+
+Double_t fun_s2_pol2(double *m, double *par) const
+{
+  Double_t val = 0.0;
+  double x     = m[0];
+  val = TMath::Voigt(x - par[1], par[3], par[2]);
+  return par[0]*val + par[4] + x*par[5] + x*x*par[6];
+}
+
+Double_t fun_s2_pol3(double *m, double *par) const
 {
   Double_t val = 0.0;
   double x     = m[0];
@@ -496,6 +512,11 @@ void AnalyzeSparse(Color_t lcolor = -1)
     TF1 *ff = 0;
     Int_t del = 0;
     if (isVoig) {
+      
+      if      (polynom == 3) ff = new TF1("ff3", fun_s2_pol3, 0.9, 1.2, 8);
+      else if (polynom == 2) ff = new TF1("ff2", fun_s2_pol2, 0.9, 1.2, 7);
+      else if (polynom == 1) ff = new TF1("ff1", fun_s2_pol1, 0.9, 1.2, 6);
+      else Printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       ff = new TF1("ff", fun_s2, 0.9, 1.2, 8);
       del = 1; // change only from parametger[3]
     }
