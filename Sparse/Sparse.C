@@ -11,6 +11,7 @@ Double_t norm[2]  = {1.045, 1.085};
 Double_t del_step = 0.25;
 Bool_t isTPC = kTRUE;
 Bool_t isVoig = kFALSE;
+Bool_t isBinCounting = kFALSE;
 Int_t polynom = 2;
 Double_t fmin = 0.995;
 Double_t fmax = 1.185;
@@ -534,7 +535,9 @@ void AnalyzeSparse(Color_t lcolor = -1)
     //    fmin = 1.00999;
     //    fmax = 1.0678000000800000000165;
     // !!!!!!!!!!!!!!!!!!
-    Bool_t hisfun = kFALSE; // kFALSE = integral from function
+    
+    Bool_t hisfun = isBinCounting; // kFALSE = integral from function
+    // Bool_t hisfun = kFALSE; // kFALSE = integral from function
     Double_t       hisfun_k = 1.0/hh->GetBinWidth(10);
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (binhaluska)
