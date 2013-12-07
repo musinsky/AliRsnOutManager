@@ -517,7 +517,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
       else if (polynom == 2) ff = new TF1("ff2", fun_s2_pol2, 0.9, 1.2, 7);
       else if (polynom == 1) ff = new TF1("ff1", fun_s2_pol1, 0.9, 1.2, 6);
       else Printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      ff = new TF1("ff", fun_s2, 0.9, 1.2, 8);
+      // ff = new TF1("ff", fun_s2, 0.9, 1.2, 8);
       del = 1; // change only from parametger[3]
     }
     else {
@@ -566,8 +566,9 @@ void AnalyzeSparse(Color_t lcolor = -1)
 
     // !!!!!!!!!!!!!!!!!!
     // wehere integral (his or fun)
-    Double_t fmini = 1.02-fipm*0.004;
-    Double_t fmaxi = 1.02+fipm*0.004;
+    Double_t myMass = 1.019445;
+    Double_t fmini = myMass-fipm*0.004;
+    Double_t fmaxi = myMass+fipm*0.004;
     hh->Fit(ff, "Q", "", fmin, fmax);
     hh->Fit(ff, "Q", "", fmin, fmax);
     fitStatus = hh->Fit(ff, "Q", "", fmin, fmax);
@@ -597,7 +598,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
     Double_t drawfmax = fmax; //1.150;
     TF1 *pp3 = new TF1("pp3", "[0]+x*[1]+x*x*[2]+x*x*x*[3]",
                        drawfmin, drawfmax);
-    pp3->SetParameters(0,0,0,0,0,0,0,0,0,0);
+    // pp3->SetParameters(0,0,0,0,0,0,0,0,0,0);
     pp3->SetParameters(ff->GetParameter(3+del), ff->GetParameter(4+del),
                        ff->GetParameter(5+del), ff->GetParameter(6+del));
     //    pp3->Print();
@@ -625,7 +626,9 @@ void AnalyzeSparse(Color_t lcolor = -1)
     //    fmini = ff->GetParameter(1) - fipm*ff->GetParameter(2);
     //    fmaxi = ff->GetParameter(1) + fipm*ff->GetParameter(2);
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    value              = hh->Integral(hh->FindBin(fmini), hh->FindBin(fmaxi));
+    // value              = hh->Integral(hh->FindBin(fmini), hh->FindBin(fmaxi));
+    Double_t bgVal = pp3->Integral(fmini, fmaxi)*hisfun_k;
+    value = hh->Integral(hh->FindBin(fmini), hh->FindBin(fmaxi)) - bgVal;
     // pre histo doimplementovat odcitavanie BKG, pre fun uz je hotove
     if (!hisfun) value = ff->Integral(fmini, fmaxi)*hisfun_k -
                    pp3->Integral(fmini, fmaxi)*hisfun_k;
