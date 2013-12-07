@@ -1,6 +1,6 @@
 void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
          TString in_fname = "AnalysisResults.root",
-         const char *path_Sparse_macro = "/eos/saske.sk/alice/rsn/PHIKK/00_ANALYSIS/RSN_20131015/RsnOut_macros", TString out_path = "/eos/saske.sk/scratch/ALICE/RSN_OUT/2013-12-01/OUT/")
+         const char *path_Sparse_macro = "/eos/saske.sk/alice/rsn/PHIKK/00_ANALYSIS/RSN_20131015/RsnOut_macros", TString out_path = "/eos/saske.sk/scratch/ALICE/RSN_OUT/test/OUT/")
 {
   gROOT->ProcessLine(TString::Format(".L %s/Sparse.C",path_Sparse_macro).Data());
 
@@ -10,9 +10,12 @@ void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
   // del_step = 2.50;
   mixing = kTRUE;
   //  del_step = 0.50; // Viktor
+  isVoig = kTRUE;
+  isBinCounting = kTRUE;
+
   g2f_prefix="tmp/";
 
-  SetCombinations(c);
+  SetCombinations(c,2);
 
   SetNameBordelNew(id,  0, 2010, kTRUE, "RsnOutput.root");
   eff_prefix = path_Sparse_macro;
@@ -29,11 +32,13 @@ void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
   SetNameBordelNew(id, 40, 2010, kTRUE, "RsnOutput.root");
   AnalyzeSparse(kMagenta);
 
-  out_path=TString::Format("%s/%s/%d/",out_path.Data(),sufNameCurrent.Data(),c);
+  return ;
 
-  if (mixing) out_path+="MIX";
-  else out_path+="LS";
   if (!out_path.IsNull()) {
+    out_path=TString::Format("%s/%s/%d/",out_path.Data(),sufNameCurrent.Data(),c);
+    
+    if (mixing) out_path+="MIX";
+    else out_path+="LS";
     //gSystem->Exec(TString::Format("mkdir -p %s",out_path.Data()).Data());
     //gSystem->Exec(TString::Format("mv *_PRIMARY_* %s/",out_path.Data()).Data());
     // TString out = gSystem->GetFromPipe("find -name *_PRIMARY_*");

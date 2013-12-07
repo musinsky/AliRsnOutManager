@@ -1,3 +1,3 @@
 #!/bin/bash
-root -b -q 'run.C(1,1,0,"AnalysisResults.root",".","/tmp/")'
+root.exe -b -q 'run.C(0,0,0,"AnalysisResults.root",".","")'
 
