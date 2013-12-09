@@ -11,11 +11,15 @@
 
   SetCombinations(c);
 
-  SetNameBordelNew(0,  0, 2010, kTRUE, "RsnOutput.root");
-  AnalyzeSparse(kBlack);
+  // switch effiTPC !!! before !!! SetNameBordelNew
+
+  effiTPC = kFALSE; // = effi from qaulityonly * sigma^2 (is default)
   SetNameBordelNew(0, 10, 2010, kTRUE, "RsnOutput.root");
-  AnalyzeSparse(kRed);
+  AnalyzeSparse(kBlack);
+  effiTPC = kTRUE;  // = each sigma has own effi
   SetNameBordelNew(0, 20, 2010, kTRUE, "RsnOutput.root");
+  AnalyzeSparse(kRed);
+  // SetNameBordelNew(0, 20, 2010, kTRUE, "RsnOutput.root");
   // AnalyzeSparse(kGreen);
   // SetNameBordelNew(0, 30, 2010, kTRUE, "RsnOutput.root");
   // AnalyzeSparse(kBlue);
