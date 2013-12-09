@@ -701,8 +701,8 @@ void AnalyzeSparse(Color_t lcolor = -1)
   lname.ReplaceAll(TString::Format("RsnHistMini_Phi_PhiNsigma%s",mv_colon.Data()).Data(),"");
 
   // save peaks pictures
-  //  c->SaveAs(Form("%s_a.pdf", lname.Data()));
-  //  c2->SaveAs(Form("%s_b.pdf", lname.Data()));
+  c->SaveAs(Form("%s_a.pdf", graph_name.Data()));
+  c2->SaveAs(Form("%s_b.pdf", graph_name.Data()));
 
   TGraphErrors *gr_raw = new TGraphErrors(count, grx, gry, grxE, gryE);
   G2F(gr_raw, TString::Format("pt_%s", "R"), TString::Format("%s_%02d", lname.Data(), combi));
