@@ -37,7 +37,7 @@ TMultiGraph *m_gr = new TMultiGraph();
 
 void SetCombinations(Int_t c = 0, Int_t poly = 2)
 {
-  effiTPC = kFALSE; // common or own TPC effi, correct only for 2013_01
+  //  effiTPC = kFALSE; // common or own TPC effi
   //  mixing  = kFALSE;
   norm[0] = 1.045;  // where is norm signal and background
   norm[1] = 1.085;
@@ -48,7 +48,6 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
   combi   = c;
 
   if (c == 1) {
-    effiTPC = kFALSE;
     norm[0] = norm[0] - 0.01;
     norm[1] = norm[1] + 0.01;
     fmin    = fmin;
@@ -57,7 +56,6 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
     combi   = c;
   }
   if (c == 2) {
-    effiTPC = kFALSE;
     norm[0] = norm[0] - 0.02;
     norm[1] = norm[1] + 0.02;
     fmin    = fmin;
@@ -66,7 +64,6 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
     combi   = c;
   }
   if (c == 3) {
-    effiTPC = kFALSE;
     norm[0] = 0.995;
     norm[1] = 1.005;
     fmin    = fmin;
@@ -75,7 +72,6 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
     combi   = c;
   }
   if (c == 4) {
-    effiTPC = kFALSE;
     norm[0] = norm[0];
     norm[1] = norm[1];
     fmin    = fmin - 0.001;
@@ -84,7 +80,6 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
     combi   = c;
   }
   if (c == 5) {
-    effiTPC = kFALSE;
     norm[0] = norm[0];
     norm[1] = norm[1];
     fmin    = fmin - 0.002;
@@ -93,7 +88,6 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
     combi   = c;
   }
   if (c == 6) {
-    effiTPC = kFALSE;
     norm[0] = norm[0] - 0.01;
     norm[1] = norm[1] + 0.01;
     fmin    = fmin - 0.005;
@@ -102,7 +96,6 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
     combi   = c;
   }
   if (c == 7) {
-    effiTPC = kFALSE;
     norm[0] = norm[0] - 0.01;
     norm[1] = norm[1] + 0.01;
     fmin    = fmin;
@@ -111,7 +104,6 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
     combi   = c;
   }
   if (c == 8) {
-    effiTPC = kFALSE;
     norm[0] = 0.995;
     norm[1] = 1.005;
     fmin    = fmin - 0.005;
@@ -120,7 +112,6 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
     combi   = c;
   }
   if (c == 9) {
-    effiTPC = kFALSE;
     norm[0] = norm[0] - 0.01;
     norm[1] = norm[1] + 0.01;
     fmin    = fmin - 0.001;
@@ -129,7 +120,6 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
     combi   = c;
   }
   if (c == 10) {
-    effiTPC = kFALSE;
     norm[0] = norm[0];
     norm[1] = norm[1];
     fmin    = fmin - 0.002;
@@ -150,6 +140,7 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
     fname = Form("root://eos.saske.sk//eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-01-06/DATA_LHC11a_ESD/%s/%s", suf[fsuf], my_fname);
     mv_colon = "_";
     sufNameCurrent=suf[fsuf];
+    eff_prefix="EFFI_20130106_00_DEFAULT/effi_";
   }
   else if (rsn_data == 20130411) {
     const char *suf[11] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
@@ -227,10 +218,11 @@ void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
                       const char *my_fname="AnalysisResults.root")
 {
   if (rsn_data == 20131015) {
-    const char *suf[13] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S", 
-			   "DCAXY6S", "DCAZ01", "DCAZ05", "DCAZ10", "DCAZ15", 
-			   "NCLSTTPC50", "NCLSTTPC80", "NCLSTTPC85", "NCLSTTPC90"};
+    const char *suf[13] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
+                           "DCAXY6S", "DCAZ01", "DCAZ05", "DCAZ10", "DCAZ15",
+                           "NCLSTTPC50", "NCLSTTPC80", "NCLSTTPC85", "NCLSTTPC90"};
     sufNameCurrent=suf[fsuf];
+    eff_prefix="EFFI_20131015_00_DEFAULT/effi_";
   }
   else {
     Printf("Wrong input Rsn data !!!");
@@ -263,8 +255,15 @@ void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
 
   lname = Form("PhiNsigma_%s_%s_%s", tmp_qc, tmp_10or11, suf[fsuf]);
   what  = lname;
-  graph_name   = what;
-  graphee_name = Form("PhiNsigma_%s_%s", tmp_10or11, suf[fsuf]);
+  graph_name = Form("PhiNsigma_%s_%s_%s", tmp_qc, "STD2010_PRIMARY",
+                    suf[fsuf]);
+  graphee_name = Form("PhiNsigma_qualityonly_%s_%s", "STD2010_PRIMARY",
+                      suf[fsuf]);
+  //  graph_name   = what;
+  //  graphee_name = Form("PhiNsigma_qualityonly_%s_%s", tmp_10or11, suf[fsuf]);
+
+  Printf("graph   %s", graph_name.Data());
+  Printf("graphee %s", graphee_name.Data());
 
   s1name     = "Unlike";
   s3name_p   = "LikePP";
@@ -512,7 +511,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
     TF1 *ff = 0;
     Int_t del = 0;
     if (isVoig) {
-      
+
       if      (polynom == 3) ff = new TF1("ff3", fun_s2_pol3, 0.9, 1.2, 8);
       else if (polynom == 2) ff = new TF1("ff2", fun_s2_pol2, 0.9, 1.2, 7);
       else if (polynom == 1) ff = new TF1("ff1", fun_s2_pol1, 0.9, 1.2, 6);
@@ -556,7 +555,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
     //    fmin = 1.00999;
     //    fmax = 1.0678000000800000000165;
     // !!!!!!!!!!!!!!!!!!
-    
+
     Bool_t hisfun = isBinCounting; // kFALSE = integral from function
     // Bool_t hisfun = kFALSE; // kFALSE = integral from function
     Double_t       hisfun_k = 1.0/hh->GetBinWidth(10);
@@ -833,7 +832,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   }
   if (binAnders) eff_prefix="ANDERS_";
 
-  graphee_name=TString::Format("PhiNsigma_qualityonly_STD2010_PRIMARY_%s",sufNameCurrent.Data()).Data();
+  // graphee_name=TString::Format("PhiNsigma_qualityonly_STD2010_PRIMARY_%s",sufNameCurrent.Data()).Data();
 
   Printf(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
 
