@@ -223,8 +223,14 @@ void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
                            "NCLSTTPC50", "NCLSTTPC80", "NCLSTTPC85", "NCLSTTPC90"};
     sufNameCurrent=suf[fsuf];
     eff_prefix="EFFI_20131015_00_DEFAULT/effi_";
-  }
-  else {
+  } else if (rsn_data == 20130106) {
+    const char *suf[12] = {"00_DEFAULT", "CHI2ITS036", "CHI2ITS100", "CHI2TPC04",
+                           "CHI2TPC06", "DCAXY035", "DCAXY140", "DCAZ01", "DCAZ20",
+                           "NCLSTTPC50", "NCLSTTPC70", "NCLSTTPC80"};
+
+    eff_prefix="EFFI_20131015_00_DEFAULT/effi_";
+
+  } else {
     Printf("Wrong input Rsn data !!!");
     return;
   }
@@ -234,7 +240,11 @@ void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
     noSigma = kTRUE; }
   else if (qc == 10) { tmp_qc = "KTPCnsig10";  ilist = 0; sigma = 1.0;
     noSigma = kFALSE; }
+  else if (qc == 15) { tmp_qc = "KTPCnsig15";  ilist = 0; sigma = 1.5;
+    noSigma = kFALSE; }
   else if (qc == 20) { tmp_qc = "KTPCnsig20";  ilist = 0; sigma = 2.0;
+    noSigma = kFALSE; }
+  else if (qc == 25) { tmp_qc = "KTPCnsig25";  ilist = 0; sigma = 2.5;
     noSigma = kFALSE; }
   else if (qc == 30) { tmp_qc = "KTPCnsig30";  ilist = 0; sigma = 3.0;
     noSigma = kFALSE; }
@@ -272,8 +282,14 @@ void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
   smixpp     = "MixingPP";
   smixmm     = "MixingMM";
 
-  fname = Form("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC11a/ESD_pass4_without_SDD/RSN_20131015/Merged/All/%s/%s/%s/%s", tmp_10or11, suf[fsuf],
-               tmp_qc, my_fname);
+  if (rsn_data == 20131015) {
+    fname = Form("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC11a/ESD_pass4_without_SDD/RSN_20131015/Merged/All/%s/%s/%s/%s", tmp_10or11, suf[fsuf],
+		 tmp_qc, my_fname);
+    
+  } else if (rsn_data == 20130106) {
+    fname = Form("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC11a/ESD_pass4_without_SDD/RSN_20130106/All/%s/%s/%s/%s", tmp_10or11, suf[fsuf],
+		 tmp_qc, my_fname);
+  }
 
   if (!info) return;
   Printf("file name: %s", fname.Data());
