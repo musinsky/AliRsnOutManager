@@ -710,7 +710,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
       gry4[count] = tmp_sg/TMath::Sqrt(tmp_sg + tmp_bg);
     }
 
-    Printf("=> %4.2f\n", ptmean);
+    Printf("=> %5.3f\n", ptmean);
     count++;
   }
 
