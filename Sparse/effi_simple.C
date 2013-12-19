@@ -16,8 +16,9 @@ void effi_simple(Int_t dataset = 201310, TString fname = "")
   if (!f) return;
   THnSparse *sparse;
   TH1::AddDirectory(kFALSE);
-  TH1 *hgen, *htrue;
+  TH1 *hgen, *htrue, *hres;
   TString tmp(f->GetName());
+  Double_t resVal[100];
 
   if (tmp.Contains("RsnOutput")) {   // new datasets
     f->GetObject("Generated", sparse);
@@ -28,8 +29,27 @@ void effi_simple(Int_t dataset = 201310, TString fname = "")
     sparse->GetAxis(2)->SetRangeUser(-0.5, 0.5);
     htrue = sparse->Projection(1);
     delete sparse;
-    hgen->Rebin(2);   // now 2013-04 and 2013-10 have same binning as 2013-01
-    htrue->Rebin(2);
+    Int_t rebinFac=2;
+
+    hgen->Rebin(rebinFac);   // now 2013-04 and 2013-10 have same binning as 2013-01
+    htrue->Rebin(rebinFac);
+
+    f->GetObject("Resolution", sparse);
+    sparse->GetAxis(2)->SetRangeUser(-0.5, 0.5);
+    Double_t step,min,max;
+    for (Int_t i=0;i<(hgen->GetXaxis()->GetNbins()/rebinFac);i++) {
+      min = 0.2*i;
+      max = 0.2*(i+1);
+      sparse->GetAxis(1)->SetRangeUser(min,max);
+      hres = sparse->Projection(0);
+      hres->Fit("gaus","Q","");
+      TF1 *ff = hres->GetListOfFunctions()->FindObject("gaus");
+      if (!ff) resVal[i]=0.0;
+      else resVal[i] = ff->GetParameter(2);
+      // Printf("[%f,%f] %f",min,max,resVal[i]);
+    }
+    delete hres;
+    delete sparse;
   }
   else {   // old dataset
     TList *list;
@@ -61,10 +81,11 @@ void effi_simple(Int_t dataset = 201310, TString fname = "")
     gPad->SetGrid();
   }
 
-  H2F(htrue, "out.effi", kFALSE);
+  H2F(htrue, "out.effi", kTRUE, resVal);
+
 }
 
-void H2F(const TH1 *h, TString name, Bool_t info = kTRUE)
+void H2F(const TH1 *h, TString name, Bool_t info = kTRUE, Double_t *extra)
 {
   if (info) Printf("Creating file %s", name.Data());
   ofstream myfile;
@@ -76,7 +97,7 @@ void H2F(const TH1 *h, TString name, Bool_t info = kTRUE)
     y  = h->GetBinContent(i);
     ex = h->GetBinWidth(i)/2.0;
     ey = h->GetBinError(i);
-    str_tmp = TString::Format("%f %f %f %f", x, y, NanCheck(ex), NanCheck(ey));
+    str_tmp = TString::Format("%f %f %f %f %f", x, y, NanCheck(ex), NanCheck(ey),extra[i-1]);
     if (info) Printf("%s", str_tmp.Data());
     myfile << str_tmp.Data() << endl;
   }
