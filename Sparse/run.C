@@ -5,31 +5,38 @@ void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
   gROOT->ProcessLine(TString::Format(".L %s/Sparse.C",path_Sparse_macro).Data());
 
   rsn_data = 20131015;
+  //  rsn_data = 20130106;
+  Int_t year=2010;
+  // year=2011;
+
   input_new = kTRUE;
   del_step = 0.20;
   // del_step = 2.50;
   mixing = kTRUE;
-  //  del_step = 0.50; // Viktor
-  isVoig = kTRUE;
-  isBinCounting = kTRUE;
+  del_step = 0.50; // Viktor
+  // isVoig = kTRUE;
+  // isBinCounting = kTRUE;
+
+  // use Own Eff
+  effiTPC = kTRUE;
 
   g2f_prefix="tmp/";
 
   SetCombinations(c,2);
 
-  SetNameBordelNew(id,  0, 2010, kTRUE, "RsnOutput.root");
-  eff_prefix = path_Sparse_macro;
-  eff_prefix += "/EFFI_20131015_";
-  eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
+  SetNameBordelNew(id,  0, year, kTRUE, "RsnOutput.root");
+  // eff_prefix = path_Sparse_macro;
+  // eff_prefix += "/EFFI_20131015_";
+  // eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
 
   AnalyzeSparse(kBlack);
-  SetNameBordelNew(id, 10, 2010, kTRUE, "RsnOutput.root");
+  SetNameBordelNew(id, 10, year, kTRUE, "RsnOutput.root");
   AnalyzeSparse(kRed);
-  SetNameBordelNew(id, 20, 2010, kTRUE, "RsnOutput.root");
+  SetNameBordelNew(id, 20, year, kTRUE, "RsnOutput.root");
   AnalyzeSparse(kGreen);
-  SetNameBordelNew(id, 30, 2010, kTRUE, "RsnOutput.root");
+  SetNameBordelNew(id, 30, year, kTRUE, "RsnOutput.root");
   AnalyzeSparse(kBlue);
-  SetNameBordelNew(id, 40, 2010, kTRUE, "RsnOutput.root");
+  SetNameBordelNew(id, 40, year, kTRUE, "RsnOutput.root");
   AnalyzeSparse(kMagenta);
 
   return ;
