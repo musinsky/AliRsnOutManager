@@ -1,0 +1,11 @@
+{
+    "template" : "root -b -q '/eos/saske.sk/alice/rsn/PHIKK/00_ANALYSIS/RSN_20131015/RsnOut_macros/run.C($start,$end,$combination,$file,\"/eos/saske.sk/alice/rsn/PHIKK/00_ANALYSIS/RSN_20131015/RsnOut_macros\")'",
+    "packets" : [
+	{
+	    "file" : "AnalysisResults.root",
+	    "combination" : 0,
+	    "start" : 0,
+	    "end" : 12
+	}
+    ]
+}
