@@ -18,7 +18,7 @@ void effi_simple(Int_t dataset = 201310, TString fname = "")
   TH1::AddDirectory(kFALSE);
   TH1 *hgen, *htrue, *hres;
   TString tmp(f->GetName());
-  Double_t resVal[100];
+  Double_t resVal[100][2];
 
   if (tmp.Contains("RsnOutput")) {   // new datasets
     f->GetObject("Generated", sparse);
@@ -44,9 +44,13 @@ void effi_simple(Int_t dataset = 201310, TString fname = "")
       hres = sparse->Projection(0);
       hres->Fit("gaus","Q","");
       TF1 *ff = hres->GetListOfFunctions()->FindObject("gaus");
-      if (!ff) resVal[i]=0.0;
-      else resVal[i] = ff->GetParameter(2);
-      // Printf("[%f,%f] %f",min,max,resVal[i]);
+      // add sigma
+      if (!ff) resVal[i][0]=0.0;
+      else resVal[i][0] = ff->GetParameter(2);
+
+      // add error in sigma
+      if (!ff) resVal[i][1]=0.0;
+      else resVal[i][1] = ff->GetParError(2);
     }
     delete hres;
     delete sparse;
@@ -85,7 +89,7 @@ void effi_simple(Int_t dataset = 201310, TString fname = "")
 
 }
 
-void H2F(const TH1 *h, TString name, Bool_t info = kTRUE, Double_t *extra)
+void H2F(const TH1 *h, TString name, Bool_t info = kTRUE, Double_t extra[][2])
 {
   if (info) Printf("Creating file %s", name.Data());
   ofstream myfile;
@@ -97,7 +101,7 @@ void H2F(const TH1 *h, TString name, Bool_t info = kTRUE, Double_t *extra)
     y  = h->GetBinContent(i);
     ex = h->GetBinWidth(i)/2.0;
     ey = h->GetBinError(i);
-    str_tmp = TString::Format("%f %f %f %f %f", x, y, NanCheck(ex), NanCheck(ey),extra[i-1]);
+    str_tmp = TString::Format("%f %f %f %f %f %f %f", x, y, NanCheck(ex), NanCheck(ey), extra[i-1][0], NanCheck(ex), extra[i-1][1]);
     if (info) Printf("%s", str_tmp.Data());
     myfile << str_tmp.Data() << endl;
   }
