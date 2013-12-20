@@ -40,9 +40,10 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
   //  effiTPC = kFALSE; // common or own TPC effi
   //  mixing  = kFALSE;
   norm[0] = 1.045;  // where is norm signal and background
-  norm[1] = 1.085;
+  norm[1] = 1.065;
   fmin    = 0.995;  // where is fit
   fmax    = 1.185;
+  fmax    = 1.065;
   fipm    = 3.0;    // where is integral (+- 'fipm' sigma)
   polynom = poly;
   combi   = c;
@@ -285,6 +286,8 @@ void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
   if (rsn_data == 20131015) {
     fname = Form("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC11a/ESD_pass4_without_SDD/RSN_20131015/Merged/All/%s/%s/%s/%s", tmp_10or11, suf[fsuf],
 		 tmp_qc, my_fname);
+    // fname = Form("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC12f1a/ESD/RSN_20131015/Merged/All/%s/%s/%s/%s", tmp_10or11, suf[fsuf],
+    // 		 tmp_qc, my_fname);
     
   } else if (rsn_data == 20130106) {
     fname = Form("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC11a/ESD_pass4_without_SDD/RSN_20130106/All/%s/%s/%s/%s", tmp_10or11, suf[fsuf],
@@ -408,6 +411,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   Double_t gr_mass[999], gr_massE[999], gr_width[999], gr_widthE[999];
   Double_t gry_true[999], gry_true_eff[999];
   TH1::AddDirectory(kFALSE);
+  Double_t xtmp,ytmp;
 
   TFile::SetCacheFileDir(gSystem->HomeDirectory());
   TFile *f = TFile::Open(fname.Data(), "CACHEREAD");
@@ -441,6 +445,26 @@ void AnalyzeSparse(Color_t lcolor = -1)
     bl[6] = 40;bl[7] = 50;
   }
 
+  if (effiTPC) {
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    graphee_name =  graph_name;
+    noSigma = kTRUE;
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  }
+  if (eff_prefix.IsNull()) {
+    eff_prefix="EFFI_";
+      eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
+  }
+  if (binAnders) eff_prefix="ANDERS_";
+  // graphee_name=TString::Format("PhiNsigma_qualityonly_STD2010_PRIMARY_%s",sufNameCurrent.Data()).Data();
+  Printf(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
+  TGraphErrors *geff = new TGraphErrors(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
+  TGraphErrors *geff_res = new TGraphErrors(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data(),"%lg %*lg %*lg %*lg %lg %lg %lg");
+  
+  // geff->Print();
+  // geff_res->Print();
+
+
   Printf("number of intervals = %d", nn);
   Int_t count = 0;
   Double_t ptmean = 0, value = 0;
@@ -451,6 +475,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   TCanvas *c = new TCanvas();
   c->SetTitle(graph_name.Data());
   c->Divide(6, 4, 0.0005, 0.0005); c->Modified(); c->Draw();
+  // c->Divide(3, 3, 0.0005, 0.0005); c->Modified(); c->Draw();
   TCanvas *c2 = (TCanvas *)c->DrawClone("c2");
   c2->Modified(); c2->Draw();
   TCanvas *c3, *c4;
@@ -560,8 +585,12 @@ void AnalyzeSparse(Color_t lcolor = -1)
     ff->SetLineColor(kGreen-3);
     ff->SetLineWidth(2);
     if (isVoig) {
-      if (isTPC) ff->FixParameter(3, 0.00118398);
-      else       ff->FixParameter(3, 0.00115599);
+      // if (isTPC) ff->FixParameter(3, 0.00118398);
+      // else       ff->FixParameter(3, 0.00115599);
+      // ff->FixParameter(3, 0.00118398);
+      geff_res->GetPoint(i,xtmp,ytmp);
+      ff->FixParameter(3, ytmp);
+      // Printf("%d %f",i, ytmp);
     }
 
     // where fit
@@ -836,23 +865,26 @@ void AnalyzeSparse(Color_t lcolor = -1)
   //  TGraphErrors *geff = new TGraphErrors(Form("EFFI_OK/effi_%s",
   //                                             graph_name.Data()));
 
-  if (effiTPC) {
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    graphee_name =  graph_name;
-    noSigma = kTRUE;
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  }
-  if (eff_prefix.IsNull()) {
-    eff_prefix="EFFI_";
-    eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
-  }
-  if (binAnders) eff_prefix="ANDERS_";
+  // if (effiTPC) {
+  //   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //   graphee_name =  graph_name;
+  //   noSigma = kTRUE;
+  //   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // }
+  // if (eff_prefix.IsNull()) {
+  //   eff_prefix="EFFI_";
+  //   eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
+  // }
+  // if (binAnders) eff_prefix="ANDERS_";
 
-  // graphee_name=TString::Format("PhiNsigma_qualityonly_STD2010_PRIMARY_%s",sufNameCurrent.Data()).Data();
+  // // graphee_name=TString::Format("PhiNsigma_qualityonly_STD2010_PRIMARY_%s",sufNameCurrent.Data()).Data();
 
-  Printf(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
+  // Printf(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
 
-  TGraphErrors *geff = new TGraphErrors(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
+  // TGraphErrors *geff = new TGraphErrors(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
+
+
+
   //  if (binAnders) {
   //    delete geff;
   //    geff = new TGraphErrors(TString::Format("%s%s", eff_prefix_anders.Data(), graphee_name.Data()).Data());
@@ -927,7 +959,6 @@ void AnalyzeSparse(Color_t lcolor = -1)
   //   G2F(grs2, TString::Format("%s_%02d_pt_%s", lname.Data(), combi, "RFEC"));
   G2F(grs2, "pt_RFEC", TString::Format("%s_%02d", lname.Data(), combi));
 
-
   c = new TCanvas();
   c->SetWindowSize(1200, 450);
   c->Divide(2, 1, 0.001, 0.001); c->Modified(); c->Draw();
@@ -957,6 +988,9 @@ void AnalyzeSparse(Color_t lcolor = -1)
   c->cd();
   //  c->SaveAs(Form("%s_%s.eps", blabla.Data(), graph_name.Data()));
   f->Close();
+  delete geff;
+  delete geff_res;
+
 }
 
 TH1 *PullHisto(const TList *list, const char *name, Int_t min, Int_t max,
@@ -1175,7 +1209,7 @@ Double_t CalculateFactor(const TH1F *hEventStat, Double_t delta_pt, Double_t pt)
   // Branching ratio
   Double_t br = 0.489;
 
-  Double_t fac = effTrigger / (delta_y * delta_pt * effVert * br * nEventsSel);
+  Double_t fac = effTrigger / (delta_y * delta_pt * effVert * br * nEvents);
 
   Printf("NumEvents    = %.0f", nEvents);
   Printf("NumEventsSel = %.0f", nEventsSel);

@@ -13,16 +13,19 @@ void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
   del_step = 0.20;
   // del_step = 2.50;
   mixing = kTRUE;
-  del_step = 0.50; // Viktor
-  // isVoig = kTRUE;
+  // del_step = 0.50; // Viktor
+  isVoig = kTRUE;
   // isBinCounting = kTRUE;
 
   // use Own Eff
-  effiTPC = kTRUE;
+  // effiTPC = kTRUE;
 
   g2f_prefix="tmp/";
 
-  SetCombinations(c,2);
+  Int_t polynom = 1;
+  // polynom = 2;
+
+  SetCombinations(c,polynom);
 
   SetNameBordelNew(id,  0, year, kTRUE, "RsnOutput.root");
   // eff_prefix = path_Sparse_macro;
@@ -38,7 +41,7 @@ void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
   AnalyzeSparse(kBlue);
   SetNameBordelNew(id, 40, year, kTRUE, "RsnOutput.root");
   AnalyzeSparse(kMagenta);
-
+  
   return ;
 
   if (!out_path.IsNull()) {
