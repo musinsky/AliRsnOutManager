@@ -673,16 +673,17 @@ void AnalyzeSparse(Color_t lcolor = -1)
     //    fmaxi = ff->GetParameter(1) + fipm*ff->GetParameter(2);
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // value              = hh->Integral(hh->FindBin(fmini), hh->FindBin(fmaxi));
-    Double_t bgVal = pp3->Integral(fmini, fmaxi)*hisfun_k;
-    value = hh->Integral(hh->FindBin(fmini), hh->FindBin(fmaxi)) - bgVal;
-    // pre histo doimplementovat odcitavanie BKG, pre fun uz je hotove
-    if (!hisfun) value = ff->Integral(fmini, fmaxi)*hisfun_k -
-                   pp3->Integral(fmini, fmaxi)*hisfun_k;
+// //     Double_t bgVal = pp3->Integral(fmini, fmaxi)*hisfun_k;
+// //     value = hh->Integral(hh->FindBin(fmini), hh->FindBin(fmaxi)) - bgVal;
+// //     // pre histo doimplementovat odcitavanie BKG, pre fun uz je hotove
+// //     if (!hisfun) value = ff->Integral(fmini, fmaxi)*hisfun_k -
+// //                    pp3->Integral(fmini, fmaxi)*hisfun_k;
     
+//     Printf("value1=%f %f %f",value, ff->Integral(fmini, fmaxi)*hisfun_k,pp3->Integral(fmini, fmaxi)*hisfun_k);
     Double_t valueError=0;
     if (hisfun)  value = CalculateYield(valueError, fmini, fmaxi, hh, ff,r.Get(), pp3);
     else value = CalculateYield(valueError, 1, 0, hh, ff,r.Get(), pp3);
-    
+//     Printf("value2=%f",value);
     if (value < 0) value = 0;
 
     // if (ff->GetNDF() < (hh->GetNbinsX()*0.50)) {
@@ -1238,9 +1239,11 @@ Double_t CalculateFactor2(Double_t pt)
   return fac;
 }
 
-Double_t CalculateYield(Double_t &err, Double_t min, Double_t max, TH1*hSig, TF1*fitSigBg,TFitResult *rFitSigBg, TF1*fitBg=0, TFitResult *rFitBg=0,Double_t infinity=1e10) {
+Double_t CalculateYield(Double_t &err, Double_t min, Double_t max, TH1*hSig, TF1*fitSigBg,TFitResult *rFitSigBg, TF1*fitBg=0, TFitResult *rFitBg=0/*,Double_t infinity=1e10*/) {
   
+  //
   // !!!! Working only with fixed width in histogram hSig
+  //
   
   if (!hSig || !fitSigBg) {
     err = -1.0;
@@ -1254,33 +1257,40 @@ Double_t CalculateYield(Double_t &err, Double_t min, Double_t max, TH1*hSig, TF1
   Double_t histErr = 0.0;
   Double_t histVal = 0.0;
   Double_t histWidth = hSig->GetXaxis()->GetBinWidth(1);
-  if(min < max) {
-    histVal = hSig->IntegralAndError(min, max, histErr);
-    
+  
+  Double_t minIntergral = 1.019445-10*0.0045;
+  Double_t maxIntergral = 1.019445+10*0.0045;
+  
+    if(min < max) {
+    histVal = hSig->IntegralAndError(hSig->FindBin(min),hSig->FindBin(max), histErr);
+//     Printf("aaa %f %f",histVal,histErr);
   
     if (fitBg) {
-      bgVal = fitBg->Integral(min, max)*histWidth;
-      bgErr = fitBg->IntegralError(min, max)*histWidth;
+      bgVal = fitBg->Integral(min, max)/histWidth;
+//       if (rFitSigBg) bgErr = fitBg->IntegralError(min, max)/histWidth;
+      bgErr = histErr;
       histVal -= bgVal;
       histErr = TMath::Sqrt(TMath::Power(histErr,2) + TMath::Power(bgErr,2));
     }
     
     // now we use function of fit with outside range
-    funVal = fitSigBg->Integral(0,min)*histWidth;
-    funErr = fitSigBg->IntegralError(0,min)*histWidth;
+    funVal = fitSigBg->Integral(minIntergral,min)/histWidth;
+    if (rFitSigBg) funErr = fitSigBg->IntegralError(minIntergral,min,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix()->GetMatrixArray())/histWidth;
     if (fitBg) {
-      bgVal = fitBg->Integral(0,min)*histWidth;
-      bgErr = fitBg->IntegralError(0,min)*histWidth;
+      bgVal = fitBg->Integral(minIntergral,min)/histWidth;
+      bgErr = funErr;
+//       if (rFitSigBg) bgErr = fitBg->IntegralError(minIntergral,min,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix()->GetMatrixArray())/histWidth;
       funVal -= bgVal;
       funErr = TMath::Sqrt(TMath::Power(funErr,2) + TMath::Power(bgErr,2));
     }
     
     Double_t funValTmp,funErrTmp;
-    funValTmp = fitSigBg->Integral(max,infinity)*histWidth;
-    funErrTmp = fitSigBg->IntegralError(max,infinity)*histWidth;
+    funValTmp = fitSigBg->Integral(max,maxIntergral)/histWidth;
+    if (rFitSigBg) funErrTmp = fitSigBg->IntegralError(max,maxIntergral,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix()->GetMatrixArray())/histWidth;
     if (fitBg) {
-      bgVal = fitBg->Integral(max,infinity)*histWidth;
-      bgErr = fitBg->IntegralError(max,infinity)*histWidth;
+      bgVal = fitBg->Integral(max,maxIntergral)/histWidth;
+      bgErr = funErrTmp;
+//       if (rFitSigBg) bgErr = fitBg->IntegralError(max,maxIntergral,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix()->GetMatrixArray())/histWidth;
       funValTmp -= bgVal;
       funErrTmp = TMath::Sqrt(TMath::Power(funErrTmp,2) + TMath::Power(bgErr,2));
     }
@@ -1289,14 +1299,15 @@ Double_t CalculateYield(Double_t &err, Double_t min, Double_t max, TH1*hSig, TF1
     funErr = TMath::Sqrt(TMath::Power(funErrTmp,2) + TMath::Power(funErr,2));
     
   } else {
-    Printf("AAAAAAAAAAAA");
-    funVal = fitSigBg->Integral(0,infinity)*histWidth;
-    funErr = fitSigBg->IntegralError(0,infinity,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix()->GetMatrixArray())*histWidth;
+    funVal = fitSigBg->Integral(minIntergral,maxIntergral)/histWidth;
+//     Printf("funVal=%f %f",funVal, histWidth);
+    if (rFitSigBg) funErr = fitSigBg->IntegralError(minIntergral,maxIntergral,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix()->GetMatrixArray())/histWidth;
     if (fitBg) {
-      bgVal = fitBg->Integral(0,infinity)*histWidth;
+      bgVal = fitBg->Integral(minIntergral,maxIntergral)/histWidth;
       bgErr = funErr;
-//       bgErr = fitBg->IntegralError(0,infinity,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix()->GetMatrixArray())*histWidth;
+//       bgErr = fitBg->IntegralError(minIntergral,maxIntergral,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix()->GetMatrixArray())/histWidth;
       funVal -= bgVal;
+//       Printf("funValNew=%f",funVal);
       funErr = TMath::Sqrt(TMath::Power(funErr,2) + TMath::Power(bgErr,2));
     }
   }
@@ -1304,5 +1315,5 @@ Double_t CalculateYield(Double_t &err, Double_t min, Double_t max, TH1*hSig, TF1
   Double_t retVal = funVal+histVal;
   err = TMath::Sqrt(TMath::Power(histErr,2) + TMath::Power(funErr,2));
   
-  return 0.0;
+  return retVal;
 }
