@@ -15,7 +15,7 @@ void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
   mixing = kTRUE;
   // del_step = 0.50; // Viktor
   isVoig = kTRUE;
-  // isBinCounting = kTRUE;
+  isBinCounting = kTRUE;
 
   // use Own Eff
   // effiTPC = kTRUE;
@@ -23,16 +23,16 @@ void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
   g2f_prefix="tmp/";
 
   Int_t polynom = 1;
-  // polynom = 2;
+  polynom = 2;
 
   SetCombinations(c,polynom);
 
-  SetNameBordelNew(id,  0, year, kTRUE, "RsnOutput.root");
-  // eff_prefix = path_Sparse_macro;
-  // eff_prefix += "/EFFI_20131015_";
-  // eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
+  // SetNameBordelNew(id,  0, year, kTRUE, "RsnOutput.root");
+  // // eff_prefix = path_Sparse_macro;
+  // // eff_prefix += "/EFFI_20131015_";
+  // // eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
 
-  AnalyzeSparse(kBlack);
+  // AnalyzeSparse(kBlack);
   SetNameBordelNew(id, 10, year, kTRUE, "RsnOutput.root");
   AnalyzeSparse(kRed);
   SetNameBordelNew(id, 20, year, kTRUE, "RsnOutput.root");
