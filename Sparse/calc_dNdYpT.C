@@ -14,7 +14,7 @@
 
 Double_t LevyTsallis(const Double_t *pt, const Double_t *par);
 
-TF1 *calc_dNdYpT(const char *data_file = "pt/out.txt", Bool_t show = kTRUE)
+TF1 *calc_dNdYpT(const char *data_file = "pt/out.txt", Bool_t fixMass=kTRUE, Bool_t show = kTRUE)
 {
   TGraphErrors *g = new TGraphErrors(data_file);
   if (g->IsZombie()) return 0;
@@ -24,7 +24,7 @@ TF1 *calc_dNdYpT(const char *data_file = "pt/out.txt", Bool_t show = kTRUE)
 
   TF1 *flt = new TF1("flt", LevyTsallis, 0., 5., 4);
   flt->SetParameters(0.02, 0.3, 7, 1.019445);
-  flt->FixParameter(3, 1.019445);        // !!!
+  if (fixMass) flt->FixParameter(3, 1.019445);        // !!!
 
   Double_t fitmin = 0.25, fitmax = 5.25; // !!!
   g->Fit(flt, "QS", "", fitmin, fitmax);
