@@ -70,6 +70,12 @@ void effi_simple(Int_t dataset = 201310, TString fname = "")
   hgen->Rebin();   // now our working binning
   htrue->Rebin();
 
+  TFile fout("out.root", "RECREATE");
+  fout.cd();
+  hgen->Write("hgen");
+  htrue->Write("htrue");
+  fout.Close();
+
   htrue->Divide(hgen);
   htrue->SetTitle(Form("effi %d", dataset));
   htrue->SetMinimum(0.0);
