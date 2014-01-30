@@ -27,7 +27,7 @@ TString eff_prefix_anders="EFFI_Anders/effi_";
 TString sufNameCurrent="";
 TString g2f_prefix="";
 TString fname,lname,s1name,s3name_p,s3name_m,smix,smixpp,smixmm, graph_name,
-  graphee_name;
+graphee_name;
 TMultiGraph *m_gr     = new TMultiGraph();
 TMultiGraph *m_gr_mass= new TMultiGraph();
 TMultiGraph *m_gr_fix = new TMultiGraph();
@@ -142,8 +142,8 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
 {
   if (rsn_data == 20130106) {
     const char *suf[12] = {"00_DEFAULT", "CHI2ITS036", "CHI2ITS100", "CHI2TPC04",
-                           "CHI2TPC06", "DCAXY035", "DCAXY140", "DCAZ01", "DCAZ20",
-                           "NCLSTTPC50", "NCLSTTPC70", "NCLSTTPC80"};
+      "CHI2TPC06", "DCAXY035", "DCAXY140", "DCAZ01", "DCAZ20",
+      "NCLSTTPC50", "NCLSTTPC70", "NCLSTTPC80"};
 
     fname = Form("root://eos.saske.sk//eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-01-06/DATA_LHC11a_ESD/%s/%s", suf[fsuf], my_fname);
     mv_colon = "_";
@@ -152,9 +152,9 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
   }
   else if (rsn_data == 20130411) {
     const char *suf[11] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
-                           "DCAXY6S", "DCAXY7S", "DCAXY7S_DCAZ20",
-                           "DCAXY7S_NCLSTTPC50", "DCAZ20", "NCLSTTPC50",
-                           "NCLSTTPC80"};
+      "DCAXY6S", "DCAXY7S", "DCAXY7S_DCAZ20",
+      "DCAXY7S_NCLSTTPC50", "DCAZ20", "NCLSTTPC50",
+      "NCLSTTPC80"};
     fname = Form("root://eos.saske.sk//eos/saske.sk/scratch/ALICE/RSN/RESULTS/Rsn_Phi/pp_2.76/2013-04-11/DATA/%s/%s", suf[fsuf], my_fname);
     mv_colon = ":";
     sufNameCurrent=suf[fsuf];
@@ -166,17 +166,17 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
 
   const char *tmp_qc = "";
   if      (qc == 0)  { tmp_qc = "qualityonly"; ilist = 0; sigma = 0.0;
-    noSigma = kTRUE; }
+  noSigma = kTRUE; }
   else if (qc == 10) { tmp_qc = "KTPCnsig10";  ilist = 2; sigma = 1.0;
-    noSigma = kFALSE; }
+  noSigma = kFALSE; }
   else if (qc == 15) { tmp_qc = "KTPCnsig15";  ilist = 2; sigma = 1.5;
-    noSigma = kFALSE; }
+  noSigma = kFALSE; }
   else if (qc == 20) { tmp_qc = "KTPCnsig20";  ilist = 3; sigma = 2.0;
-    noSigma = kFALSE; }
+  noSigma = kFALSE; }
   else if (qc == 25) { tmp_qc = "KTPCnsig25";  ilist = 4; sigma = 2.5;
-    noSigma = kFALSE; }
+  noSigma = kFALSE; }
   else if (qc == 30) { tmp_qc = "KTPCnsig30";  ilist = 5; sigma = 3.0;
-    noSigma = kFALSE; }
+  noSigma = kFALSE; }
   else {
     Printf("Wrong TPC cut !!!");
     return;
@@ -205,7 +205,7 @@ void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
   }
 
   graphee_name =
-    Form("PhiNsigma_qualityonly_%s_%s", tmp_10or11, suf[fsuf]);
+      Form("PhiNsigma_qualityonly_%s_%s", tmp_10or11, suf[fsuf]);
 
   s1name     = Form("RsnMini_phi.%s_Unlike",   what);
   s3name_p   = Form("RsnMini_phi.%s_LikePP",   what);
@@ -227,21 +227,21 @@ void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
 {
   if (rsn_data == 20131015) {
     const char *suf[13] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
-                           "DCAXY6S", "DCAZ01", "DCAZ05", "DCAZ10", "DCAZ15",
-                           "NCLSTTPC50", "NCLSTTPC80", "NCLSTTPC85", "NCLSTTPC90"};
+      "DCAXY6S", "DCAZ01", "DCAZ05", "DCAZ10", "DCAZ15",
+      "NCLSTTPC50", "NCLSTTPC80", "NCLSTTPC85", "NCLSTTPC90"};
     sufNameCurrent=suf[fsuf];
     eff_prefix="EFFI_20131015_00_DEFAULT/effi_";
   } else if (rsn_data == 20130106) {
     const char *suf[12] = {"00_DEFAULT", "CHI2ITS036", "CHI2ITS100", "CHI2TPC04",
-                           "CHI2TPC06", "DCAXY035", "DCAXY140", "DCAZ01", "DCAZ20",
-                           "NCLSTTPC50", "NCLSTTPC70", "NCLSTTPC80"};
+      "CHI2TPC06", "DCAXY035", "DCAXY140", "DCAZ01", "DCAZ20",
+      "NCLSTTPC50", "NCLSTTPC70", "NCLSTTPC80"};
 
     eff_prefix="EFFI_20131015_00_DEFAULT/effi_";
 
   } else if (rsn_data == 20140125) {
     const char *suf[13] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
-                           "DCAXY6S", "DCAZ01", "DCAZ05", "DCAZ10", "DCAZ15",
-                           "NCLSTTPC50", "NCLSTTPC80", "NCLSTTPC85", "NCLSTTPC90"};
+      "DCAXY6S", "DCAZ01", "DCAZ05", "DCAZ10", "DCAZ15",
+      "NCLSTTPC50", "NCLSTTPC80", "NCLSTTPC85", "NCLSTTPC90"};
     sufNameCurrent=suf[fsuf];
     eff_prefix="EFFI_20140125_00_DEFAULT/effi_";
   } else {
@@ -251,19 +251,19 @@ void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
 
   const char *tmp_qc = "";
   if      (qc == 0)  { tmp_qc = "qualityonly"; ilist = 0; sigma = 0.0;
-    noSigma = kTRUE; }
+  noSigma = kTRUE; }
   else if (qc == 10) { tmp_qc = "KTPCnsig10";  ilist = 0; sigma = 1.0;
-    noSigma = kFALSE; }
+  noSigma = kFALSE; }
   else if (qc == 15) { tmp_qc = "KTPCnsig15";  ilist = 0; sigma = 1.5;
-    noSigma = kFALSE; }
+  noSigma = kFALSE; }
   else if (qc == 20) { tmp_qc = "KTPCnsig20";  ilist = 0; sigma = 2.0;
-    noSigma = kFALSE; }
+  noSigma = kFALSE; }
   else if (qc == 25) { tmp_qc = "KTPCnsig25";  ilist = 0; sigma = 2.5;
-    noSigma = kFALSE; }
+  noSigma = kFALSE; }
   else if (qc == 30) { tmp_qc = "KTPCnsig30";  ilist = 0; sigma = 3.0;
-    noSigma = kFALSE; }
+  noSigma = kFALSE; }
   else if (qc == 40) { tmp_qc = "KTPCnsig40";  ilist = 0; sigma = 4.0;
-    noSigma = kFALSE; }
+  noSigma = kFALSE; }
   else {
     Printf("Wrong TPC cut !!!");
     return;
@@ -298,16 +298,16 @@ void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
 
   if (rsn_data == 20131015) {
     fname = Form("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC11a/ESD_pass4_without_SDD/RSN_20131015/Merged/All/%s/%s/%s/%s", tmp_10or11, suf[fsuf],
-		 tmp_qc, my_fname);
+                 tmp_qc, my_fname);
     // fname = Form("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC12f1a/ESD/RSN_20131015/Merged/All/%s/%s/%s/%s", tmp_10or11, suf[fsuf],
     // 		 tmp_qc, my_fname);
-    
+
   } else if (rsn_data == 20130106) {
     fname = Form("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC11a/ESD_pass4_without_SDD/RSN_20130106/All/%s/%s/%s/%s", tmp_10or11, suf[fsuf],
-		 tmp_qc, my_fname);
+                 tmp_qc, my_fname);
   } else if (rsn_data == 20140125) {
     fname = Form("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC11a/ESD_pass4_without_SDD/RSN_20140125/Merged/All/%s/%s/%s/%s", tmp_10or11, suf[fsuf],
-		 tmp_qc, my_fname);
+                 tmp_qc, my_fname);
   }
 
   if (!info) return;
@@ -380,12 +380,12 @@ Double_t Levy(const Double_t *pt, const Double_t *par) const
   Double_t lPower = par[2];
 
   Double_t lBigCoef = ((lPower-1)*(lPower-2)) /
-    (l2pi*lPower*lTemp*(lPower*lTemp+lMass*(lPower-2)));
+      (l2pi*lPower*lTemp*(lPower*lTemp+lMass*(lPower-2)));
   Double_t lInPower = 1 + (TMath::Sqrt(pt[0]*pt[0]+lMass*lMass)-lMass) /
-    (lPower*lTemp);
+      (lPower*lTemp);
 
   return pt[0]*(ldNdy * pt[0] * lBigCoef *
-                TMath::Power(lInPower,(-1.0)*lPower));
+      TMath::Power(lInPower,(-1.0)*lPower));
 }
 
 TF1 *fl = new TF1("fl", Levy, 0., 4., 4);
@@ -401,9 +401,9 @@ Double_t LevyTsallis(const Double_t *pt, const Double_t *par) const
   Double_t lMass  = par[3];
 
   Double_t lBigCoef = ((lPower-1.0)*(lPower-2.0)) /
-    (lPower*lTemp*(lPower*lTemp + lMass*(lPower-2.0)));
+      (lPower*lTemp*(lPower*lTemp + lMass*(lPower-2.0)));
   Double_t lInPower = 1.0 + (TMath::Sqrt(pt[0]*pt[0]+lMass*lMass) - lMass) /
-    (lPower*lTemp);
+      (lPower*lTemp);
   lInPower = TMath::Power(lInPower, (-1.0)*lPower);
 
   return lBigCoef * ldNdy * pt[0] * lInPower;
@@ -423,7 +423,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
   TH1D *hg, *h1, *h3_p, *h3_m, *ht;
   TString gtitle = Form("Real Data, %s", graph_name.Data());
   Double_t grx[999], gry[999], gry2[999], gry3[999], gry4[999],
-    gry_eff[999], gry_fix[999], grxE[999],  gryE[999], gry_fixE[999];
+  gry_eff[999], gry_fix[999], grxE[999],  gryE[999], gry_fixE[999];
   Double_t gr_mass[999], gr_massE[999], gr_width[999], gr_widthE[999];
   Double_t gry_true[999], gry_true_eff[999];
   TH1::AddDirectory(kFALSE);
@@ -454,11 +454,16 @@ void AnalyzeSparse(Color_t lcolor = -1)
   //  binhaluska = kTRUE;
   if (binAnders) {
     nn = 8;
-    bf[0] = 6;bf[1] =  9;bf[2] = 11;bf[3] = 16;bf[4] = 21;bf[5] = 26;
-    bl[0] = 8;bl[1] = 10;bl[2] = 15;bl[3] = 20;bl[4] = 25;bl[5] = 30;
+    //    bf[0] = 6;bf[1] =  9;bf[2] = 11;bf[3] = 16;bf[4] = 21;bf[5] = 26;
+    //    bl[0] = 8;bl[1] = 10;bl[2] = 15;bl[3] = 20;bl[4] = 25;bl[5] = 30;
+    //    bf[6] = 31;bf[7] = 41;
+    //    bl[6] = 40;bl[7] = 50;
 
-    bf[6] = 31;bf[7] = 41;
-    bl[6] = 40;bl[7] = 50;
+    bf[0] = 11;bf[1] = 17;bf[2] = 21;bf[3] = 31;bf[4] = 41;bf[5] = 51; // 20140125
+    bl[0] = 16;bl[1] = 20;bl[2] = 30;bl[3] = 40;bl[4] = 50;bl[5] = 60;
+    bf[6] = 61;bf[7] = 81;
+    bl[6] = 80;bl[7] = 100;
+
   }
 
   if (effiTPC) {
@@ -469,14 +474,14 @@ void AnalyzeSparse(Color_t lcolor = -1)
   }
   if (eff_prefix.IsNull()) {
     eff_prefix="EFFI_";
-      eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
+    eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
   }
-  if (binAnders) eff_prefix="ANDERS_";
+  if (binAnders) eff_prefix += "ANDERS_";
   // graphee_name=TString::Format("PhiNsigma_qualityonly_STD2010_PRIMARY_%s",sufNameCurrent.Data()).Data();
   Printf(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
   TGraphErrors *geff = new TGraphErrors(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
   TGraphErrors *geff_res = new TGraphErrors(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data(),"%lg %*lg %*lg %*lg %lg %lg %lg");
-  
+
   // geff->Print();
   // geff_res->Print();
 
@@ -631,7 +636,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
     Double_t fmaxi = myMass+fipm*0.004;
     hh->Fit(ff, "Q", "", fmin, fmax);
     hh->Fit(ff, "Q", "", fmin, fmax);
-//     fitStatus = hh->Fit(ff, "Q", "", fmin, fmax);
+    //     fitStatus = hh->Fit(ff, "Q", "", fmin, fmax);
     TFitResultPtr r = hh->Fit(ff, "Q", "", fmin, fmax);
     // TFitResultPtr r = hh->Fit(ff, "QS", "", fmin, fmax);
     fitStatus=0;
@@ -690,17 +695,17 @@ void AnalyzeSparse(Color_t lcolor = -1)
     //    fmaxi = ff->GetParameter(1) + fipm*ff->GetParameter(2);
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // value              = hh->Integral(hh->FindBin(fmini), hh->FindBin(fmaxi));
-//     Double_t bgVal = pp3->Integral(fmini, fmaxi)*hisfun_k;
-//     value = hh->Integral(hh->FindBin(fmini), hh->FindBin(fmaxi)) - bgVal;
-//     // pre histo doimplementovat odcitavanie BKG, pre fun uz je hotove
-//     if (!hisfun) value = ff->Integral(fmini, fmaxi)*hisfun_k -
-//                    pp3->Integral(fmini, fmaxi)*hisfun_k;
-    
-//     Printf("value1=%f %f %f",value, ff->Integral(fmini, fmaxi)*hisfun_k,pp3->Integral(fmini, fmaxi)*hisfun_k);
+    //     Double_t bgVal = pp3->Integral(fmini, fmaxi)*hisfun_k;
+    //     value = hh->Integral(hh->FindBin(fmini), hh->FindBin(fmaxi)) - bgVal;
+    //     // pre histo doimplementovat odcitavanie BKG, pre fun uz je hotove
+    //     if (!hisfun) value = ff->Integral(fmini, fmaxi)*hisfun_k -
+    //                    pp3->Integral(fmini, fmaxi)*hisfun_k;
+
+    //     Printf("value1=%f %f %f",value, ff->Integral(fmini, fmaxi)*hisfun_k,pp3->Integral(fmini, fmaxi)*hisfun_k);
     Double_t valueError=0;
     if (hisfun)  value = CalculateYield(valueError, bcmin, bcmax, hh, ff,r.Get(), pp3);
     else value = CalculateYield(valueError, 1, 0, hh, ff,(TFitResult*)r.Get(), pp3);
-//     Printf("value2=%f",value);
+    //     Printf("value2=%f",value);
     if (value < 0) value = 0;
 
     // if (ff->GetNDF() < (hh->GetNbinsX()*0.50)) {
@@ -738,11 +743,11 @@ void AnalyzeSparse(Color_t lcolor = -1)
       // 2013-06-10
       grxE[count] = (bwidth[i]/2.0);
     gry[count] = value;
-//     gryE[count] = TMath::Sqrt(gry[count]); // !!!!!!!!!!!!!!!!
+    //     gryE[count] = TMath::Sqrt(gry[count]); // !!!!!!!!!!!!!!!!
     gryE[count] = valueError; // !!!!!!!!!!!!!!!!
 
-    
-    
+
+
     // Signal, Background
     Double_t tmp1 = h1->Integral(h1->FindBin(fmini), h1->FindBin(fmaxi));
     Double_t tmp2 = h3_p->Integral(h3_p->FindBin(fmini), h3_p->FindBin(fmaxi));
@@ -767,7 +772,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
       gry4[count] = tmp_sg/TMath::Sqrt(tmp_sg + tmp_bg);
     }
 
-    Printf("=> %5.3f\n", ptmean);
+    Printf("=> %5.3f  pT_bins[%03d, %03d]\n", ptmean, bf[i], bl[i]);
     count++;
   }
 
@@ -1039,10 +1044,10 @@ TH1 *PullHisto(const TList *list, const char *name, Int_t min, Int_t max,
                       atmp->GetBinLowEdge(min),
                       atmp->GetBinLowEdge(max) + atmp->GetBinWidth(max)));
   mean = atmp->GetBinLowEdge(min) +
-    (atmp->GetBinLowEdge(max) + atmp->GetBinWidth(max) -
-     atmp->GetBinLowEdge(min))/2.0;
+      (atmp->GetBinLowEdge(max) + atmp->GetBinWidth(max) -
+          atmp->GetBinLowEdge(min))/2.0;
   bw = (atmp->GetBinLowEdge(max) + atmp->GetBinWidth(max) -
-        atmp->GetBinLowEdge(min));
+      atmp->GetBinLowEdge(min));
   // !!!!!!!!!!!!!!!!!!!!
   //  Printf("binwidth = %.5f", bw);
   return hfin;//->Rebin();
@@ -1067,10 +1072,10 @@ TH1 *PullHistoNew(const TFile *file, const char *name, Int_t min, Int_t max,
                       atmp->GetBinLowEdge(min),
                       atmp->GetBinLowEdge(max) + atmp->GetBinWidth(max)));
   mean = atmp->GetBinLowEdge(min) +
-    (atmp->GetBinLowEdge(max) + atmp->GetBinWidth(max) -
-     atmp->GetBinLowEdge(min))/2.0;
+      (atmp->GetBinLowEdge(max) + atmp->GetBinWidth(max) -
+          atmp->GetBinLowEdge(min))/2.0;
   bw = (atmp->GetBinLowEdge(max) + atmp->GetBinWidth(max) -
-        atmp->GetBinLowEdge(min));
+      atmp->GetBinLowEdge(min));
   // !!!!!!!!!!!!!!!!!!!!
   //  Printf("binwidth = %.5f", bw);
   delete hs;
@@ -1095,14 +1100,14 @@ Int_t FindExactRange(const TH1 *h, Double_t step, Int_t *fb, Int_t *lb)
   Double_t maxp = 3.4; // maxp = 5.0 => 24 intervarls
   maxp=5.0;
   for (Int_t i = 1; i <= h->GetNbinsX(); i+=bin_step) {
-//     if (i<20) continue;
+    //     if (i<20) continue;
     fb[count] = i;
     lb[count] = i+bin_step-1;
     if (h->GetBinCenter(i) > maxp) {
       lb[count] = h->GetNbinsX()-1;
       break;
     }
-       Printf("%02d %02d", fb[count], lb[count]);
+    Printf("%02d %02d", fb[count], lb[count]);
     count++;
   }
 
@@ -1258,18 +1263,18 @@ Double_t CalculateFactor2(Double_t pt)
 }
 
 Double_t CalculateYield(Double_t &err, Double_t min, Double_t max, TH1*hSig, TF1*fitSigBg,TFitResult *rFitSigBg, TF1*fitBg=0, TFitResult *rFitBg=0/*,Double_t infinity=1e10*/) {
-//   Printf("%p",rFitSigBg->GetParams());
-//   Printf("%p",rFitSigBg->GetCovarianceMatrix().GetMatrixArray());
-//   return -1;
+  //   Printf("%p",rFitSigBg->GetParams());
+  //   Printf("%p",rFitSigBg->GetCovarianceMatrix().GetMatrixArray());
+  //   return -1;
   //
   // !!!! Working only with fixed width in histogram hSig
   //
-  
+
   if (!hSig || !fitSigBg) {
     err = -1.0;
     return -1.0;
   }
-  
+
   Double_t funErr = 0.0;
   Double_t funVal = 0.0;
   Double_t bgVal= 0.0;
@@ -1277,63 +1282,63 @@ Double_t CalculateYield(Double_t &err, Double_t min, Double_t max, TH1*hSig, TF1
   Double_t histErr = 0.0;
   Double_t histVal = 0.0;
   Double_t histWidth = hSig->GetXaxis()->GetBinWidth(1);
-  
+
   Double_t minIntergral = 1.019445-10*0.0045;
   Double_t maxIntergral = 1.019445+10*0.0045;
-  
-    if(min < max) {
+
+  if(min < max) {
     histVal = hSig->IntegralAndError(hSig->FindBin(min),hSig->FindBin(max), histErr);
-//     Printf("aaa %f %f",histVal,histErr);
-  
+    //     Printf("aaa %f %f",histVal,histErr);
+
     if (fitBg) {
       bgVal = fitBg->Integral(min, max)/histWidth;
-//       if (rFitSigBg) bgErr = fitBg->IntegralError(min, max)/histWidth;
+      //       if (rFitSigBg) bgErr = fitBg->IntegralError(min, max)/histWidth;
       bgErr = histErr;
       histVal -= bgVal;
       histErr = TMath::Sqrt(TMath::Power(histErr,2) + TMath::Power(bgErr,2));
     }
-    
+
     // now we use function of fit with outside range
     funVal = fitSigBg->Integral(minIntergral,min)/histWidth;
     if (rFitSigBg) funErr = fitSigBg->IntegralError(minIntergral,min,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix().GetMatrixArray())/histWidth;
     if (fitBg) {
       bgVal = fitBg->Integral(minIntergral,min)/histWidth;
       bgErr = funErr;
-//       if (rFitSigBg) bgErr = fitBg->IntegralError(minIntergral,min,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix().GetMatrixArray())/histWidth;
+      //       if (rFitSigBg) bgErr = fitBg->IntegralError(minIntergral,min,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix().GetMatrixArray())/histWidth;
       funVal -= bgVal;
       funErr = TMath::Sqrt(TMath::Power(funErr,2) + TMath::Power(bgErr,2));
     }
-    
+
     Double_t funValTmp,funErrTmp;
     funValTmp = fitSigBg->Integral(max,maxIntergral)/histWidth;
     if (rFitSigBg) funErrTmp = fitSigBg->IntegralError(max,maxIntergral,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix().GetMatrixArray())/histWidth;
     if (fitBg) {
       bgVal = fitBg->Integral(max,maxIntergral)/histWidth;
       bgErr = funErrTmp;
-//       if (rFitSigBg) bgErr = fitBg->IntegralError(max,maxIntergral,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix().GetMatrixArray())/histWidth;
+      //       if (rFitSigBg) bgErr = fitBg->IntegralError(max,maxIntergral,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix().GetMatrixArray())/histWidth;
       funValTmp -= bgVal;
       funErrTmp = TMath::Sqrt(TMath::Power(funErrTmp,2) + TMath::Power(bgErr,2));
     }
 
     funVal += funValTmp;
     funErr = TMath::Sqrt(TMath::Power(funErrTmp,2) + TMath::Power(funErr,2));
-    
+
   } else {
     funVal = fitSigBg->Integral(minIntergral,maxIntergral)/histWidth;
-//     Printf("funVal=%f %f",funVal, histWidth);
+    //     Printf("funVal=%f %f",funVal, histWidth);
     if (rFitSigBg) funErr = fitSigBg->IntegralError(minIntergral,maxIntergral,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix().GetMatrixArray())/histWidth;
     if (fitBg) {
       bgVal = fitBg->Integral(minIntergral,maxIntergral)/histWidth;
       bgErr = funErr;
-//       bgErr = fitBg->IntegralError(minIntergral,maxIntergral,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix().GetMatrixArray())/histWidth;
+      //       bgErr = fitBg->IntegralError(minIntergral,maxIntergral,rFitSigBg->GetParams(), rFitSigBg->GetCovarianceMatrix().GetMatrixArray())/histWidth;
       funVal -= bgVal;
-//       Printf("funValNew=%f",funVal);
+      //       Printf("funValNew=%f",funVal);
       funErr = TMath::Sqrt(TMath::Power(funErr,2) + TMath::Power(bgErr,2));
     }
   }
 
   Double_t retVal = funVal+histVal;
   err = TMath::Sqrt(TMath::Power(histErr,2) + TMath::Power(funErr,2));
-  
+
   return retVal;
 }

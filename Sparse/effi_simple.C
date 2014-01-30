@@ -1,4 +1,4 @@
-void effi_simple(Int_t dataset = 201401, TString fname = "")
+void effi_simple(Int_t dataset = 201401, TString fname = "", Bool_t bAnders = kFALSE)
 {
   TFile::SetCacheFileDir(gSystem->HomeDirectory());
   TFile *f = 0;
@@ -69,8 +69,17 @@ void effi_simple(Int_t dataset = 201401, TString fname = "")
   }
   delete f;
 
-  hgen->Rebin();   // now our working binning
-  htrue->Rebin();
+  if (bAnders) {
+    Double_t bbAnders[9] = {0.50, 0.80, 1.00, 1.50, 2.00, 2.50, 3.00, 4.00, 5.00}; // same as binning in Sparse.C
+    TH1 *hgenR = (TH1 *)hgen->Rebin(8, "hgenR", bbAnders);
+    TH1 *htrueR = (TH1 *)htrue->Rebin(8, "htrueR", bbAnders);
+    hgen = hgenR;
+    htrue = htrueR;
+  }
+  else {
+    hgen->Rebin();   // now our working binning
+    htrue->Rebin();
+  }
 
   TFile fout("out.root", "RECREATE");
   fout.cd();
@@ -78,11 +87,11 @@ void effi_simple(Int_t dataset = 201401, TString fname = "")
   htrue->Write("htrue");
   fout.Close();
 
-  htrue->Divide(hgen);
+  htrue->Divide(htrue, hgen, 1., 1., "B");
   htrue->SetTitle(Form("effi %d", dataset));
   htrue->SetMinimum(0.0);
   htrue->SetMaximum(0.8);
-  htrue->GetXaxis()->SetRangeUser(0.0, 5.0);
+  // htrue->GetXaxis()->SetRangeUser(0.0, 5.0);
   if (gPad) {
     htrue->Draw("same");
   }
@@ -104,7 +113,7 @@ void H2F(const TH1 *h, TString name, Bool_t info = kTRUE, Double_t extra[][2])
   myfile.open(name.Data());
   TString str_tmp;
   Double_t x, y, ex, ey;
-  for (Int_t i = 1; i < h->GetNbinsX(); i++) {
+  for (Int_t i = 1; i < (h->GetNbinsX() + 1); i++) {
     x  = h->GetBinCenter(i);
     y  = h->GetBinContent(i);
     ex = h->GetBinWidth(i)/2.0;
