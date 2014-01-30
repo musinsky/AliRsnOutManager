@@ -600,11 +600,12 @@ void AnalyzeSparse(Color_t lcolor = -1)
     //    ff = new TF1("ff", fun_s_pol2, 0.9, 1.2, 6); polynom = 2;
     //    ff = new TF1("ff", fun_s_pol1, 0.9, 1.2, 5); polynom = 1;
 
-    ff->SetParameters(2.0, 1.02, 0.004, 0., 0., 0., 0., 0.);
+    ff->SetParameters(10.0, 1.02, 0.004, 0., 700., -700., 0., 0.);
     //  if (noSigma) ff->SetParameters(200.0, 1.02, 0.004, 0., 0., 0., 0., 0.);
     //  ff->SetLineColor(hh->GetLineColor()-3);
     ff->SetLineColor(kGreen-3);
-    ff->SetLineWidth(2);
+    ff->SetNpx(1000);
+    ff->SetLineWidth(1);
     if (isVoig) {
       // if (isTPC) ff->FixParameter(3, 0.00118398);
       // else       ff->FixParameter(3, 0.00115599);
@@ -635,10 +636,10 @@ void AnalyzeSparse(Color_t lcolor = -1)
     Double_t fmini = myMass-fipm*0.004;
     Double_t fmaxi = myMass+fipm*0.004;
     hh->Fit(ff, "Q", "", fmin, fmax);
-    hh->Fit(ff, "Q", "", fmin, fmax);
+    hh->Fit(ff, "", "", fmin, fmax);
     //     fitStatus = hh->Fit(ff, "Q", "", fmin, fmax);
-    TFitResultPtr r = hh->Fit(ff, "Q", "", fmin, fmax);
-    // TFitResultPtr r = hh->Fit(ff, "QS", "", fmin, fmax);
+    //    TFitResultPtr r = hh->Fit(ff, "Q", "", fmin, fmax);
+    TFitResultPtr r = hh->Fit(ff, "QS", "", fmin, fmax);
     fitStatus=0;
     // if (ff->GetParameter(1)!=TMath::Range(fmini, fmaxi, ff->GetParameter(1))) {
     //   // peak is around 1.02
@@ -772,6 +773,8 @@ void AnalyzeSparse(Color_t lcolor = -1)
       gry4[count] = tmp_sg/TMath::Sqrt(tmp_sg + tmp_bg);
     }
 
+    c2->Modified();
+    c2->Update();
     Printf("=> %5.3f  pT_bins[%03d, %03d]\n", ptmean, bf[i], bl[i]);
     count++;
   }

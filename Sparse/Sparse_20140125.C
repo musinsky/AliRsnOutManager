@@ -3,20 +3,31 @@
   rsn_data = 20140125;
   input_new = kTRUE;
   del_step = 0.20;
-  binAnders = kTRUE;
+  //  binAnders = kTRUE;
   mixing = kTRUE;
+  isVoig = kTRUE;
+  //  isBinCounting = kTRUE;
   g2f_prefix="test/";
+  Int_t polynom = 1;
   Int_t c = 0;
-  SetCombinations(c);
+  SetCombinations(c, polynom);
 
   // switch effiTPC !!! before !!! SetNameBordelNew
-  effiTPC = kFALSE; // = effi from qaulityonly * sigma^2 (is default)
-  SetNameBordelNew(0, 30, 2010, kTRUE, "RsnOutput.root");
-  AnalyzeSparse(kBlack);
 
   effiTPC = kTRUE;  // = each sigma has own effi
+
+
+  effiTPC = kFALSE;
+  SetNameBordelNew(0, 0, 2010, kTRUE, "RsnOutput.root");
+  AnalyzeSparse(kBlack);
+  //  SetNameBordelNew(0, 40, 2010, kTRUE, "RsnOutput.root");
+  //  AnalyzeSparse(kRed);
   SetNameBordelNew(0, 30, 2010, kTRUE, "RsnOutput.root");
-  AnalyzeSparse(kRed);
+  AnalyzeSparse(kGreen);
+  //  SetNameBordelNew(0, 20, 2010, kTRUE, "RsnOutput.root");
+  //  AnalyzeSparse(kBlue);
+  //  SetNameBordelNew(0, 10, 2010, kTRUE, "RsnOutput.root");
+  //  AnalyzeSparse(kMagenta);
   return;
 
   // SetNameBordelNew(0, 20, 2010, kTRUE, "RsnOutput.root");

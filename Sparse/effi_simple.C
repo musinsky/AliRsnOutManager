@@ -20,7 +20,6 @@ void effi_simple(Int_t dataset = 201401, TString fname = "", Int_t brebin = 2)
   TH1::AddDirectory(kFALSE);
   TH1 *hgen, *htrue, *hres;
   TString tmp(f->GetName());
-  Double_t resVal[100][2];
 
   if (tmp.Contains("RsnOutput")) {   // new datasets
     f->GetObject("Generated", sparse);
@@ -35,27 +34,6 @@ void effi_simple(Int_t dataset = 201401, TString fname = "", Int_t brebin = 2)
 
     hgen->Rebin(rebinFac);   // now 2013-04 and 2013-10 have same binning as 2013-01
     htrue->Rebin(rebinFac);
-
-    f->GetObject("Resolution", sparse);
-    sparse->GetAxis(2)->SetRangeUser(-0.5, 0.5);
-    Double_t step,min,max;
-    for (Int_t i=0;i<(hgen->GetXaxis()->GetNbins()/rebinFac);i++) {
-      min = 0.2*i;
-      max = 0.2*(i+1);
-      sparse->GetAxis(1)->SetRangeUser(min,max);
-      hres = sparse->Projection(0);
-      hres->Fit("gaus","Q","");
-      TF1 *ff = hres->GetListOfFunctions()->FindObject("gaus");
-      // add sigma
-      if (!ff) resVal[i][0]=0.0;
-      else resVal[i][0] = ff->GetParameter(2);
-
-      // add error in sigma
-      if (!ff) resVal[i][1]=0.0;
-      else resVal[i][1] = ff->GetParError(2);
-    }
-    delete hres;
-    delete sparse;
   }
   else {   // old dataset
     TList *list;
@@ -67,7 +45,6 @@ void effi_simple(Int_t dataset = 201401, TString fname = "", Int_t brebin = 2)
     htrue = sparse->Projection(1);
     delete sparse;
   }
-  delete f;
 
   if (brebin == 0) {
     Double_t bbAnders[9] = {0.50, 0.80, 1.00, 1.50, 2.00, 2.50, 3.00, 4.00, 5.00}; // same as binning in Sparse.C
@@ -77,9 +54,34 @@ void effi_simple(Int_t dataset = 201401, TString fname = "", Int_t brebin = 2)
     htrue = htrueR;
   }
   else {
-    hgen->Rebin(rebin);   // now our working binning
-    htrue->Rebin(rebin);
+    hgen->Rebin(brebin);   // now our working binning
+    htrue->Rebin(brebin);
   }
+
+  f->GetObject("Resolution", sparse);
+  sparse->GetAxis(2)->SetRangeUser(-0.5, 0.5);
+  Double_t min, max;
+  Double_t resVal[100][2];
+  for (Int_t i = 1; i < (hgen->GetNbinsX() + 1); i++) {
+    min = hgen->GetBinLowEdge(i);
+    max = hgen->GetBinLowEdge(i) + hgen->GetBinWidth(i);
+    //    Printf("%7f, %7f", min, max);
+    sparse->GetAxis(1)->SetRangeUser(min, max);
+    hres = sparse->Projection(0);
+    hres->Fit("gaus", "Q");
+
+    TF1 *ff = hres->GetListOfFunctions()->FindObject("gaus");
+    // add sigma
+    if (!ff) resVal[i-1][0] = 0.0;
+    else resVal[i-1][0] = ff->GetParameter(2);
+    // add error in sigma
+    if (!ff) resVal[i-1][1] = 0.0;
+    else resVal[i-1][1] = ff->GetParError(2);
+    Printf("%d, %f, %7f +- %7f", i-1, hgen->GetBinCenter(i), resVal[i-1][0], resVal[i-1][1]);
+  }
+  delete hres;
+  delete sparse;
+  delete f;
 
   TFile fout("out.root", "RECREATE");
   fout.cd();
