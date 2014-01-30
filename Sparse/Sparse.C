@@ -43,10 +43,11 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
   //  effiTPC = kFALSE; // common or own TPC effi
   //  mixing  = kFALSE;
   norm[0] = 1.045;  // where is norm signal and background
-  norm[1] = 1.065;
+  norm[1] = 1.055;
   fmin    = 0.995;  // where is fit
   // fmax    = 1.185;
   fmax    = 1.065;
+  fmax    = 1.055;
 
   bcmin=1.010; // bin count range
   bcmax=1.030;
@@ -237,6 +238,12 @@ void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
 
     eff_prefix="EFFI_20131015_00_DEFAULT/effi_";
 
+  } else if (rsn_data == 20140125) {
+    const char *suf[13] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
+                           "DCAXY6S", "DCAZ01", "DCAZ05", "DCAZ10", "DCAZ15",
+                           "NCLSTTPC50", "NCLSTTPC80", "NCLSTTPC85", "NCLSTTPC90"};
+    sufNameCurrent=suf[fsuf];
+    eff_prefix="EFFI_20140125_00_DEFAULT/effi_";
   } else {
     Printf("Wrong input Rsn data !!!");
     return;
@@ -297,6 +304,9 @@ void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
     
   } else if (rsn_data == 20130106) {
     fname = Form("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC11a/ESD_pass4_without_SDD/RSN_20130106/All/%s/%s/%s/%s", tmp_10or11, suf[fsuf],
+		 tmp_qc, my_fname);
+  } else if (rsn_data == 20140125) {
+    fname = Form("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC11a/ESD_pass4_without_SDD/RSN_20140125/Merged/All/%s/%s/%s/%s", tmp_10or11, suf[fsuf],
 		 tmp_qc, my_fname);
   }
 

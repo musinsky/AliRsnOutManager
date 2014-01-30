@@ -1,10 +1,12 @@
-void effi_simple(Int_t dataset = 201310, TString fname = "")
+void effi_simple(Int_t dataset = 201401, TString fname = "")
 {
   TFile::SetCacheFileDir(gSystem->HomeDirectory());
   TFile *f = 0;
   if (fname.IsNull()) {
     if (dataset == 201310)
       f = TFile::Open("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC12f1a/ESD/RSN_20131015/Merged/All/STD2010/00_DEFAULT/qualityonly/RsnOutput.root", "CACHEREAD");
+    if (dataset == 201401)
+      f = TFile::Open("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC12f1a/ESD/RSN_20140125/Merged/All/STD2010/00_DEFAULT/qualityonly/RsnOutput.root", "CACHEREAD");
     if (dataset == 201304)
       f = TFile::Open("root://eos.saske.sk//eos/saske.sk/alice/rsn/PHIKK/LHC12f1a/ESD/RSN_20130411/All/STD2010/00_DEFAULT/qualityonly/RsnOutput.root", "CACHEREAD");
     if (dataset == 201301)
