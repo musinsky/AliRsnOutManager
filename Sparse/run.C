@@ -5,6 +5,7 @@ void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
   gROOT->ProcessLine(TString::Format(".L %s/Sparse.C",path_Sparse_macro).Data());
 
   rsn_data = 20131015;
+  rsn_data = 20140125;
   //  rsn_data = 20130106;
   Int_t year=2010;
   // year=2011;
@@ -14,8 +15,11 @@ void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
   // del_step = 2.50;
   mixing = kTRUE;
   // del_step = 0.50; // Viktor
+  binAnders = kTRUE;
+
   isVoig = kTRUE;
   isBinCounting = kTRUE;
+
 
   // use Own Eff
   // effiTPC = kTRUE;

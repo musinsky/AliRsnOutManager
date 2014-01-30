@@ -476,7 +476,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
     eff_prefix="EFFI_";
     eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
   }
-  if (binAnders) eff_prefix += "ANDERS_";
+  // if (binAnders) eff_prefix += "ANDERS_";
   // graphee_name=TString::Format("PhiNsigma_qualityonly_STD2010_PRIMARY_%s",sufNameCurrent.Data()).Data();
   Printf(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());
   TGraphErrors *geff = new TGraphErrors(TString::Format("%s%s", eff_prefix.Data(),graphee_name.Data()).Data());

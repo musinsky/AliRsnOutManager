@@ -1,4 +1,4 @@
-void effi_simple(Int_t dataset = 201401, TString fname = "", Bool_t bAnders = kFALSE)
+void effi_simple(Int_t dataset = 201401, TString fname = "", Int_t brebin = 2)
 {
   TFile::SetCacheFileDir(gSystem->HomeDirectory());
   TFile *f = 0;
@@ -69,7 +69,7 @@ void effi_simple(Int_t dataset = 201401, TString fname = "", Bool_t bAnders = kF
   }
   delete f;
 
-  if (bAnders) {
+  if (brebin == 0) {
     Double_t bbAnders[9] = {0.50, 0.80, 1.00, 1.50, 2.00, 2.50, 3.00, 4.00, 5.00}; // same as binning in Sparse.C
     TH1 *hgenR = (TH1 *)hgen->Rebin(8, "hgenR", bbAnders);
     TH1 *htrueR = (TH1 *)htrue->Rebin(8, "htrueR", bbAnders);
@@ -77,8 +77,8 @@ void effi_simple(Int_t dataset = 201401, TString fname = "", Bool_t bAnders = kF
     htrue = htrueR;
   }
   else {
-    hgen->Rebin();   // now our working binning
-    htrue->Rebin();
+    hgen->Rebin(rebin);   // now our working binning
+    htrue->Rebin(rebin);
   }
 
   TFile fout("out.root", "RECREATE");

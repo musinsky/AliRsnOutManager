@@ -1,4 +1,4 @@
-void effi_simple_20140125(Bool_t binAnders = kFALSE)
+void effi_simple_20140125(Int_t rebin = 2)
 {
   gROOT->LoadMacro("effi_simple.C");
 
@@ -16,7 +16,7 @@ void effi_simple_20140125(Bool_t binAnders = kFALSE)
   for (Int_t iCut = 0; iCut< cuts->GetEntries();iCut++) {
     cutName = ((TObjString *)cuts->At(iCut))->GetString();
     efile_base = TString::Format("effi_PhiNsigma_%s_STD2010_PRIMARY_",cutName.Data());
-    if (binAnders) efile_base = TString::Format("effi_ANDERS_PhiNsigma_%s_STD2010_PRIMARY_",cutName.Data());
+    // if (rebin == 0) efile_base = TString::Format("effi_ANDERS_PhiNsigma_%s_STD2010_PRIMARY_",cutName.Data());
     for (Int_t i = 0; i < 1; i++) {
       fname = fname_base + suf[i] + "/" + cutName + "/RsnOutput.root";
       Printf("Doing %s ...",fname.Data());
@@ -26,7 +26,7 @@ void effi_simple_20140125(Bool_t binAnders = kFALSE)
       //    Printf("%s", edir.Data());
       //    Printf("%s", efile.Data());
 
-      effi_simple(201401, fname, binAnders);
+      effi_simple(201401, fname, rebin);
 
       gSystem->mkdir(edir.Data(), 1);
       gSystem->Exec(TString::Format("mv %s %s/%s", "out.effi",
