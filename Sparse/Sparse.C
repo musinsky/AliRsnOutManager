@@ -17,6 +17,7 @@ Double_t fmin = 0.995;
 Double_t fmax = 1.185;
 Double_t bcmin=1.010;
 Double_t bcmax=1.030;
+Bool_t landscape = kTRUE;
 
 Double_t fipm = 3.0;
 Int_t combi = 0;
@@ -109,7 +110,7 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
   }
   if (c == 8) {
     isVoig = kFALSE
-    combi   = c;
+        combi   = c;
   }
   if (c == 9) {
     effiTPC = kTRUE;    
@@ -487,14 +488,39 @@ void AnalyzeSparse(Color_t lcolor = -1)
   gStyle->SetOptFit();
   TCanvas *c = new TCanvas();
   c->SetTitle(graph_name.Data());
-  c->Divide(6, 4, 0.0005, 0.0005); c->Modified(); c->Draw();
-  // c->Divide(3, 3, 0.0005, 0.0005); c->Modified(); c->Draw();
+  Int_t ncx, ncy, cdc;
+  if (landscape) {
+    ncx = 4;
+    ncy = 2;
+  }
+  else {
+    c->SetWindowSize(c->GetWh(), c->GetWw());
+    ncx = 2;
+    ncy = 4;
+  }
+  c->Divide(ncx, ncy, 0.0005, 0.0005);
+  c->Modified();
+  c->Update();
+  c->Draw();
+
   TCanvas *c2 = (TCanvas *)c->DrawClone("c2");
-  c2->Modified(); c2->Draw();
+  c2->Modified();
+  c2->Update();
+  c2->Draw();
   TCanvas *c3, *c4;
 
+
   for (Int_t i = 0; i < nn; i++) {
-    c->cd(count + 1)->SetGrid();
+    cdc = (count%(ncx*ncy)) + 1;
+    if ((cdc == 1) && count > 1) {
+      c->SaveAs(Form("%s_%02d_a_%02d_%02d.pdf", graph_name.Data(), combi, nn, count));
+      c->Clear("D");
+      c->Modified();
+      c->Update();
+    }
+    c->cd(cdc)->SetGrid();
+    //    c->cd(count + 1)->SetGrid();
+
     if (l)
       h1 = (TH1D *)PullHisto(l, s1name.Data(), bf[i], bl[i], ptmean, bwidth[i]);
     else
@@ -554,7 +580,15 @@ void AnalyzeSparse(Color_t lcolor = -1)
     h3_p->SetLineColor(kBlue);
     h3_p->Draw("hist, same");
 
-    c2->cd(count + 1)->SetGrid();
+    if ((cdc == 1) && count > 1) {
+      c2->SaveAs(Form("%s_%02d_b_%02d_%02d.pdf", graph_name.Data(),combi, nn, count));
+      c2->Clear("D");
+      c2->Modified();
+      c2->Update();
+    }
+    c2->cd(cdc)->SetGrid();
+    //    c2->cd(count + 1)->SetGrid();
+
     TH1 *hh = (TH1 *)h1->Clone("hh");
     hh->SetLineColor(kRed+1);
     hh->Add(h3_p, -1);
@@ -628,7 +662,8 @@ void AnalyzeSparse(Color_t lcolor = -1)
     Double_t fmini = myMass-fipm*0.004;
     Double_t fmaxi = myMass+fipm*0.004;
     hh->Fit(ff, "Q", "", fmin, fmax);
-    hh->Fit(ff, "", "", fmin, fmax);
+    hh->Fit(ff, "Q", "", fmin, fmax);
+    hh->Fit(ff, "Q", "", fmin, fmax);
     //     fitStatus = hh->Fit(ff, "Q", "", fmin, fmax);
     //    TFitResultPtr r = hh->Fit(ff, "Q", "", fmin, fmax);
     TFitResultPtr r = hh->Fit(ff, "QS", "", fmin, fmax);
@@ -774,8 +809,10 @@ void AnalyzeSparse(Color_t lcolor = -1)
   lname.ReplaceAll(TString::Format("RsnHistMini_Phi_PhiNsigma%s",mv_colon.Data()).Data(),"");
 
   // save peaks pictures
-  c->SaveAs(Form("%s_%02d_a.pdf", graph_name.Data(),combi));
-  c2->SaveAs(Form("%s_%02d_b.pdf", graph_name.Data(),combi));
+  c->SaveAs(Form("%s_%02d_a_%02d_%02d.pdf", graph_name.Data(), combi, nn, count));
+  //c->SaveAs(Form("%s_%02d_a.pdf", graph_name.Data(),combi));
+  c2->SaveAs(Form("%s_%02d_b_%02d_%02d.pdf", graph_name.Data(),combi, nn, count));
+  //c2->SaveAs(Form("%s_%02d_b.pdf", graph_name.Data(),combi));
 
   TGraphErrors *gr_raw = new TGraphErrors(count, grx, gry, grxE, gryE);
   G2F(gr_raw, TString::Format("pt_%s", "R"), TString::Format("%s_%02d", lname.Data(), combi));
