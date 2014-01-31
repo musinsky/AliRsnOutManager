@@ -90,49 +90,41 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
   if (c == 5) {
     norm[0] = norm[0];
     norm[1] = norm[1];
-    fmin    = fmin - 0.002;
-    fmax    = fmax + 0.002;
+    fmin    = fmin + 0.001;
+    fmax    = fmax - 0.001;
     fipm    = 3.0;
     combi   = c;
   }
   if (c == 6) {
-    norm[0] = norm[0] - 0.01;
-    norm[1] = norm[1] + 0.01;
-    fmin    = fmin - 0.005;
-    fmax    = fmax + 0.005;
-    fipm    = 4.0;
+    norm[0] = norm[0] + 0.01;
+    norm[1] = norm[1] - 0.01;
+    fmin    = fmin;
+    fmax    = fmax;
+    fipm    = 3.0;
     combi   = c;
   }
   if (c == 7) {
-    norm[0] = norm[0] - 0.01;
-    norm[1] = norm[1] + 0.01;
-    fmin    = fmin;
-    fmax    = fmax;
-    fipm    = 4.0;
+    isBinCounting = kFALSE;
     combi   = c;
   }
   if (c == 8) {
-    norm[0] = 0.995;
-    norm[1] = 1.005;
-    fmin    = fmin - 0.005;
-    fmax    = fmax + 0.005;
-    fipm    = 4.0;
+    isVoig = kFALSE
     combi   = c;
   }
   if (c == 9) {
-    norm[0] = norm[0] - 0.01;
-    norm[1] = norm[1] + 0.01;
-    fmin    = fmin - 0.001;
-    fmax    = fmax + 0.001;
-    fipm    = 4.0;
+    effiTPC = kTRUE;    
     combi   = c;
   }
   if (c == 10) {
-    norm[0] = norm[0];
-    norm[1] = norm[1];
-    fmin    = fmin - 0.002;
-    fmax    = fmax + 0.002;
-    fipm    = 4.0;
+    polynom = 2;
+    combi   = c;
+  }
+  if (c == 11) {
+    polynom = 3;
+    combi   = c;
+  }
+  if (c == 12) {
+    mixing = kFALSE;
     combi   = c;
   }
 }
@@ -782,8 +774,8 @@ void AnalyzeSparse(Color_t lcolor = -1)
   lname.ReplaceAll(TString::Format("RsnHistMini_Phi_PhiNsigma%s",mv_colon.Data()).Data(),"");
 
   // save peaks pictures
-  c->SaveAs(Form("%s_a.pdf", graph_name.Data()));
-  c2->SaveAs(Form("%s_b.pdf", graph_name.Data()));
+  c->SaveAs(Form("%s_%02d_a.pdf", graph_name.Data(),combi));
+  c2->SaveAs(Form("%s_%02d_b.pdf", graph_name.Data(),combi));
 
   TGraphErrors *gr_raw = new TGraphErrors(count, grx, gry, grxE, gryE);
   G2F(gr_raw, TString::Format("pt_%s", "R"), TString::Format("%s_%02d", lname.Data(), combi));

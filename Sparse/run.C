@@ -14,38 +14,41 @@ void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
   del_step = 0.20;
   // del_step = 2.50;
   mixing = kTRUE;
-  // del_step = 0.50; // Viktor
-  binAnders = kTRUE;
-
+  del_step = 0.50; // Viktor
+  // binAnders = kTRUE;
+  if (binAnders) del_step = 0.1;
   isVoig = kTRUE;
   isBinCounting = kTRUE;
-
 
   // use Own Eff
   // effiTPC = kTRUE;
 
-  g2f_prefix="tmp/";
 
   Int_t polynom = 1;
-  polynom = 2;
+  // polynom = 2;
 
   SetCombinations(c,polynom);
 
+  g2f_prefix=TString::Format("%d_%.2f/",rsn_data,del_step).Data();
+
+
   // SetNameBordelNew(id,  0, year, kTRUE, "RsnOutput.root");
-  // // eff_prefix = path_Sparse_macro;
-  // // eff_prefix += "/EFFI_20131015_";
-  // // eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
+  // // // eff_prefix = path_Sparse_macro;
+  // // // eff_prefix += "/EFFI_20131015_";
+  // // // eff_prefix+=TString::Format("%s/effi_",sufNameCurrent.Data()).Data();
 
   // AnalyzeSparse(kBlack);
-  SetNameBordelNew(id, 10, year, kTRUE, "RsnOutput.root");
-  AnalyzeSparse(kRed);
-  SetNameBordelNew(id, 20, year, kTRUE, "RsnOutput.root");
-  AnalyzeSparse(kGreen);
+  // SetNameBordelNew(id, 10, year, kTRUE, "RsnOutput.root");
+  // AnalyzeSparse(kRed);
+  // SetNameBordelNew(id, 20, year, kTRUE, "RsnOutput.root");
+  // AnalyzeSparse(kGreen);
   SetNameBordelNew(id, 30, year, kTRUE, "RsnOutput.root");
   AnalyzeSparse(kBlue);
-  SetNameBordelNew(id, 40, year, kTRUE, "RsnOutput.root");
-  AnalyzeSparse(kMagenta);
+  // SetNameBordelNew(id, 40, year, kTRUE, "RsnOutput.root");
+  // AnalyzeSparse(kMagenta);
   
+  gSystem->Exec(TString::Format("mv *.pdf %s/",g2f_prefix.Data()).Data());
+
   return ;
 
   if (!out_path.IsNull()) {
