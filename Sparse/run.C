@@ -14,8 +14,8 @@ void run(Int_t id = 0, Int_t id_to = 0, Int_t c = 0,
   del_step = 0.20;
   // del_step = 2.50;
   mixing = kTRUE;
-  del_step = 0.50; // Viktor
-  // binAnders = kTRUE;
+  // del_step = 0.50; // Viktor
+  binAnders = kTRUE;
   if (binAnders) del_step = 0.1;
   isVoig = kTRUE;
   isBinCounting = kTRUE;

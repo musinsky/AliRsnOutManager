@@ -83,24 +83,24 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
   if (c == 4) {
     norm[0] = norm[0];
     norm[1] = norm[1];
-    fmin    = fmin - 0.001;
-    fmax    = fmax + 0.001;
+    fmin    = fmin - 0.01;
+    fmax    = fmax + 0.01;
     fipm    = 3.0;
     combi   = c;
   }
   if (c == 5) {
     norm[0] = norm[0];
     norm[1] = norm[1];
-    fmin    = fmin + 0.001;
-    fmax    = fmax - 0.001;
+    fmin    = fmin + 0.005;
+    fmax    = fmax - 0.005;
     fipm    = 3.0;
     combi   = c;
   }
   if (c == 6) {
-    norm[0] = norm[0] + 0.01;
-    norm[1] = norm[1] - 0.01;
-    fmin    = fmin;
-    fmax    = fmax;
+    norm[0] = norm[0];
+    norm[1] = norm[1];
+    fmin    = fmin + 0.01;
+    fmax    = fmax - 0.005;
     fipm    = 3.0;
     combi   = c;
   }
