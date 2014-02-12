@@ -1,4 +1,4 @@
-void effi_simple(Int_t dataset = 201401, TString fname = "", Int_t brebin = 2)
+void effi_simple(Int_t dataset = 201401, TString fname = "", Int_t brebin = 2, Bool_t takeDafaultBinning=kFALSE)
 {
   TFile::SetCacheFileDir(gSystem->HomeDirectory());
   TFile *f = 0;
@@ -31,9 +31,10 @@ void effi_simple(Int_t dataset = 201401, TString fname = "", Int_t brebin = 2)
     htrue = sparse->Projection(1);
     delete sparse;
     Int_t rebinFac=2;
-
-    hgen->Rebin(rebinFac);   // now 2013-04 and 2013-10 have same binning as 2013-01
-    htrue->Rebin(rebinFac);
+    if (takeDafaultBinning) {
+      hgen->Rebin(rebinFac);   // now 2013-04 and 2013-10 have same binning as 2013-01
+      htrue->Rebin(rebinFac);
+    }
   }
   else {   // old dataset
     TList *list;
@@ -47,11 +48,25 @@ void effi_simple(Int_t dataset = 201401, TString fname = "", Int_t brebin = 2)
   }
 
   if (brebin == 0) {
-    Double_t bbAnders[9] = {0.50, 0.80, 1.00, 1.50, 2.00, 2.50, 3.00, 4.00, 5.00}; // same as binning in Sparse.C
-    TH1 *hgenR = (TH1 *)hgen->Rebin(8, "hgenR", bbAnders);
-    TH1 *htrueR = (TH1 *)htrue->Rebin(8, "htrueR", bbAnders);
-    hgen = hgenR;
-    htrue = htrueR;
+    if (!takeDafaultBinning) {
+      hgen->Print("all");
+      // Double_t bbAnders[19] = {0.2, 0.35, 0.50, 0.65, 0.80, 0.90, 1.00, 1.25, 1.50, 1.75, 2.00, 2.25, 2.50, 2.75, 3.00, 3.50, 4.00, 4.50, 5.00}; // same as binning in Sparse.C
+      // TH1 *hgenR = (TH1 *)hgen->Rebin(18, "hgenR", bbAnders);
+      // TH1 *htrueR = (TH1 *)htrue->Rebin(18, "htrueR", bbAnders);
+      // hgen = hgenR;
+      // htrue = htrueR;
+      Double_t bbAnders[21] = {0.4, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00, 1.10, 1.20, 1.30, 1.50, 1.75, 2.00, 2.25, 2.50, 2.75, 3.00, 3.50, 4.00, 4.50, 5.00}; // same as binning in Sparse.C
+      TH1 *hgenR = (TH1 *)hgen->Rebin(20, "hgenR", bbAnders);
+      TH1 *htrueR = (TH1 *)htrue->Rebin(20, "htrueR", bbAnders);
+      hgen = hgenR;
+      htrue = htrueR;
+    } else {
+      Double_t bbAnders[9] = {0.50, 0.80, 1.00, 1.50, 2.00, 2.50, 3.00, 4.00, 5.00}; // same as binning in Sparse.C
+      TH1 *hgenR = (TH1 *)hgen->Rebin(8, "hgenR", bbAnders);
+      TH1 *htrueR = (TH1 *)htrue->Rebin(8, "htrueR", bbAnders);
+      hgen = hgenR;
+      htrue = htrueR;      
+    }
   }
   else {
     hgen->Rebin(brebin);   // now our working binning
@@ -61,7 +76,7 @@ void effi_simple(Int_t dataset = 201401, TString fname = "", Int_t brebin = 2)
   f->GetObject("Resolution", sparse);
   sparse->GetAxis(2)->SetRangeUser(-0.5, 0.5);
   Double_t min, max;
-  Double_t resVal[100][2];
+  Double_t resVal[999][2];
   for (Int_t i = 1; i < (hgen->GetNbinsX() + 1); i++) {
     min = hgen->GetBinLowEdge(i);
     max = hgen->GetBinLowEdge(i) + hgen->GetBinWidth(i);
@@ -85,6 +100,8 @@ void effi_simple(Int_t dataset = 201401, TString fname = "", Int_t brebin = 2)
 
   TFile fout("out.root", "RECREATE");
   fout.cd();
+  hgen->Print("all");
+  htrue->Print("all");
   hgen->Write("hgen");
   htrue->Write("htrue");
   fout.Close();

@@ -3,6 +3,7 @@ Int_t rsn_data   = 20130106; // 20130411
 TString mv_colon = "_";      // ":";
 Bool_t effiTPC = kFALSE;
 Bool_t binAnders = kFALSE;
+Int_t binAndersIdx = 0;
 Bool_t useCF = kFALSE;
 Bool_t mixing  = kFALSE;
 Bool_t noSigma = kFALSE;
@@ -18,7 +19,7 @@ Double_t fmax = 1.185;
 Double_t bcmin=1.010;
 Double_t bcmax=1.030;
 Bool_t landscape = kTRUE;
-
+Int_t year=2010;
 Double_t fipm = 3.0;
 Int_t combi = 0;
 Double_t export_bin[999] = {0};
@@ -49,6 +50,7 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
   // fmax    = 1.185;
   fmax    = 1.065;
   fmax    = 1.055;
+//  fmax    = 1.12;
 
   bcmin=1.010; // bin count range
   bcmax=1.030;
@@ -99,8 +101,8 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
   if (c == 6) {
     norm[0] = norm[0];
     norm[1] = norm[1];
-    fmin    = fmin + 0.01;
-    fmax    = fmax - 0.005;
+    fmin    = fmin + 0.005;
+    fmax    = fmax + 0.005;
     fipm    = 3.0;
     combi   = c;
   }
@@ -128,6 +130,24 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
     mixing = kFALSE;
     combi   = c;
   }
+  if (c == 13) {
+    norm[0] = norm[0];
+    norm[1] = norm[1];
+    fmin    = fmin - 0.005;
+    fmax    = fmax - 0.005;
+    fipm    = 3.0;
+    combi   = c;
+  }
+  if (c == 14) {
+    norm[0] = norm[0];
+    norm[1] = norm[1];
+    fmin    = fmin - 0.01;
+    fmax    = fmax - 0.01;
+    fipm    = 3.0;
+    combi   = c;
+  }
+
+
 }
 
 void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
@@ -219,9 +239,9 @@ void SetNameBordelNew(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
                       const char *my_fname="AnalysisResults.root")
 {
   if (rsn_data == 20131015) {
-    const char *suf[13] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
+    const char *suf[17] = {"00_DEFAULT", "CHI2ITS100", "CHI2TPC06", "DCAXY5S",
       "DCAXY6S", "DCAZ01", "DCAZ05", "DCAZ10", "DCAZ15",
-      "NCLSTTPC50", "NCLSTTPC80", "NCLSTTPC85", "NCLSTTPC90"};
+      "NCLSTTPC50", "NCLSTTPC80", "NCLSTTPC85", "NCLSTTPC90", "NCROWTPC50", "NCROWTPC70", "NCROWTPC80", "NCROWTPC90" };
     sufNameCurrent=suf[fsuf];
     eff_prefix="EFFI_20131015_00_DEFAULT/effi_";
   } else if (rsn_data == 20130106) {
@@ -446,17 +466,80 @@ void AnalyzeSparse(Color_t lcolor = -1)
   Bool_t binhaluska = kFALSE;
   //  binhaluska = kTRUE;
   if (binAnders) {
-    nn = 8;
     //    bf[0] = 6;bf[1] =  9;bf[2] = 11;bf[3] = 16;bf[4] = 21;bf[5] = 26;
     //    bl[0] = 8;bl[1] = 10;bl[2] = 15;bl[3] = 20;bl[4] = 25;bl[5] = 30;
     //    bf[6] = 31;bf[7] = 41;
     //    bl[6] = 40;bl[7] = 50;
 
-    bf[0] = 11;bf[1] = 17;bf[2] = 21;bf[3] = 31;bf[4] = 41;bf[5] = 51; // 20140125
-    bl[0] = 16;bl[1] = 20;bl[2] = 30;bl[3] = 40;bl[4] = 50;bl[5] = 60;
-    bf[6] = 61;bf[7] = 81;
-    bl[6] = 80;bl[7] = 100;
+    // bf[0] = 11;bf[1] = 17;bf[2] = 21;bf[3] = 31;bf[4] = 41;bf[5] = 51; // 20140125
+    // bl[0] = 16;bl[1] = 20;bl[2] = 30;bl[3] = 40;bl[4] = 50;bl[5] = 60;
+    // bf[6] = 61;bf[7] = 81;
+    // bl[6] = 80;bl[7] = 100;
 
+    
+    if (binAndersIdx == 2) {
+      // new Anders binning rebin2
+      nn = 18;
+      Int_t idx=0;
+      bf[idx] = 5; bl[idx++] = 7;
+      bf[idx] = 8; bl[idx++] = 10;
+      bf[idx] = 11; bl[idx++] = 13;
+      bf[idx] = 14; bl[idx++] = 16;
+      bf[idx] = 17; bl[idx++] = 18;
+      bf[idx] = 19; bl[idx++] = 20;
+      bf[idx] = 21; bl[idx++] = 25;
+      bf[idx] = 26; bl[idx++] = 30;
+      bf[idx] = 31; bl[idx++] = 35;
+      bf[idx] = 36; bl[idx++] = 40;
+      bf[idx] = 41; bl[idx++] = 45;
+      bf[idx] = 46; bl[idx++] = 50;
+      bf[idx] = 51; bl[idx++] = 55;
+      bf[idx] = 56; bl[idx++] = 60;
+      bf[idx] = 61; bl[idx++] = 70;
+      bf[idx] = 71; bl[idx++] = 80;
+      bf[idx] = 81; bl[idx++] = 90;
+      bf[idx] = 91; bl[idx++] = 100;
+
+    } if (binAndersIdx == 3) {
+      // new Anders binning rebin3
+      // nn = 18;
+      Int_t idx=0;
+      bf[idx] = 9; bl[idx++] = 10;
+      bf[idx] = 11; bl[idx++] = 12;
+      bf[idx] = 13; bl[idx++] = 14;
+      bf[idx] = 15; bl[idx++] = 16;
+      bf[idx] = 17; bl[idx++] = 18;
+      bf[idx] = 19; bl[idx++] = 20;
+      bf[idx] = 21; bl[idx++] = 22;
+      bf[idx] = 23; bl[idx++] = 24;
+      bf[idx] = 25; bl[idx++] = 26;
+      // bf[idx] = 27; bl[idx++] = 28;
+      // bf[idx] = 29; bl[idx++] = 30;
+      bf[idx] = 27; bl[idx++] = 30;
+      
+      bf[idx] = 31; bl[idx++] = 35;
+      bf[idx] = 36; bl[idx++] = 40;
+      bf[idx] = 41; bl[idx++] = 45;
+      bf[idx] = 46; bl[idx++] = 50;
+      bf[idx] = 51; bl[idx++] = 55;
+      bf[idx] = 56; bl[idx++] = 60;
+
+      bf[idx] = 61; bl[idx++] = 70;
+      bf[idx] = 71; bl[idx++] = 80;
+      bf[idx] = 81; bl[idx++] = 90;
+      bf[idx] = 91; bl[idx++] = 100;
+
+      nn = idx;
+    } else {
+      // new Anders
+      nn = 9;
+      bf[0] = 5;
+      bl[0] = 10;
+      bf[1] = 11;bf[2] = 17;bf[3] = 21;bf[4] = 31;bf[5] = 41;bf[6] = 51; // 20140125
+      bl[1] = 16;bl[2] = 20;bl[3] = 30;bl[4] = 40;bl[5] = 50;bl[6] = 60;
+      bf[7] = 61;bf[8] = 81;
+      bl[7] = 80;bl[8] = 100;      
+    }
   }
 
   if (effiTPC) {
@@ -532,6 +615,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
     h1->GetXaxis()->SetLabelSize(0.05);
     h1->GetYaxis()->SetLabelSize(0.05);
     h1->GetYaxis()->SetNdivisions(409);
+    //h1->SetMaximum(10000);
     h1->Draw("hist");
 
     if (!mixing) {
@@ -573,7 +657,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
                                     ptmean, bwidth[i]);
       h3_p->Add(h3_m);
     }
-
+    h3_p = h3_m;
     Norm(h1, h3_p, norm[0], norm[1]);
     if (h3_p->Integral() != h3_p->Integral()) // isnan
       h3_p->Reset();
@@ -592,6 +676,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
     TH1 *hh = (TH1 *)h1->Clone("hh");
     hh->SetLineColor(kRed+1);
     hh->Add(h3_p, -1);
+    //hh->SetMaximum(7000);
     hh->Draw("hist");
     //    hh->GetXaxis()->SetRangeUser(0.995, 1.095);
 
@@ -626,7 +711,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
     //    ff = new TF1("ff", fun_s_pol2, 0.9, 1.2, 6); polynom = 2;
     //    ff = new TF1("ff", fun_s_pol1, 0.9, 1.2, 5); polynom = 1;
 
-    ff->SetParameters(10.0, 1.02, 0.004, 0., 700., -700., 0., 0.);
+    ff->SetParameters(10.0, 1.02, 0.004, 0., 70., -70., 0., 0.);
     //  if (noSigma) ff->SetParameters(200.0, 1.02, 0.004, 0., 0., 0., 0., 0.);
     //  ff->SetLineColor(hh->GetLineColor()-3);
     ff->SetLineColor(kGreen-3);
@@ -666,7 +751,12 @@ void AnalyzeSparse(Color_t lcolor = -1)
     hh->Fit(ff, "Q", "", fmin, fmax);
     //     fitStatus = hh->Fit(ff, "Q", "", fmin, fmax);
     //    TFitResultPtr r = hh->Fit(ff, "Q", "", fmin, fmax);
-    TFitResultPtr r = hh->Fit(ff, "QS", "", fmin, fmax);
+    TString myOptMvala="Q";
+    //if (i>0) myOptMvala="QS";
+    if (ptmean>0.20) myOptMvala="QS";
+    //myOptMvala="Q";
+    Printf("FIT opt=%s",myOptMvala.Data());
+    TFitResultPtr r = hh->Fit(ff, myOptMvala.Data(), "", fmin, fmax);
     fitStatus=0;
     // if (ff->GetParameter(1)!=TMath::Range(fmini, fmaxi, ff->GetParameter(1))) {
     //   // peak is around 1.02
@@ -1111,7 +1201,7 @@ TH1 *PullHistoNew(const TFile *file, const char *name, Int_t min, Int_t max,
   // !!!!!!!!!!!!!!!!!!!!
   //  Printf("binwidth = %.5f", bw);
   delete hs;
-  return hfin;//->Rebin();
+  return hfin;//->Rebin(3);
 }
 
 
@@ -1130,7 +1220,8 @@ Int_t FindExactRange(const TH1 *h, Double_t step, Int_t *fb, Int_t *lb)
   Int_t count = 0;
   // !!!!!!!!!!!!!!!!!!!!
   Double_t maxp = 3.4; // maxp = 5.0 => 24 intervarls
-  maxp=5.0;
+  maxp=4.6;
+  // maxp=3.0;
   for (Int_t i = 1; i <= h->GetNbinsX(); i+=bin_step) {
     //     if (i<20) continue;
     fb[count] = i;
@@ -1320,10 +1411,11 @@ Double_t CalculateYield(Double_t &err, Double_t min, Double_t max, TH1*hSig, TF1
 
   if(min < max) {
     histVal = hSig->IntegralAndError(hSig->FindBin(min),hSig->FindBin(max), histErr);
-    //     Printf("aaa %f %f",histVal,histErr);
+//    Printf("aaa %f %f",histVal,histErr);
 
     if (fitBg) {
       bgVal = fitBg->Integral(min, max)/histWidth;
+//      Printf("bb %f %f",bgVal,histErr);
       //       if (rFitSigBg) bgErr = fitBg->IntegralError(min, max)/histWidth;
       bgErr = histErr;
       histVal -= bgVal;
