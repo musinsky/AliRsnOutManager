@@ -730,12 +730,27 @@ void AnalyzeSparse(Color_t lcolor = -1)
     hh->Draw("hist");
     //    hh->GetXaxis()->SetRangeUser(0.995, 1.095);
 
-    FITUJ(hh, geff_res->GetY()[i]);
-    c2->Modified();
-    c2->Update();
-    count++;
-    if (count > 7) break;
-    continue;
+
+    Double_t *rrr = FITUJ(hh, geff_res->GetY()[i]);
+    if (!rrr) {
+      Printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      rrr = new Double_t[6];
+      rrr[0] = 0.0; rrr[1] = 0.0; rrr[2] = 0.0; rrr[3] = 0.0; rrr[4] = 0.0; rrr[5] = 0.0;
+    }
+    gry[count]       = rrr[0];
+    gryE[count]      = rrr[1];
+    gr_mass[count]   = rrr[2];
+    gr_massE[count]  = rrr[3];
+    gr_width[count]  = rrr[4];
+    gr_widthE[count] = rrr[5];
+    delete [] rrr;
+    grx[count]  = ptmean;
+    grxE[count] = (bwidth[i]/2.0);
+
+
+    // !!!!!!!!!!!!!!!!!!
+    // FITUJ
+    /*
 
 
     // !!!!!!!!!!!!!!!!!!
@@ -922,6 +937,15 @@ void AnalyzeSparse(Color_t lcolor = -1)
     //     gryE[count] = TMath::Sqrt(gry[count]); // !!!!!!!!!!!!!!!!
     gryE[count] = valueError; // !!!!!!!!!!!!!!!!
 
+     */
+    // FITUJ
+    // !!!!!!!!!!!!!!!!!!
+
+
+    Double_t myMass = 1.019445;
+    Double_t fmini = myMass-fipm*0.004;
+    Double_t fmaxi = myMass+fipm*0.004;
+    value = gry[count];
 
 
     // Signal, Background
@@ -1559,7 +1583,6 @@ Double_t *FITUJ(const TH1 *histo, Double_t vres) const
 
   // set parameters
   Double_t p0p = histo->Integral(histo->FindBin(fmin), histo->FindBin(fmax))*histo->GetBinWidth(histo->FindBin(fmin));
-  Printf("p0 estimate = %f", p0p);
   func1->SetParameters(p0p, phi_mass, phi_width, 0.001, pol1r->GetParameter(0), pol1r->GetParameter(1));
   func2->SetParameters(p0p, phi_mass, phi_width, 0.001, pol2r->GetParameter(0), pol2r->GetParameter(1),
                        pol2r->GetParameter(2));
@@ -1629,7 +1652,7 @@ Double_t *FITUJ(const TH1 *histo, Double_t vres) const
   Option_t *opt = "Q";
   histo->Fit(func_best, opt, "", fstart, fstop);
   // if (ptmean > 0.20) opt = "QS";
-  opt = "QS";
+  opt = "Q"; // "S" is important (slow) only for CalculateYield (not for Fit)
   Printf("final fit option = %s", opt);
   TFitResultPtr frp = histo->Fit(func_best, opt, "", fstart, fstop);
 
@@ -1663,6 +1686,16 @@ Double_t *FITUJ(const TH1 *histo, Double_t vres) const
   results[3] = func_best->GetParError(1);
   results[4] = func_best->GetParameter(2); // width
   results[5] = func_best->GetParError(2);
+
+  // checking mass, width
+  if ((TMath::Abs(results[2] - phi_mass)/phi_mass) > 0.001) {
+    results[2] = 0.0;
+    results[3] = 0.0;
+  }
+  if ((results[2] < 0.1) || ((TMath::Abs(results[4] - phi_width)) > phi_width)) {
+    results[4] = 0.0;
+    results[5] = 0.0;
+  }
 
   return results;
 }
