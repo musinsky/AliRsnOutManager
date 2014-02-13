@@ -55,9 +55,14 @@ void effi_simple(Int_t dataset = 201401, TString fname = "", Int_t brebin = 2, B
       // TH1 *htrueR = (TH1 *)htrue->Rebin(18, "htrueR", bbAnders);
       // hgen = hgenR;
       // htrue = htrueR;
-      Double_t bbAnders[21] = {0.4, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00, 1.10, 1.20, 1.30, 1.50, 1.75, 2.00, 2.25, 2.50, 2.75, 3.00, 3.50, 4.00, 4.50, 5.00}; // same as binning in Sparse.C
-      TH1 *hgenR = (TH1 *)hgen->Rebin(20, "hgenR", bbAnders);
-      TH1 *htrueR = (TH1 *)htrue->Rebin(20, "htrueR", bbAnders);
+      // Double_t bbAnders[21] = {0.4, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00, 1.10, 1.20, 1.30, 1.50, 1.75, 2.00, 2.25, 2.50, 2.75, 3.00, 3.50, 4.00, 4.50, 5.00}; // same as binning in Sparse.C
+      // TH1 *hgenR = (TH1 *)hgen->Rebin(20, "hgenR", bbAnders);
+      // TH1 *htrueR = (TH1 *)htrue->Rebin(20, "htrueR", bbAnders);
+      // hgen = hgenR;
+      // htrue = htrueR;
+      Double_t bbAnders[17] = {0.4, 0.60, 0.80, 1.00, 1.20, 1.40, 1.60, 1.80, 2.00, 2.20, 2.40, 2.60, 3.00, 3.50, 4.00, 4.50, 5.00}; // same as binning in Sparse.C
+      TH1 *hgenR = (TH1 *)hgen->Rebin(16, "hgenR", bbAnders);
+      TH1 *htrueR = (TH1 *)htrue->Rebin(16, "htrueR", bbAnders);
       hgen = hgenR;
       htrue = htrueR;
     } else {

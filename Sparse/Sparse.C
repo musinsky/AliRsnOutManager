@@ -530,6 +530,29 @@ void AnalyzeSparse(Color_t lcolor = -1)
       bf[idx] = 91; bl[idx++] = 100;
 
       nn = idx;
+     } if (binAndersIdx == 4) {
+      // new Christina binning
+      // nn = 18;
+      Int_t idx=0;
+      bf[idx] = 9; bl[idx++] = 12;
+      bf[idx] = 13; bl[idx++] = 16;
+      bf[idx] = 17; bl[idx++] = 20;
+      bf[idx] = 21; bl[idx++] = 24;
+      bf[idx] = 25; bl[idx++] = 28;
+      bf[idx] = 29; bl[idx++] = 32;
+      
+      bf[idx] = 33; bl[idx++] = 36;
+      bf[idx] = 37; bl[idx++] = 40;
+      bf[idx] = 41; bl[idx++] = 44;
+      bf[idx] = 45; bl[idx++] = 58;
+      bf[idx] = 59; bl[idx++] = 62;
+
+      bf[idx] = 61; bl[idx++] = 70;
+      bf[idx] = 71; bl[idx++] = 80;
+      bf[idx] = 81; bl[idx++] = 90;
+      bf[idx] = 91; bl[idx++] = 100;
+
+      nn = idx;
     } else {
       // new Anders
       nn = 9;
