@@ -1634,13 +1634,19 @@ Double_t *FITUJ(const TH1 *histo, Double_t vres) const
   };
 
   Int_t chi_best = TMath::LocMin(3, tmp_chi);
-  Printf("best function with pol%d bkg", chi_best+1);
-
   TF1 *func_best = 0;
+  if (polynom > 0) {
+    chi_best = polynom - 1; // manual setting of polynom
+    Printf("set (manual) function with pol%d bkg", chi_best+1);
+  }
+  else
+    Printf("best (auto)  function with pol%d bkg", chi_best+1);
+
   if      (chi_best == 0) func_best = func1;
   else if (chi_best == 1) func_best = func2;
   else if (chi_best == 2) func_best = func3;
   else    Printf("Not possible");
+
 
   func_best->SetLineColor(kGreen-3);
   func_best->SetNpx(1000);
@@ -1657,8 +1663,8 @@ Double_t *FITUJ(const TH1 *histo, Double_t vres) const
   TFitResultPtr frp = histo->Fit(func_best, opt, "", fstart, fstop);
 
   if (int(frp) != 0) {
-    Printf("fit status != 0");
-    return 0;
+    Printf("fit status !!!!!!!!!= 0");
+    //    return 0;
   }
 
   // draw background function
