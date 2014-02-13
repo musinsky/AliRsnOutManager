@@ -50,7 +50,7 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
   // fmax    = 1.185;
   fmax    = 1.065;
   fmax    = 1.055;
-//  fmax    = 1.12;
+  //  fmax    = 1.12;
 
   bcmin=1.010; // bin count range
   bcmax=1.030;
@@ -384,6 +384,33 @@ Double_t fun_s2_pol3(double *m, double *par) const
   return par[0]*val + par[4] + x*par[5] + x*x*par[6] + x*x*x*par[7];
 }
 
+
+Double_t rpol1(double *x, double *par) const
+{
+  if (x[0] > 1.005 && x[0] < 1.035) {
+    TF1::RejectPoint();
+    return 0;
+  }
+  return par[0] + par[1]*x[0];
+}
+Double_t rpol2(double *x, double *par) const
+{
+  if (x[0] > 1.005 && x[0] < 1.035) {
+    TF1::RejectPoint();
+    return 0;
+  }
+  return par[0] + par[1]*x[0] + par[2]*x[0]*x[0];
+}
+Double_t rpol3(double *x, double *par) const
+{
+  if (x[0] > 1.005 && x[0] < 1.035) {
+    TF1::RejectPoint();
+    return 0;
+  }
+  return par[0] + par[1]*x[0] + par[2]*x[0]*x[0] + par[3]*x[0]*x[0]*x[0];
+}
+
+
 Double_t Levy(const Double_t *pt, const Double_t *par) const
 {
   Double_t lMass  = par[3];
@@ -476,7 +503,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
     // bf[6] = 61;bf[7] = 81;
     // bl[6] = 80;bl[7] = 100;
 
-    
+
     if (binAndersIdx == 2) {
       // new Anders binning rebin2
       nn = 18;
@@ -516,7 +543,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
       // bf[idx] = 27; bl[idx++] = 28;
       // bf[idx] = 29; bl[idx++] = 30;
       bf[idx] = 27; bl[idx++] = 30;
-      
+
       bf[idx] = 31; bl[idx++] = 35;
       bf[idx] = 36; bl[idx++] = 40;
       bf[idx] = 41; bl[idx++] = 45;
@@ -530,7 +557,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
       bf[idx] = 91; bl[idx++] = 100;
 
       nn = idx;
-     } if (binAndersIdx == 4) {
+    } if (binAndersIdx == 4) {
       // new Christina binning
       // nn = 18;
       Int_t idx=0;
@@ -540,7 +567,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
       bf[idx] = 21; bl[idx++] = 24;
       bf[idx] = 25; bl[idx++] = 28;
       bf[idx] = 29; bl[idx++] = 32;
-      
+
       bf[idx] = 33; bl[idx++] = 36;
       bf[idx] = 37; bl[idx++] = 40;
       bf[idx] = 41; bl[idx++] = 44;
@@ -702,6 +729,14 @@ void AnalyzeSparse(Color_t lcolor = -1)
     //hh->SetMaximum(7000);
     hh->Draw("hist");
     //    hh->GetXaxis()->SetRangeUser(0.995, 1.095);
+
+    FITUJ(hh, geff_res->GetY()[i]);
+    c2->Modified();
+    c2->Update();
+    count++;
+    if (count > 7) break;
+    continue;
+
 
     // !!!!!!!!!!!!!!!!!!
     TF1 *ff = 0;
@@ -1434,11 +1469,11 @@ Double_t CalculateYield(Double_t &err, Double_t min, Double_t max, TH1*hSig, TF1
 
   if(min < max) {
     histVal = hSig->IntegralAndError(hSig->FindBin(min),hSig->FindBin(max), histErr);
-//    Printf("aaa %f %f",histVal,histErr);
+    //    Printf("aaa %f %f",histVal,histErr);
 
     if (fitBg) {
       bgVal = fitBg->Integral(min, max)/histWidth;
-//      Printf("bb %f %f",bgVal,histErr);
+      //      Printf("bb %f %f",bgVal,histErr);
       //       if (rFitSigBg) bgErr = fitBg->IntegralError(min, max)/histWidth;
       bgErr = histErr;
       histVal -= bgVal;
@@ -1488,4 +1523,146 @@ Double_t CalculateYield(Double_t &err, Double_t min, Double_t max, TH1*hSig, TF1
   err = TMath::Sqrt(TMath::Power(histErr,2) + TMath::Power(funErr,2));
 
   return retVal;
+}
+
+
+
+Double_t *FITUJ(const TH1 *histo, Double_t vres) const
+{
+  if (!histo) return 0;
+
+  const Double_t phi_mass  = 1.019445;
+  const Double_t phi_width = 0.00426;
+  Double_t fstart, fstop;
+
+  fstart = histo->GetXaxis()->GetXmin();
+  fstop  = histo->GetXaxis()->GetXmax();
+  TF1 *func1 = new TF1("func1", fun_s2_pol1, fstart, fstop, 6);
+  TF1 *func2 = new TF1("func2", fun_s2_pol2, fstart, fstop, 7);
+  TF1 *func3 = new TF1("func3", fun_s2_pol3, fstart, fstop, 8);
+
+  // find init parameters
+  // first fit exclude intervals for polynomials
+  TF1 *pol1r = new TF1("pol1r", rpol1, func1->GetXmin(), func1->GetXmax(), 2);
+  TF1 *pol2r = new TF1("pol2r", rpol2, func2->GetXmin(), func2->GetXmax(), 3);
+  TF1 *pol3r = new TF1("pol3r", rpol3, func3->GetXmin(), func3->GetXmax(), 4);
+  fstart = 0.99;
+  fstop  = histo->GetXaxis()->GetXmax();
+  //  fstart = phi_mass -  7*phi_width;
+  //  fstop  = phi_mass + 10*phi_width;
+  //  fstart = fmin;
+  //  fstop  = fmax;
+  histo->Fit(pol1r, "QN FC", "", fstart, fstop);
+  histo->Fit(pol2r, "QN FC", "", fstart, fstop);
+  histo->Fit(pol3r, "QN FC", "", fstart, fstop);
+  TF1::RejectPoint(kFALSE);
+
+  // set parameters
+  Double_t p0p = histo->Integral(histo->FindBin(fmin), histo->FindBin(fmax))*histo->GetBinWidth(histo->FindBin(fmin));
+  Printf("p0 estimate = %f", p0p);
+  func1->SetParameters(p0p, phi_mass, phi_width, 0.001, pol1r->GetParameter(0), pol1r->GetParameter(1));
+  func2->SetParameters(p0p, phi_mass, phi_width, 0.001, pol2r->GetParameter(0), pol2r->GetParameter(1),
+                       pol2r->GetParameter(2));
+  func3->SetParameters(p0p, phi_mass, phi_width, 0.001, pol3r->GetParameter(0), pol3r->GetParameter(1),
+                       pol3r->GetParameter(2), pol3r->GetParameter(3));
+  func1->FixParameter(3, vres);
+  func2->FixParameter(3, vres);
+  func3->FixParameter(3, vres);
+  delete pol1r;
+  delete pol2r;
+  delete pol3r;
+
+  // find best function
+  fstart = fmin;
+  fstop  = fmax;
+  histo->Fit(func1, "QN", "", fstart, fstop);
+  histo->Fit(func1, "QN", "", fstart, fstop);
+  histo->Fit(func2, "QN", "", fstart, fstop);
+  histo->Fit(func2, "QN", "", fstart, fstop);
+  histo->Fit(func3, "QN", "", fstart, fstop);
+  histo->Fit(func3, "QN", "", fstart, fstop);
+
+  //  // chi2 is closest to 1.0
+  //  Double_t tmp_chi[3] = {
+  //    TMath::Abs(func1->GetChisquare()/func1->GetNDF() - 1.0),
+  //    TMath::Abs(func2->GetChisquare()/func2->GetNDF() - 1.0),
+  //    TMath::Abs(func3->GetChisquare()/func3->GetNDF() - 1.0)
+  //  };
+
+  //  // chi2 is smallest
+  //  Double_t tmp_chi[3] = {
+  //    func1->GetChisquare()/func1->GetNDF(),
+  //    func2->GetChisquare()/func2->GetNDF(),
+  //    func3->GetChisquare()/func3->GetNDF()
+  //  };
+
+  //  // par0 is smallest
+  //  Double_t tmp_chi[3] = {
+  //    func1->GetParameter(0),
+  //    func2->GetParameter(0),
+  //    func3->GetParameter(0)
+  //  };
+
+  // error of par0 is smallest !!! BEST OPTION !!!
+  Double_t tmp_chi[3] = {
+    func1->GetParError(0),
+    func2->GetParError(0),
+    func3->GetParError(0)
+  };
+
+  Int_t chi_best = TMath::LocMin(3, tmp_chi);
+  Printf("best function with pol%d bkg", chi_best+1);
+
+  TF1 *func_best = 0;
+  if      (chi_best == 0) func_best = func1;
+  else if (chi_best == 1) func_best = func2;
+  else if (chi_best == 2) func_best = func3;
+  else    Printf("Not possible");
+
+  func_best->SetLineColor(kGreen-3);
+  func_best->SetNpx(1000);
+  func_best->SetLineWidth(1);
+
+  // final fitting
+  fstart = fmin;
+  fstop  = fmax;
+  Option_t *opt = "Q";
+  histo->Fit(func_best, opt, "", fstart, fstop);
+  // if (ptmean > 0.20) opt = "QS";
+  opt = "QS";
+  Printf("final fit option = %s", opt);
+  TFitResultPtr frp = histo->Fit(func_best, opt, "", fstart, fstop);
+
+  if (int(frp) != 0) {
+    Printf("fit status != 0");
+    return 0;
+  }
+
+  // draw background function
+  fstart = fmin;
+  fstop  = fmax;
+  TF1 *bkg_pol = new TF1("bkg_pol", "pol3", fstart, fstop);
+  bkg_pol->SetParameters(func_best->GetParameter(4), func_best->GetParameter(5),
+                         func_best->GetParameter(6), func_best->GetParameter(7));
+  bkg_pol->SetLineColor(kBlue + 1);
+  bkg_pol->SetNpx(1000);
+  bkg_pol->SetLineWidth(1);
+  bkg_pol->SetTitle(Form("%s_pol%d", bkg_pol->GetTitle(), chi_best+1));
+  bkg_pol->Draw("same");
+  histo->GetListOfFunctions()->Add(bkg_pol);
+
+  Double_t value = 0, valueError = 0;
+  if (isBinCounting) value = CalculateYield(valueError, bcmin, bcmax, histo, func_best, frp.Get(), bkg_pol);
+  else               value = CalculateYield(valueError, 1.0,     0.0, histo, func_best, frp.Get(), bkg_pol);
+  if (value < 0) value = 0;
+
+  Double_t *results = new Double_t[6];
+  results[0] = value;
+  results[1] = valueError;
+  results[2] = func_best->GetParameter(1); // mass
+  results[3] = func_best->GetParError(1);
+  results[4] = func_best->GetParameter(2); // width
+  results[5] = func_best->GetParError(2);
+
+  return results;
 }
