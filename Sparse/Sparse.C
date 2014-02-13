@@ -147,6 +147,88 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
     combi   = c;
   }
 
+  if (c == 20) {
+    norm[0] = norm[0];
+    norm[1] = norm[1] + 0.010;
+  }
+  if (c == 21) {
+    norm[0] = norm[0];
+    norm[1] = norm[1] + 0.030;
+  }
+  if (c == 22) {
+    norm[0] = norm[0] + 0.010;
+    norm[1] = norm[1] + 0.010;
+  }
+  if (c == 23) {
+    norm[0] = norm[0] + 0.010;
+    norm[1] = norm[1] + 0.040;
+  }
+  if (c == 24) {
+    norm[0] = 0.995;
+    norm[1] = 1.000;
+  }
+  if (c == 25) {
+    norm[0] = 0.995;
+    norm[1] = 1.005;
+  }
+  if (c == 26) {
+    norm[0] = 1.000;
+    norm[1] = 1.005;
+  }
+  if (c == 30) {
+    fmin    = fmin;
+    fmax    = fmax + 0.005;
+  }
+  if (c == 31) {
+    fmin    = fmin;
+    fmax    = fmax + 0.010;
+  }
+  if (c == 32) {
+    fmin    = fmin;
+    fmax    = fmax + 0.015;
+  }
+  if (c == 33) {
+    fmin    = fmin;
+    fmax    = fmax + 0.025;
+  }
+  if (c == 34) {
+    fmin    = fmin;
+    fmax    = fmax + 0.045;
+  }
+  if (c == 35) {
+    fmin    = fmin;
+    fmax    = fmax + 0.065;
+  }
+  if (c == 36) {
+    fmin    = fmin + 0.005;
+    fmax    = fmax + 0.005;
+  }
+  if (c == 37) {
+    fmin    = fmin + 0.005;
+    fmax    = fmax + 0.010;
+  }
+  if (c == 38) {
+    fmin    = fmin + 0.005;
+    fmax    = fmax + 0.045;
+  }
+  if (c == 39) {
+    fmin    = fmin + 0.005;
+    fmax    = fmax + 0.065;
+  }
+
+  if (c == 50) {
+    isBinCounting = kFALSE;
+  }
+  if (c == 51) {
+    isVoig = kFALSE;
+  }
+  if (c == 52) {
+    effiTPC = kTRUE;    
+  }
+  if (c == 53) {
+    mixing = kFALSE;
+  }
+
 
 }
 
@@ -567,12 +649,11 @@ void AnalyzeSparse(Color_t lcolor = -1)
       bf[idx] = 21; bl[idx++] = 24;
       bf[idx] = 25; bl[idx++] = 28;
       bf[idx] = 29; bl[idx++] = 32;
-
       bf[idx] = 33; bl[idx++] = 36;
-      bf[idx] = 37; bl[idx++] = 40;
-      bf[idx] = 41; bl[idx++] = 44;
-      bf[idx] = 45; bl[idx++] = 58;
-      bf[idx] = 59; bl[idx++] = 62;
+      
+      bf[idx] = 37; bl[idx++] = 44;
+      bf[idx] = 45; bl[idx++] = 52;
+      bf[idx] = 53; bl[idx++] = 60;
 
       bf[idx] = 61; bl[idx++] = 70;
       bf[idx] = 71; bl[idx++] = 80;
