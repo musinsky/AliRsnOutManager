@@ -1522,7 +1522,7 @@ Double_t CalculateFactor(const TH1F *hEventStat, Double_t delta_pt, Double_t pt)
   // deltaY Eta is 1.0 (-0.5, 0.5)
   Double_t delta_y    = 1.0;
   // trigger eff 0.851 +7% - 3.5%
-  Double_t effTrigger = 0.851;
+  Double_t effTrigger = 0.881;
   // Phi loss because of VertexCut We have to check
   // (for now 0.01 -> 1% as in 7TeV paper
   Double_t effVert    = 0.909;
@@ -1542,7 +1542,7 @@ Double_t CalculateFactor2(Double_t pt)
 {
   // pt => bin center
   // sigmaMB in pb
-  Double_t effTrigger = 0.851;
+  Double_t effTrigger = 0.881;
   Double_t sigmaMB = 55.4*1e9/effTrigger;
   Double_t fac = (sigmaMB)/(2*TMath::Pi()*pt);
   return fac;
@@ -1676,22 +1676,28 @@ Double_t *FITUJ(const TH1 *histo, Double_t vres) const
   delete pol2r;
   delete pol3r;
 
+
+  TString opt = "Q";
+  // if (ptmean > 0.20) opt = "QS";
+  opt = "Q"; // "S" is important (slow) only for CalculateYield (not for Fit)
+  // opt = "QIE"; // "S" is important (slow) only for CalculateYield (not for Fit)
+  // opt = "QIEM"; // "S" is important (slow) only for CalculateYield (not for Fit)
   // find best function
   fstart = fmin;
   fstop  = fmax;
-  histo->Fit(func1, "QN", "", fstart, fstop);
-  histo->Fit(func1, "QN", "", fstart, fstop);
-  histo->Fit(func2, "QN", "", fstart, fstop);
-  histo->Fit(func2, "QN", "", fstart, fstop);
-  histo->Fit(func3, "QN", "", fstart, fstop);
-  histo->Fit(func3, "QN", "", fstart, fstop);
+  histo->Fit(func1, Form("%sN",opt.Data()), "", fstart, fstop);
+  histo->Fit(func1, Form("%sN",opt.Data()), "", fstart, fstop);
+  histo->Fit(func2, Form("%sN",opt.Data()), "", fstart, fstop);
+  histo->Fit(func2, Form("%sN",opt.Data()), "", fstart, fstop);
+  histo->Fit(func3, Form("%sN",opt.Data()), "", fstart, fstop);
+  histo->Fit(func3, Form("%sN",opt.Data()), "", fstart, fstop);
 
-  //  // chi2 is closest to 1.0
-  //  Double_t tmp_chi[3] = {
-  //    TMath::Abs(func1->GetChisquare()/func1->GetNDF() - 1.0),
-  //    TMath::Abs(func2->GetChisquare()/func2->GetNDF() - 1.0),
-  //    TMath::Abs(func3->GetChisquare()/func3->GetNDF() - 1.0)
-  //  };
+   // chi2 is closest to 1.0
+   Double_t tmp_chi[3] = {
+     TMath::Abs(func1->GetChisquare()/func1->GetNDF() - 1.0),
+     TMath::Abs(func2->GetChisquare()/func2->GetNDF() - 1.0),
+     TMath::Abs(func3->GetChisquare()/func3->GetNDF() - 1.0)
+   };
 
   //  // chi2 is smallest
   //  Double_t tmp_chi[3] = {
@@ -1708,12 +1714,14 @@ Double_t *FITUJ(const TH1 *histo, Double_t vres) const
   //  };
 
   // error of par0 is smallest !!! BEST OPTION !!!
-  Double_t tmp_chi[3] = {
-    func1->GetParError(0),
-    func2->GetParError(0),
-    func3->GetParError(0)
-  };
+  // Double_t tmp_chi[3] = {
+  //   func1->GetParError(0),
+  //   func2->GetParError(0),
+  //   func3->GetParError(0)
+  // };
 
+
+  Printf("AAAAAAAA %f %f %f",tmp_chi[0],tmp_chi[1],tmp_chi[2]);
   Int_t chi_best = TMath::LocMin(3, tmp_chi);
   TF1 *func_best = 0;
   if (polynom > 0) {
@@ -1736,12 +1744,10 @@ Double_t *FITUJ(const TH1 *histo, Double_t vres) const
   // final fitting
   fstart = fmin;
   fstop  = fmax;
-  Option_t *opt = "Q";
-  histo->Fit(func_best, opt, "", fstart, fstop);
-  // if (ptmean > 0.20) opt = "QS";
-  opt = "Q"; // "S" is important (slow) only for CalculateYield (not for Fit)
-  Printf("final fit option = %s", opt);
-  TFitResultPtr frp = histo->Fit(func_best, opt, "", fstart, fstop);
+  // histo->Fit(func_best, opt.Data(), "", fstart, fstop);
+  opt += "S";
+  Printf("final fit option = %s", opt.Data());
+  TFitResultPtr frp = histo->Fit(func_best, opt.Data(), "", fstart, fstop);
 
   if (int(frp) != 0) {
     Printf("fit status !!!!!!!!!= 0");
