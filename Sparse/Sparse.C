@@ -650,7 +650,7 @@ void AnalyzeSparse(Color_t lcolor = -1)
       bf[idx] = 25; bl[idx++] = 28;
       bf[idx] = 29; bl[idx++] = 32;
       bf[idx] = 33; bl[idx++] = 36;
-      
+
       bf[idx] = 37; bl[idx++] = 44;
       bf[idx] = 45; bl[idx++] = 52;
       bf[idx] = 53; bl[idx++] = 60;
@@ -1676,64 +1676,73 @@ Double_t *FITUJ(const TH1 *histo, Double_t vres) const
   delete pol2r;
   delete pol3r;
 
-
   TString opt = "Q";
-  // if (ptmean > 0.20) opt = "QS";
   opt = "Q"; // "S" is important (slow) only for CalculateYield (not for Fit)
-  // opt = "QIE"; // "S" is important (slow) only for CalculateYield (not for Fit)
-  // opt = "QIEM"; // "S" is important (slow) only for CalculateYield (not for Fit)
+  // opt = "QIE";
+  // opt = "QIEM";
+
   // find best function
   fstart = fmin;
   fstop  = fmax;
-  histo->Fit(func1, Form("%sN",opt.Data()), "", fstart, fstop);
-  histo->Fit(func1, Form("%sN",opt.Data()), "", fstart, fstop);
-  histo->Fit(func2, Form("%sN",opt.Data()), "", fstart, fstop);
-  histo->Fit(func2, Form("%sN",opt.Data()), "", fstart, fstop);
-  histo->Fit(func3, Form("%sN",opt.Data()), "", fstart, fstop);
-  histo->Fit(func3, Form("%sN",opt.Data()), "", fstart, fstop);
+  histo->Fit(func1, TString::Format("%sN", opt.Data()), "", fstart, fstop);
+  histo->Fit(func1, TString::Format("%sN", opt.Data()), "", fstart, fstop);
+  histo->Fit(func2, TString::Format("%sN", opt.Data()), "", fstart, fstop);
+  histo->Fit(func2, TString::Format("%sN", opt.Data()), "", fstart, fstop);
+  histo->Fit(func3, TString::Format("%sN", opt.Data()), "", fstart, fstop);
+  histo->Fit(func3, TString::Format("%sN", opt.Data()), "", fstart, fstop);
 
-   // chi2 is closest to 1.0
-   Double_t tmp_chi[3] = {
-     TMath::Abs(func1->GetChisquare()/func1->GetNDF() - 1.0),
-     TMath::Abs(func2->GetChisquare()/func2->GetNDF() - 1.0),
-     TMath::Abs(func3->GetChisquare()/func3->GetNDF() - 1.0)
-   };
+  Int_t best_current;
+  Int_t best_all[3] = {0, 0, 0};
+  Double_t test_value[3];
 
-  //  // chi2 is smallest
-  //  Double_t tmp_chi[3] = {
-  //    func1->GetChisquare()/func1->GetNDF(),
-  //    func2->GetChisquare()/func2->GetNDF(),
-  //    func3->GetChisquare()/func3->GetNDF()
-  //  };
+  // chi2 is closest to 1.0
+  test_value[0] = TMath::Abs(func1->GetChisquare()/func1->GetNDF() - 1.0);
+  test_value[1] = TMath::Abs(func2->GetChisquare()/func2->GetNDF() - 1.0);
+  test_value[2] = TMath::Abs(func3->GetChisquare()/func3->GetNDF() - 1.0);
 
-  //  // par0 is smallest
-  //  Double_t tmp_chi[3] = {
-  //    func1->GetParameter(0),
-  //    func2->GetParameter(0),
-  //    func3->GetParameter(0)
-  //  };
+  best_current = TMath::LocMin(3, test_value);
+  Printf("best function for chi2->1.0 is:      pol%d bkg", best_current+1);
+  best_all[best_current]++;
 
-  // error of par0 is smallest !!! BEST OPTION !!!
-  // Double_t tmp_chi[3] = {
-  //   func1->GetParError(0),
-  //   func2->GetParError(0),
-  //   func3->GetParError(0)
-  // };
+  // error of par0 is smallest (integral)
+  test_value[0] = func1->GetParError(0);
+  test_value[1] = func2->GetParError(0);
+  test_value[2] = func3->GetParError(0);
 
+  best_current = TMath::LocMin(3, test_value);
+  Printf("best function for integral error is: pol%d bkg", best_current+1);
+  best_all[best_current]++;
 
-  Printf("AAAAAAAA %f %f %f",tmp_chi[0],tmp_chi[1],tmp_chi[2]);
-  Int_t chi_best = TMath::LocMin(3, tmp_chi);
+  // error of par1 is smallest (mass)
+  test_value[0] = func1->GetParError(1);
+  test_value[1] = func2->GetParError(1);
+  test_value[2] = func3->GetParError(1);
+
+  best_current = TMath::LocMin(3, test_value);
+  Printf("best function for mass error is:     pol%d bkg", best_current+1);
+  best_all[best_current]++;
+
+  // error of par2 is smallest (width)
+  test_value[0] = func1->GetParError(2);
+  test_value[1] = func2->GetParError(2);
+  test_value[2] = func3->GetParError(2);
+
+  best_current = TMath::LocMin(3, test_value);
+  Printf("best function for width error is:    pol%d bkg", best_current+1);
+  best_all[best_current]++;
+
+  Int_t best_max = TMath::LocMax(3, best_all);
   TF1 *func_best = 0;
   if (polynom > 0) {
-    chi_best = polynom - 1; // manual setting of polynom
-    Printf("set (manual) function with pol%d bkg", chi_best+1);
+    best_max = polynom - 1; // manual setting of polynom
+    Printf("set (manual) function with pol%d bkg", best_max+1);
   }
   else
-    Printf("best (auto)  function with pol%d bkg", chi_best+1);
+    Printf("best (auto)  function with pol%d bkg", best_max+1);
 
-  if      (chi_best == 0) func_best = func1;
-  else if (chi_best == 1) func_best = func2;
-  else if (chi_best == 2) func_best = func3;
+  if      (best_max == 0) func_best = func1;
+  else if (best_max == 1) func_best = func2;
+  else if (best_max == 2) func_best = func3;
   else    Printf("Not possible");
 
 
@@ -1763,7 +1772,7 @@ Double_t *FITUJ(const TH1 *histo, Double_t vres) const
   bkg_pol->SetLineColor(kBlue + 1);
   bkg_pol->SetNpx(1000);
   bkg_pol->SetLineWidth(1);
-  bkg_pol->SetTitle(Form("%s_pol%d", bkg_pol->GetTitle(), chi_best+1));
+  bkg_pol->SetTitle(Form("%s_pol%d", bkg_pol->GetTitle(), best_max+1));
   bkg_pol->Draw("same");
   histo->GetListOfFunctions()->Add(bkg_pol);
 
