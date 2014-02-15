@@ -215,6 +215,14 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
     fmin    = fmin + 0.005;
     fmax    = fmax + 0.065;
   }
+  if (c == 40) {
+    fmin    = fmin;
+    fmax    = fmax - 0.005;
+  }
+  if (c == 41) {
+    fmin    = fmin;
+    fmax    = fmax - 0.010;
+  }
 
   if (c == 50) {
     isBinCounting = kFALSE;
