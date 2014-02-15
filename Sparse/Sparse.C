@@ -23,6 +23,7 @@ Int_t year=2010;
 Double_t fipm = 3.0;
 Int_t combi = 0;
 Double_t export_bin[999] = {0};
+Bool_t fixWidth=kFALSE;
 
 TString eff_prefix="EFFI_OK/effi_";
 TString eff_prefix_anders="EFFI_Anders/effi_";
@@ -1677,9 +1678,16 @@ Double_t *FITUJ(const TH1 *histo, Double_t vres) const
                        pol2r->GetParameter(2));
   func3->SetParameters(p0p, phi_mass, phi_width, 0.001, pol3r->GetParameter(0), pol3r->GetParameter(1),
                        pol3r->GetParameter(2), pol3r->GetParameter(3));
-  func1->FixParameter(3, vres);
-  func2->FixParameter(3, vres);
-  func3->FixParameter(3, vres);
+
+  if (fixWidth) {
+    func1->FixParameter(2, 0.00426);
+    func2->FixParameter(2, 0.00426);
+    func3->FixParameter(2, 0.00426);
+  } else {
+    func1->FixParameter(3, vres);
+    func2->FixParameter(3, vres);
+    func3->FixParameter(3, vres);
+  }
   delete pol1r;
   delete pol2r;
   delete pol3r;
