@@ -237,8 +237,10 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
   if (c == 53) {
     mixing = kFALSE;
   }
-
-
+  if (c == 54) {
+    fixWidth = kTRUE;
+  }
+  
 }
 
 void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
