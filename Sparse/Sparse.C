@@ -240,7 +240,7 @@ void SetCombinations(Int_t c = 0, Int_t poly = 2)
   if (c == 54) {
     fixWidth = kTRUE;
   }
-  
+
 }
 
 void SetNameBordel(Int_t fsuf, Int_t qc, Int_t std10or11, Bool_t info=kFALSE,
@@ -734,7 +734,6 @@ void AnalyzeSparse(Color_t lcolor = -1)
   c2->Draw();
   TCanvas *c3, *c4;
 
-
   for (Int_t i = 0; i < nn; i++) {
     cdc = (count%(ncx*ncy)) + 1;
     if ((cdc == 1) && count > 1) {
@@ -826,8 +825,9 @@ void AnalyzeSparse(Color_t lcolor = -1)
     Double_t *rrr = FITUJ(hh, geff_res->GetY()[i]);
     if (!rrr) {
       Printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      rrr = new Double_t[6];
-      rrr[0] = 0.0; rrr[1] = 0.0; rrr[2] = 0.0; rrr[3] = 0.0; rrr[4] = 0.0; rrr[5] = 0.0;
+      rrr = new Double_t[18];
+      for (Int_t ir = 0; ir < 18; ir++)
+        rrr[ir] = 0.0;
     }
     gry[count]       = rrr[0];
     gryE[count]      = rrr[1];
@@ -835,10 +835,30 @@ void AnalyzeSparse(Color_t lcolor = -1)
     gr_massE[count]  = rrr[3];
     gr_width[count]  = rrr[4];
     gr_widthE[count] = rrr[5];
-    delete [] rrr;
-    grx[count]  = ptmean;
-    grxE[count] = (bwidth[i]/2.0);
+    grx[count]       = ptmean;
+    grxE[count]      = (bwidth[i]/2.0);
 
+    TString srrr; // x, x_e, chi2, integral_e, mass_e, width_e
+    // pol1
+    srrr = TString::Format("%g %g %g %g %g %g", ptmean, bwidth[i]/2.0, rrr[6], rrr[9], rrr[12], rrr[15]);
+    ofstream frrr1;
+    if (count == 0) frrr1.open("par_pol1");
+    else            frrr1.open("par_pol1", std::ios::app);
+    frrr1 << srrr.Data() << endl;
+    // pol2
+    srrr = TString::Format("%g %g %g %g %g %g", ptmean, bwidth[i]/2.0, rrr[7], rrr[10], rrr[13], rrr[16]);
+    ofstream frrr2;
+    if (count == 0) frrr2.open("par_pol2");
+    else            frrr2.open("par_pol2", std::ios::app);
+    frrr2 << srrr.Data() << endl;
+    // pol3
+    srrr = TString::Format("%g %g %g %g %g %g", ptmean, bwidth[i]/2.0, rrr[8], rrr[11], rrr[14], rrr[17]);
+    ofstream frrr3;
+    if (count == 0) frrr3.open("par_pol3");
+    else            frrr3.open("par_pol3", std::ios::app);
+    frrr3 << srrr.Data() << endl;
+
+    delete [] rrr;
 
     // !!!!!!!!!!!!!!!!!!
     // FITUJ
@@ -1320,6 +1340,15 @@ void AnalyzeSparse(Color_t lcolor = -1)
   delete geff;
   delete geff_res;
 
+  // move files with additional parameters, must be after G2F (which create dir)
+  frrr1.close(); frrr2.close(); frrr3.close();
+  TString mv_prikaz;
+  mv_prikaz = TString::Format("mv par_pol1 %s/%s/", g2f_prefix.Data(), TString::Format("%s_%02d", lname.Data(), combi).Data());
+  gSystem->Exec(mv_prikaz.Data());
+  mv_prikaz = TString::Format("mv par_pol2 %s/%s/", g2f_prefix.Data(), TString::Format("%s_%02d", lname.Data(), combi).Data());
+  gSystem->Exec(mv_prikaz.Data());
+  mv_prikaz = TString::Format("mv par_pol3 %s/%s/", g2f_prefix.Data(), TString::Format("%s_%02d", lname.Data(), combi).Data());
+  gSystem->Exec(mv_prikaz.Data());
 }
 
 TH1 *PullHisto(const TList *list, const char *name, Int_t min, Int_t max,
@@ -1772,7 +1801,7 @@ Double_t *FITUJ(const TH1 *histo, Double_t vres) const
   fstart = fmin;
   fstop  = fmax;
   // histo->Fit(func_best, opt.Data(), "", fstart, fstop);
-  opt += "S";
+  opt += "";
   Printf("final fit option = %s", opt.Data());
   TFitResultPtr frp = histo->Fit(func_best, opt.Data(), "", fstart, fstop);
 
@@ -1799,7 +1828,7 @@ Double_t *FITUJ(const TH1 *histo, Double_t vres) const
   else               value = CalculateYield(valueError, 1.0,     0.0, histo, func_best, frp.Get(), bkg_pol);
   if (value < 0) value = 0;
 
-  Double_t *results = new Double_t[6];
+  Double_t *results = new Double_t[18];
   results[0] = value;
   results[1] = valueError;
   results[2] = func_best->GetParameter(1); // mass
@@ -1816,6 +1845,20 @@ Double_t *FITUJ(const TH1 *histo, Double_t vres) const
     results[4] = 0.0;
     results[5] = 0.0;
   }
+
+  // additional parameters
+  results[6]  = func1->GetChisquare()/func1->GetNDF();
+  results[7]  = func2->GetChisquare()/func2->GetNDF();
+  results[8]  = func3->GetChisquare()/func3->GetNDF();
+  results[9]  = func1->GetParError(0);
+  results[10] = func2->GetParError(0);
+  results[11] = func3->GetParError(0);
+  results[12] = func1->GetParError(1);
+  results[13] = func2->GetParError(1);
+  results[14] = func3->GetParError(1);
+  results[15] = func1->GetParError(2);
+  results[16] = func2->GetParError(2);
+  results[17] = func3->GetParError(2);
 
   return results;
 }
